@@ -1,0 +1,97 @@
+generator client{
+	provider = "prisma-client-js"
+}
+
+datasource db{
+	provider="postgresql"
+	url = env("DB_URL")
+}
+
+enum Gender{
+	Male
+	Female
+	Other
+}
+
+enum MessageType{
+	Text
+	Image
+	File
+}
+
+enum UserType{
+	User
+	Doctor
+	Admin
+}
+
+model User{
+	userId String @id() @default(uuid())
+	firstName String
+	lastName String
+	email String @unique()
+	password String
+	bio String?
+	profilePicture String?
+	dob DateTime @default(now())
+	gender Gender
+	verified Boolean @default(true)
+	medicines Medicine[]
+	creatorChat Chat[] @relation("firstParticipant")
+	participantChat Chat[] @relation("secondParticipant")
+	messages Message[]
+}
+
+model UserRole{
+	roleId String @id() @default(uuid())
+	name UserType
+}
+
+model Medicine{
+	medicineId String @id() @default(uuid())
+	name String
+	description String?
+	active Boolean @default(true)
+	userId String
+	user User @relation(fields:[userId], references:[userId])
+	schedules Schedule[]
+	frequencies Frequency[]
+	days Int[]
+}
+
+model Schedule{
+	scheduleId String @id @default(uuid())
+	hour Int
+	minutes Int
+	medicineId String
+	medicine Medicine @relation(fields:[medicineId], references:[medicineId])
+}
+
+model Frequency{
+	frequencyId String @id() @default(uuid())
+	date DateTime @default(now())
+	frequencyPerWeek Int	
+	medicineId String
+	medicine Medicine @relation(fields:[medicineId], references:[medicineId])
+}
+
+model Chat{
+	chatId String @id() @default(uuid())
+	firstUser String
+	secondUser String
+	firstParticipant User @relation("firstParticipant", fields:[firstUser], references:[userId])	
+	secondParticipant User @relation("secondParticipant", fields:[secondUser], references:[userId])
+}
+
+model Message{
+	messageId String @id @default(uuid())
+	authorId String
+	author User @relation(fields:[authorId], references:[userId])
+	date DateTime @default(now())
+	type MessageType
+	content String
+	chatBot Boolean @default(false)
+	seen Boolean @default(false)
+}
+
+
