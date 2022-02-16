@@ -1,4 +1,8 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import {
+	NavigationProp,
+	useIsFocused,
+	useNavigation,
+} from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -7,10 +11,18 @@ import MedicineListElement from "../../Components/Schedule/MedicineListElement";
 import { RootStackType } from "../../Stacks/RootStack";
 import styles from "../../Styles/styles";
 import { getMedicineList } from "../../API/api";
+import { useDispatch } from "react-redux";
+import { changeNavigationAction } from "../../Redux/Actions/ApplicationActions";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { colors } from "../../Styles/Colors";
+import MedicineListSkeleton from "../../Components/Skeletons/MedicineListSkeleton";
 
 const MedicineList = () => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
+	const focused = useIsFocused();
+	const dispatch = useDispatch();
 
+	const [isLoading, setIsLoading] = useState(true);
 	const [open, setOpen] = useState(false);
 	const [value, setValue] = useState(null);
 	const [items, setItems] = useState([]);
@@ -50,6 +62,9 @@ const MedicineList = () => {
 
 			setMedicineList(newMedicineList);
 		}
+
+		// set isloading false
+		setIsLoading(false);
 	};
 
 	const changeRenderList = (e: string) => {
@@ -70,7 +85,9 @@ const MedicineList = () => {
 	}, [medicineList]);
 
 	useEffect(() => {
-		getAllMedicines();
+		setTimeout(() => {
+			getAllMedicines();
+		}, 2000);
 
 		setItems([
 			{ label: "All", value: "all" },
@@ -109,7 +126,9 @@ const MedicineList = () => {
 					</TouchableOpacity>
 				</View>
 
-				{renderMedicineList.length > 0 ? (
+				{isLoading ? (
+					<MedicineListSkeleton />
+				) : renderMedicineList.length > 0 ? (
 					<View style={styles.medicineLists}>
 						{renderMedicineList.map((medicine) => (
 							<MedicineListElement

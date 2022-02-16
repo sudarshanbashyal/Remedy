@@ -92,7 +92,12 @@ export const getMedicineList = async (req: AuthRequestType, res: Response) => {
 			},
 			include: {
 				schedules: true,
-				frequencies: true,
+				frequencies: {
+					orderBy: {
+						date: "desc",
+					},
+					take: 1,
+				},
 			},
 		});
 

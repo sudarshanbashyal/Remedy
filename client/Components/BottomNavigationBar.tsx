@@ -4,10 +4,14 @@ import { View, TouchableOpacity } from "react-native";
 import RenderTabComponent from "../Utils/GetNavigation";
 import { RootStackType } from "../Stacks/RootStack";
 import styles from "../Styles/styles";
+import { useSelector } from "react-redux";
+import { RootStore } from "../Redux/store";
 
 const BottomNavigationBar = () => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
-	const currentNavigation = "ChatList";
+	const { currentNavigation } = useSelector(
+		(state: RootStore) => state.applicationReducer
+	);
 
 	const handleNavigation = (name: keyof RootStackType) => {
 		navigation.navigate(name);

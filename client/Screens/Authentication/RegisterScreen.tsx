@@ -8,6 +8,7 @@ import { AuthStackType } from "../../Stacks/AuthStack";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
 import { BackIcon } from "../../Styles/SVG/Svg";
+import { generateIdenticon } from "../../Utils/Identicon/identicon";
 
 export interface RegistrationType {
 	firstName: string | null;
@@ -17,6 +18,7 @@ export interface RegistrationType {
 	email: string | null;
 	password: string | null;
 	confirmPassword: string | null;
+	profilePicture: string | null;
 }
 
 const initialUserData = {
@@ -27,6 +29,7 @@ const initialUserData = {
 	email: null,
 	password: null,
 	confirmPassword: null,
+	profilePicture: null,
 };
 
 const RegisterScreen = () => {
@@ -106,8 +109,15 @@ const RegisterScreen = () => {
 		const correctEntries = checkAccountStep();
 		if (!correctEntries) return;
 
-		// register user here
-		const registration = await registerUser(userData);
+		const avatar = generateIdenticon(
+			userData.firstName + userData.lastName
+		);
+
+		const registration = await registerUser({
+			...userData,
+			profilePicture: avatar,
+		});
+
 		if (registration) {
 			navigation.navigate("Login");
 		}

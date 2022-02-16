@@ -7,6 +7,7 @@ import { loginUserAction } from "../../Redux/Actions/UserActions";
 import { AuthStackType } from "../../Stacks/AuthStack";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
+import { createChannel } from "../../Utils/Notification/notification";
 
 export interface LoginType {
 	email: string;
@@ -51,6 +52,7 @@ const LoginScreen = () => {
 				medicines,
 				token,
 				bio,
+				profilePicture,
 			} = data.user;
 
 			dispatch(
@@ -64,8 +66,12 @@ const LoginScreen = () => {
 					medicines,
 					token,
 					bio,
+					profilePicture,
 				})
 			);
+
+			// handle channel for notification
+			createChannel();
 		}
 	};
 

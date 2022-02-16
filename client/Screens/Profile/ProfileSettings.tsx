@@ -22,6 +22,10 @@ import {
 import { formatShortDate } from "../../Utils/FormatTime/formatTime";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
+import {
+	handleNotification,
+	handleSchedule,
+} from "../../Utils/Notification/notification";
 
 const ProfileSettings = () => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
@@ -180,9 +184,13 @@ const ProfileSettings = () => {
 							<Text style={styles.whiteTextButton}>Cancel</Text>
 						</TouchableOpacity>
 
-						<View style={styles.blueButtonContainer}>
-							<Text style={styles.blueButton}>Save Profile</Text>
-						</View>
+						<TouchableOpacity onPress={handleSchedule}>
+							<View style={styles.blueButtonContainer}>
+								<Text style={styles.blueButton}>
+									Save Profile
+								</Text>
+							</View>
+						</TouchableOpacity>
 					</View>
 				</View>
 			</ScrollView>

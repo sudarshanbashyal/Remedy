@@ -67,6 +67,7 @@ const StackRenderer = () => {
 						medicines,
 						token,
 						bio,
+						profilePicture,
 					} = user;
 
 					dispatch(
@@ -80,6 +81,7 @@ const StackRenderer = () => {
 							medicines,
 							token,
 							bio,
+							profilePicture,
 						})
 					);
 				}

@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ScrollView, Text, View } from "react-native";
 import BottomNavigationBar from "../../Components/BottomNavigationBar";
 import styles from "../../Styles/styles";
 import FrequencyGraph from "../../Components/Stats/FrequencyGraph";
 import HabitGraph from "../../Components/Stats/HabitGraph";
 import { colors } from "../../Styles/Colors";
+import { useDispatch } from "react-redux";
+import { changeNavigationAction } from "../../Redux/Actions/ApplicationActions";
 
 export const graphConfigs = {
 	backgroundColor: colors.lightGray,

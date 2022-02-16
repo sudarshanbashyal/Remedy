@@ -6,7 +6,15 @@ import { hashPassword, isCorrectPassword } from "../Utils/Bcrypt";
 
 export const registerUser = async (req: Request, res: Response) => {
 	try {
-		const { firstName, lastName, email, password, gender, dob } = req.body;
+		const {
+			firstName,
+			lastName,
+			email,
+			password,
+			gender,
+			dob,
+			profilePicture,
+		} = req.body;
 
 		const user = await PrismaDB.user.create({
 			data: {
@@ -16,6 +24,7 @@ export const registerUser = async (req: Request, res: Response) => {
 				password: await hashPassword(password),
 				gender,
 				dob: new Date(dob),
+				profilePicture,
 			},
 		});
 

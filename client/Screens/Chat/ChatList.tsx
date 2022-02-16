@@ -1,8 +1,14 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import React from "react";
+import {
+	NavigationProp,
+	useIsFocused,
+	useNavigation,
+} from "@react-navigation/native";
+import React, { useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useDispatch } from "react-redux";
 import BottomNavigationBar from "../../Components/BottomNavigationBar";
 import ChatPreview from "../../Components/Chat/ChatPreview";
+import { changeNavigationAction } from "../../Redux/Actions/ApplicationActions";
 import { RootStackType } from "../../Stacks/RootStack";
 import styles from "../../Styles/styles";
 import { SearchIcon } from "../../Styles/SVG/Svg";
@@ -17,7 +23,9 @@ export interface ChatPreviewInterface {
 }
 
 const ChatList = () => {
+	const dispatch = useDispatch();
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
+	const focused = useIsFocused();
 
 	const chats: ChatPreviewInterface[] = [
 		{
@@ -57,6 +65,10 @@ const ChatList = () => {
 	const handleChatNavigation = () => {
 		navigation.navigate("ChatScreen");
 	};
+
+	useEffect(() => {
+		dispatch(changeNavigationAction("ChatList"));
+	}, [focused]);
 
 	return (
 		<View style={styles.fullContainer}>

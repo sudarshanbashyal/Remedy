@@ -30,11 +30,12 @@ export const userReducer = (
 			};
 
 		case ADD_MEDICINE:
+			console.log(action.payload);
 			return {
 				...state,
 				user: {
 					...state.user,
-					meicines: [...state.user.medicines, action.payload],
+					medicines: [...state.user.medicines, {}],
 				},
 			};
 

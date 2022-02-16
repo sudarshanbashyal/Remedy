@@ -17,6 +17,7 @@ export interface UserType {
 	bio?: string;
 	gender: string;
 	medicines?: MedicineType[];
+	profilePicture: string;
 	token: string;
 }
 

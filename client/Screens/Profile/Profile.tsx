@@ -1,5 +1,5 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect } from "react";
 import { ScrollView, View, Image, Text, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import BottomNavigationBar from "../../Components/BottomNavigationBar";
@@ -32,7 +32,7 @@ const Profile = () => {
 						<Image
 							style={styles.profileInfoImage}
 							source={{
-								uri: "https://avatars.githubusercontent.com/u/47313528?v=4",
+								uri: "https://otakukart.com/wp-content/uploads/2021/12/bojji-becomes-strong.jpg",
 							}}
 						/>
 					</View>

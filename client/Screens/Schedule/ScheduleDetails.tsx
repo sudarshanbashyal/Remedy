@@ -5,6 +5,7 @@ import {
 	Switch,
 	Text,
 	TextInput,
+	ToastAndroid,
 	TouchableOpacity,
 	View,
 } from "react-native";
@@ -72,7 +73,7 @@ const ScheduleDetails = ({ route }) => {
 		let validData = true;
 
 		scheduleTimes.forEach((scheduleTime: ScheduleTimeType) => {
-			if (!scheduleTime.minutes || !scheduleTime.hour) {
+			if (scheduleTime.minutes === null || scheduleTime.hour === null) {
 				validData = false;
 			}
 		});
@@ -163,6 +164,23 @@ const ScheduleDetails = ({ route }) => {
 	const changeTime = (index: number, type: string, event: any) => {
 		const { text: newTime } = event.nativeEvent;
 
+		// validate time fields
+
+		// TODO:
+		// fix bug with hour time
+		// Replacate: type: 1 (oops meant to say 8), try to backspace (doesn't let you)
+		if (type == "minutes") {
+			if (+newTime > 60 || +newTime < 0) {
+				ToastAndroid.show("Invalid minutes value.", ToastAndroid.SHORT);
+				return;
+			}
+		} else {
+			if (+newTime > 12 || +newTime < 1) {
+				ToastAndroid.show("Invalid hour value.", ToastAndroid.SHORT);
+				return;
+			}
+		}
+
 		const newSchedule: ScheduleTimeType[] = scheduleTimes.map(
 			(time: ScheduleTimeType, currIndex: number) => {
 				if (currIndex !== index) return time;
@@ -198,7 +216,7 @@ const ScheduleDetails = ({ route }) => {
 		data.schedules.forEach((schedule: any) => {
 			let hour =
 				+schedule.hour > 12 ? +schedule.hour - 12 : +schedule.hour;
-			let minutes = +schedule.minutes || +0;
+			let minutes = +schedule.minutes || +"00";
 			let half = +schedule.hour > 12 ? "PM" : "AM";
 
 			currentScheduleTimes.push({ hour, minutes, half });
@@ -266,7 +284,7 @@ const ScheduleDetails = ({ route }) => {
 
 					<View style={styles.scheduleActiveContainer}>
 						<Text style={styles.scheduleActiveText}>
-							I'm currently on this medication.
+							I'm currently taking this medication
 						</Text>
 
 						<Switch
