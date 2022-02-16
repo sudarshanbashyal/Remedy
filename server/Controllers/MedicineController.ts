@@ -6,10 +6,16 @@ import { AuthRequestType } from "../Utils/Auth";
 export const addMedicine = async (req: AuthRequestType, res: Response) => {
 	try {
 		const { userId } = req;
-		const { name, description, days, schedules } = req.body;
+		const { name, description, days, schedules, isActive } = req.body;
 
 		const medicine = await PrismaDB.medicine.create({
-			data: { name, description, days, userId: userId as string },
+			data: {
+				name,
+				description,
+				days,
+				userId: userId as string,
+				active: isActive,
+			},
 		});
 		if (!medicine) {
 			return res.status(500).json({
@@ -138,7 +144,7 @@ export const getMedicineDetails = async (
 export const updateMedicine = async (req: AuthRequestType, res: Response) => {
 	try {
 		const { medicineId } = req.params;
-		const { name, description, days, schedules } = req.body;
+		const { name, description, days, schedules, isActive } = req.body;
 
 		await PrismaDB.medicine.update({
 			where: {
@@ -148,6 +154,7 @@ export const updateMedicine = async (req: AuthRequestType, res: Response) => {
 				name,
 				description,
 				days,
+				active: isActive,
 			},
 		});
 

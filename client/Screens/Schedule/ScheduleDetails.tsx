@@ -2,6 +2,7 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
 	ScrollView,
+	Switch,
 	Text,
 	TextInput,
 	TouchableOpacity,
@@ -52,9 +53,11 @@ const ScheduleDetails = ({ route }) => {
 	const [medicineData, setMedicineData] = useState<{
 		name: string;
 		description: string;
+		isActive: boolean;
 	}>({
 		name: null,
 		description: null,
+		isActive: true,
 	});
 
 	const [scheduleTimes, setScheduleTimes] = useState<ScheduleTimeType[]>([
@@ -185,6 +188,7 @@ const ScheduleDetails = ({ route }) => {
 		setMedicineData({
 			name,
 			description,
+			isActive: active,
 		});
 
 		setSelectedDays(days);
@@ -192,8 +196,6 @@ const ScheduleDetails = ({ route }) => {
 		// select schedule times
 		let currentScheduleTimes: ScheduleTimeType[] = [];
 		data.schedules.forEach((schedule: any) => {
-			console.log(schedule);
-
 			let hour =
 				+schedule.hour > 12 ? +schedule.hour - 12 : +schedule.hour;
 			let minutes = +schedule.minutes || +0;
@@ -261,6 +263,31 @@ const ScheduleDetails = ({ route }) => {
 							});
 						}}
 					/>
+
+					<View style={styles.scheduleActiveContainer}>
+						<Text style={styles.scheduleActiveText}>
+							I'm currently on this medication.
+						</Text>
+
+						<Switch
+							trackColor={{
+								false: colors.lightGray,
+								true: colors.primaryRed,
+							}}
+							thumbColor={
+								medicineData.isActive
+									? colors.lightGray
+									: colors.opaqueWhite
+							}
+							onValueChange={() => {
+								setMedicineData({
+									...medicineData,
+									isActive: !medicineData.isActive,
+								});
+							}}
+							value={medicineData.isActive}
+						/>
+					</View>
 				</View>
 
 				<ScheuleTime

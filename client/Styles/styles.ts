@@ -260,6 +260,17 @@ const styles = StyleSheet.create({
 		right: 0,
 		top: 0,
 	},
+	scheduleActiveText: {
+		fontFamily: "Poppins-Medium",
+		color: colors.opaqueWhite,
+		marginRight: 5,
+	},
+	scheduleActiveContainer: {
+		marginTop: 20,
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "flex-end",
+	},
 
 	scheduleDaysContainer: {
 		width: "100%",
