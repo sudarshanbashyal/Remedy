@@ -174,11 +174,6 @@ const ScheduleDetails = ({ route }) => {
 				ToastAndroid.show("Invalid minutes value.", ToastAndroid.SHORT);
 				return;
 			}
-		} else {
-			if (+newTime > 12 || +newTime < 1) {
-				ToastAndroid.show("Invalid hour value.", ToastAndroid.SHORT);
-				return;
-			}
 		}
 
 		const newSchedule: ScheduleTimeType[] = scheduleTimes.map(

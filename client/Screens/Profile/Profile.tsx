@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { ScrollView, View, Image, Text, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import BottomNavigationBar from "../../Components/BottomNavigationBar";
-import { RootStore } from "../../Redux/store";
+import { RootStore, Store } from "../../Redux/store";
 import { RootStackType } from "../../Stacks/RootStack";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
@@ -19,6 +19,9 @@ import { formatShortDate } from "../../Utils/FormatTime/formatTime";
 const Profile = () => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
 	const { user } = useSelector((state: RootStore) => state.userReducer);
+
+	const state = Store.getState();
+	console.log(state);
 
 	const handleNavigation = (name: keyof RootStackType) => {
 		navigation.navigate(name);

@@ -17,6 +17,7 @@ import {
 	bgoptions,
 	createChannel,
 	handleScheduling,
+	stopScheduling,
 } from "../../Utils/Notification/notification";
 import BackgroundService from "react-native-background-actions";
 
@@ -35,6 +36,7 @@ const loginUserAction =
 
 		// start the background scheduling job
 		if (user?.medicines) {
+			await stopScheduling();
 			await BackgroundService.start(handleScheduling, {
 				...bgoptions,
 				parameters: {

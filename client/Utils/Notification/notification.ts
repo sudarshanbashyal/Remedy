@@ -1,10 +1,11 @@
 import NodeSchedule from "node-schedule";
 import PushNotification from "react-native-push-notification";
-import BackgroundService from "react-native-background-actions";
 import {
 	MedicineType,
 	ScheduleType,
 } from "../../Redux/Actions/UserActionTypes";
+import EventEmitter from "events";
+import { Store } from "../../Redux/store";
 
 export const bgoptions = {
 	taskName: "Client Running",
@@ -19,18 +20,21 @@ export const bgoptions = {
 	parameters: {},
 };
 
+export const eventEmitter = new EventEmitter();
+
 export const stopScheduling = async () => {
-	await BackgroundService.stop();
+	eventEmitter.emit("close");
 };
 
 // TODO:
 // find a better algorithm for this function
+// find a better solution for stopping previous background tasks
 export const handleScheduling = async ({
 	medicines,
 }: {
 	medicines: MedicineType[];
 }) => {
-	await new Promise(async (resolve) => {
+	await new Promise<void>(async (resolve) => {
 		for (let medicine of medicines) {
 			if (!medicine.active) continue;
 			console.log("Medicine name:", medicine.name);
@@ -44,7 +48,8 @@ export const handleScheduling = async ({
 						() => {
 							handleNotification(
 								`Reminder: ${medicine.name}`,
-								`Hi, this is a reminder for you to take ${medicine.name}.`
+								`Hi, this is a reminder for you to take ${medicine.name}.`,
+								medicine.medicineId
 							);
 						}
 					);
@@ -52,15 +57,6 @@ export const handleScheduling = async ({
 			});
 		}
 	});
-
-	/*
-	await new Promise(async (resolve) => {
-		schedule.scheduleJob("04 * * * *", () => {
-			console.log("some notification");
-			handleNotification("Background Title", "Some message about text");
-		});
-	});
-	*/
 };
 
 export const createChannel = () => {
@@ -72,7 +68,38 @@ export const createChannel = () => {
 	);
 };
 
-export const handleNotification = (title: string, message: string) => {
+export const handleNotification = (
+	title: string,
+	message: string,
+	medicineId: string
+) => {
+	const { userReducer } = Store.getState();
+
+	const currentHour = new Date().getHours();
+	const currentMinutes = new Date().getMinutes();
+
+	let correctTime = false;
+	let currentMedicine: MedicineType = null;
+
+	userReducer.user.medicines.forEach((medicine: MedicineType) => {
+		if (medicine.medicineId === medicineId) {
+			currentMedicine = medicine;
+			return;
+		}
+	});
+
+	currentMedicine.schedules.forEach((schedule: ScheduleType) => {
+		if (
+			schedule.minutes === currentMinutes &&
+			schedule.hour === currentHour
+		) {
+			correctTime = true;
+			return;
+		}
+	});
+
+	if (!correctTime) return;
+
 	PushNotification.localNotification({
 		channelId: "scheduleChannel",
 		title,
