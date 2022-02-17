@@ -13,6 +13,12 @@ import {
 	removeUserToken,
 	storeUserToken,
 } from "../../Utils/AsyncStorage/asyncStorage";
+import {
+	bgoptions,
+	createChannel,
+	handleScheduling,
+} from "../../Utils/Notification/notification";
+import BackgroundService from "react-native-background-actions";
 
 const loginUserAction =
 	(user: UserType) => async (dispatch: Dispatch<UserDispatchType>) => {
@@ -23,6 +29,19 @@ const loginUserAction =
 
 		// store JWT token in async storage
 		await storeUserToken(user.token);
+
+		// create notification channel
+		createChannel();
+
+		// start the background scheduling job
+		if (user?.medicines) {
+			await BackgroundService.start(handleScheduling, {
+				...bgoptions,
+				parameters: {
+					medicines: user.medicines,
+				},
+			});
+		}
 	};
 
 const logoutUserAction = () => async (dispatch: Dispatch<UserDispatchType>) => {

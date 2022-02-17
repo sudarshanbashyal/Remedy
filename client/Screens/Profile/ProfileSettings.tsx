@@ -23,9 +23,11 @@ import { formatShortDate } from "../../Utils/FormatTime/formatTime";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import {
-	handleNotification,
+	bgoptions,
 	handleSchedule,
+	veryIntensiveTask,
 } from "../../Utils/Notification/notification";
+import BackgroundService from "react-native-background-actions";
 
 const ProfileSettings = () => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
@@ -184,7 +186,7 @@ const ProfileSettings = () => {
 							<Text style={styles.whiteTextButton}>Cancel</Text>
 						</TouchableOpacity>
 
-						<TouchableOpacity onPress={handleSchedule}>
+						<TouchableOpacity>
 							<View style={styles.blueButtonContainer}>
 								<Text style={styles.blueButton}>
 									Save Profile

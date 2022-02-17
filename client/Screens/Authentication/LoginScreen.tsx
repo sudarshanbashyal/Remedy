@@ -1,13 +1,13 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../API/api";
 import { loginUserAction } from "../../Redux/Actions/UserActions";
+import { RootStore } from "../../Redux/store";
 import { AuthStackType } from "../../Stacks/AuthStack";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
-import { createChannel } from "../../Utils/Notification/notification";
 
 export interface LoginType {
 	email: string;
@@ -16,6 +16,7 @@ export interface LoginType {
 
 const LoginScreen = () => {
 	const dispatch = useDispatch();
+	const { user } = useSelector((state: RootStore) => state.userReducer);
 
 	const navigation = useNavigation<NavigationProp<AuthStackType>>();
 	const [error, setError] = useState<string | null>(null);
@@ -69,9 +70,6 @@ const LoginScreen = () => {
 					profilePicture,
 				})
 			);
-
-			// handle channel for notification
-			createChannel();
 		}
 	};
 

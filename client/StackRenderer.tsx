@@ -10,6 +10,7 @@ import { RootStore } from "./Redux/store";
 import { getUserToken } from "./Utils/AsyncStorage/asyncStorage";
 import { fetchUser } from "./API/api";
 import { loginUserAction } from "./Redux/Actions/UserActions";
+import { handleScheduling } from "./Utils/Notification/notification";
 
 const StackRenderer = () => {
 	const dispatch = useDispatch();
@@ -86,6 +87,9 @@ const StackRenderer = () => {
 					);
 				}
 			}
+
+			// start medicine scheduling
+			handleScheduling(user.medicines);
 		})();
 	}, []);
 

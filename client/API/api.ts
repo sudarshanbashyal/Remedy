@@ -64,6 +64,7 @@ export const loginUser = async (userData: LoginType): Promise<any> => {
 		});
 
 		const data = await response.json();
+		console.log(data);
 
 		return data;
 	} catch (error) {

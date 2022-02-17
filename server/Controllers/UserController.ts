@@ -136,7 +136,7 @@ export const fetchUser = async (req: AuthRequestType, res: Response) => {
 			include: {
 				medicines: {
 					include: {
-						frequencies: true,
+						schedules: true,
 					},
 				},
 			},
