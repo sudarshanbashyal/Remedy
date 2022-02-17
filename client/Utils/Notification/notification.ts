@@ -28,14 +28,22 @@ export const stopScheduling = async () => {
 
 let currentJobs = [];
 
+export const createChannel = () => {
+	PushNotification.createChannel(
+		{ channelId: "scheduleChannel", channelName: "Schedule Channel" },
+		() => {
+			console.log("Channel created.");
+		}
+	);
+};
+
 // TODO:
 // find a better algorithm for this function
 // find a better solution for stopping previous background tasks
-export const handleScheduling = async ({
-	medicines,
-}: {
-	medicines: MedicineType[];
-}) => {
+export const handleScheduling = async () => {
+	const { userReducer } = Store.getState();
+	const { medicines } = userReducer.user;
+
 	await new Promise<void>(async (resolve) => {
 		eventEmitter.on("close", () => {
 			currentJobs.forEach((job: NodeSchedule.Job) => {
@@ -47,7 +55,6 @@ export const handleScheduling = async ({
 
 		for (let medicine of medicines) {
 			if (!medicine.active) continue;
-			console.log("Medicine name:", medicine.name);
 
 			const weekDays = medicine.days;
 
@@ -67,18 +74,7 @@ export const handleScheduling = async ({
 				});
 			});
 		}
-
-		console.log("jobs:", currentJobs.length);
 	});
-};
-
-export const createChannel = () => {
-	PushNotification.createChannel(
-		{ channelId: "scheduleChannel", channelName: "Schedule Channel" },
-		() => {
-			console.log("Channel created.");
-		}
-	);
 };
 
 export const handleNotification = (title: string, message: string) => {

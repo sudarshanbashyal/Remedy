@@ -37,12 +37,7 @@ const loginUserAction =
 		// start the background scheduling job
 		if (user?.medicines) {
 			await stopScheduling();
-			await BackgroundService.start(handleScheduling, {
-				...bgoptions,
-				parameters: {
-					medicines: user.medicines,
-				},
-			});
+			await BackgroundService.start(handleScheduling, bgoptions);
 		}
 	};
 
@@ -64,6 +59,9 @@ const addMedicineAction =
 			type: ADD_MEDICINE,
 			payload: medicine,
 		});
+
+		await stopScheduling();
+		await BackgroundService.start(handleScheduling, bgoptions);
 	};
 
 const updateMedicineAction =
@@ -76,6 +74,9 @@ const updateMedicineAction =
 				medicineId,
 			},
 		});
+
+		await stopScheduling();
+		await BackgroundService.start(handleScheduling, bgoptions);
 	};
 
 export {

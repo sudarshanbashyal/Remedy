@@ -1,8 +1,4 @@
-import {
-	NavigationProp,
-	useIsFocused,
-	useNavigation,
-} from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -11,16 +7,10 @@ import MedicineListElement from "../../Components/Schedule/MedicineListElement";
 import { RootStackType } from "../../Stacks/RootStack";
 import styles from "../../Styles/styles";
 import { getMedicineList } from "../../API/api";
-import { useDispatch } from "react-redux";
-import { changeNavigationAction } from "../../Redux/Actions/ApplicationActions";
-import SkeletonPlaceholder from "react-native-skeleton-placeholder";
-import { colors } from "../../Styles/Colors";
 import MedicineListSkeleton from "../../Components/Skeletons/MedicineListSkeleton";
 
 const MedicineList = () => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
-	const focused = useIsFocused();
-	const dispatch = useDispatch();
 
 	const [isLoading, setIsLoading] = useState(true);
 	const [open, setOpen] = useState(false);
@@ -85,9 +75,7 @@ const MedicineList = () => {
 	}, [medicineList]);
 
 	useEffect(() => {
-		setTimeout(() => {
-			getAllMedicines();
-		}, 2000);
+		getAllMedicines();
 
 		setItems([
 			{ label: "All", value: "all" },

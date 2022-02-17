@@ -87,9 +87,6 @@ const StackRenderer = () => {
 					);
 				}
 			}
-
-			// start medicine scheduling
-			handleScheduling(user.medicines);
 		})();
 	}, []);
 
