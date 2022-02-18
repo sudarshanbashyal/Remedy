@@ -20,27 +20,56 @@ import {
 	launchImageLibrary,
 } from "react-native-image-picker";
 import { formatFullDate } from "../../Utils/FormatTime/formatTime";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
-import {
-	bgoptions,
-	handleSchedule,
-	veryIntensiveTask,
-} from "../../Utils/Notification/notification";
-import BackgroundService from "react-native-background-actions";
+import Errors from "../../Components/Feedbacks/Errors";
+import { updateUserProfile } from "../../API/api";
+import { updateUserProfileAction } from "../../Redux/Actions/UserActions";
+import { showToast } from "../../Utils/Toast";
+
+export interface UserProfileType {
+	firstName: string;
+	lastName: string;
+	bio: string;
+	gender: string;
+	dob: Date;
+	profilePicture: string;
+}
 
 const ProfileSettings = () => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
-	const { user } = useSelector((state: RootStore) => state.userReducer);
+	const dispatch = useDispatch();
+
+	const {
+		user,
+		user: { firstName, lastName, bio, gender, dob, profilePicture },
+	} = useSelector((state: RootStore) => state.userReducer);
 
 	const goBack = () => {
 		navigation.goBack();
 	};
 
-	const [date, setDate] = useState<Date>(new Date());
+	const [userData, setUserData] = useState<UserProfileType>({
+		firstName,
+		lastName,
+		bio,
+		gender,
+		dob,
+		profilePicture,
+	});
+
+	const handleChange = (field: keyof UserProfileType, value: any) => {
+		setUserData({
+			...userData,
+			[field]: value,
+		});
+	};
+
+	const [errors, setErrors] = useState<string[]>([]);
 
 	const [datePickerOpen, setDatePickerOpen] = useState(false);
 	const [open, setOpen] = useState(false);
+
 	const [value, setValue] = useState(null);
 	const [items, setItems] = useState([
 		{ label: "Male", value: "Male" },
@@ -49,6 +78,7 @@ const ProfileSettings = () => {
 	]);
 
 	const [imageURI, setImageURI] = useState<string | null>(null);
+	const [encodedImage, setEncodedImage] = useState<string | null>(null);
 
 	const handleImagePreview = async () => {
 		const response: ImagePickerResponse = await launchImageLibrary({
@@ -58,7 +88,41 @@ const ProfileSettings = () => {
 
 		if (!response.didCancel) {
 			const image: Asset = response.assets[0];
+
 			setImageURI(image.uri);
+			setEncodedImage(image.base64);
+		}
+	};
+
+	const validateData = (): boolean => {
+		const currentErrors = [];
+
+		// check first and last name
+		if (!userData.firstName || !userData.lastName) {
+			currentErrors.push("You must enter your full name.");
+		}
+
+		// check if valid date
+		if (new Date(userData.dob) > new Date()) {
+			currentErrors.push("Invalid Birth date.");
+		}
+
+		setErrors(currentErrors);
+		return currentErrors.length === 0;
+	};
+
+	const handleSubmit = async () => {
+		const validData: boolean = validateData();
+		if (!validData) return;
+
+		const { data } = await updateUserProfile({
+			...userData,
+			profilePicture: encodedImage,
+		});
+
+		if (data) {
+			dispatch(updateUserProfileAction(data));
+			showToast("success", "Profile successfully updated.");
 		}
 	};
 
@@ -77,6 +141,10 @@ const ProfileSettings = () => {
 					</View>
 				</View>
 
+				<View style={{ paddingHorizontal: 20 }}>
+					{errors.length > 0 && <Errors errors={errors} />}
+				</View>
+
 				<View style={styles.profileImageFlexContainer}>
 					<View
 						style={{
@@ -89,6 +157,7 @@ const ProfileSettings = () => {
 								style={styles.profileImageCancelContainer}
 								onPress={() => {
 									setImageURI(null);
+									setEncodedImage(null);
 								}}
 							>
 								<CancelIcon
@@ -103,7 +172,7 @@ const ProfileSettings = () => {
 							source={{
 								uri: imageURI
 									? imageURI
-									: "https://otakukart.com/wp-content/uploads/2021/12/bojji-becomes-strong.jpg",
+									: userData.profilePicture,
 							}}
 						/>
 					</View>
@@ -120,13 +189,21 @@ const ProfileSettings = () => {
 						placeholder="First Name"
 						style={styles.inputStyle}
 						placeholderTextColor={colors.opaqueWhite}
-						value={user.firstName}
+						value={userData.firstName}
+						onChange={(e) => {
+							const { text } = e.nativeEvent;
+							handleChange("firstName", text);
+						}}
 					/>
 					<TextInput
 						placeholder="Last Name"
 						style={styles.inputStyle}
 						placeholderTextColor={colors.opaqueWhite}
-						value={user.lastName}
+						value={userData.lastName}
+						onChange={(e) => {
+							const { text } = e.nativeEvent;
+							handleChange("lastName", text);
+						}}
 					/>
 					<TextInput
 						placeholder="Say something about yourself"
@@ -135,7 +212,11 @@ const ProfileSettings = () => {
 						numberOfLines={5}
 						placeholderTextColor={colors.opaqueWhite}
 						textAlignVertical="top"
-						value={user.bio}
+						value={userData.bio}
+						onChange={(e) => {
+							const { text } = e.nativeEvent;
+							handleChange("bio", text);
+						}}
 					/>
 
 					<View style={styles.profileSettingsFlexContainer}>
@@ -143,12 +224,14 @@ const ProfileSettings = () => {
 							style={styles.lineGraphDropdown}
 							theme="DARK"
 							open={open}
-							value={user.gender}
+							value={userData.gender}
 							items={items}
 							setOpen={setOpen}
 							setValue={setValue}
 							setItems={setItems}
-							onChangeValue={() => {}}
+							onChangeValue={(value: any) => {
+								handleChange("gender", value);
+							}}
 						/>
 					</View>
 
@@ -160,17 +243,17 @@ const ProfileSettings = () => {
 							}}
 						>
 							<Text style={styles.inputStyle}>
-								{formatFullDate(user.dob)}
+								{formatFullDate(userData.dob)}
 							</Text>
 						</TouchableOpacity>
 						<DatePicker
 							modal
 							mode="date"
 							open={datePickerOpen}
-							date={date}
+							date={new Date(userData.dob)}
 							onConfirm={(date) => {
 								setDatePickerOpen(false);
-								setDate(date);
+								handleChange("dob", date);
 							}}
 							onCancel={() => {
 								setDatePickerOpen(false);
@@ -186,7 +269,7 @@ const ProfileSettings = () => {
 							<Text style={styles.whiteTextButton}>Cancel</Text>
 						</TouchableOpacity>
 
-						<TouchableOpacity>
+						<TouchableOpacity onPress={handleSubmit}>
 							<View style={styles.blueButtonContainer}>
 								<Text style={styles.blueButton}>
 									Save Profile

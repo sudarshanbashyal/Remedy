@@ -1,5 +1,6 @@
 import { LoginType } from "../Screens/Authentication/LoginScreen";
 import { RegistrationType } from "../Screens/Authentication/RegisterScreen";
+import { UserProfileType } from "../Screens/Profile/ProfileSettings";
 import { MedicineDataType } from "../Screens/Schedule/ScheduleDetails";
 import { getUserToken } from "../Utils/AsyncStorage/asyncStorage";
 import { showToast } from "../Utils/Toast";
@@ -207,6 +208,32 @@ export const getFrequencies = async (): Promise<any> => {
 
 		const data = await response.json();
 		if (data.ok) {
+			return data;
+		}
+
+		return null;
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+};
+
+export const updateUserProfile = async (
+	userData: UserProfileType
+): Promise<any> => {
+	try {
+		const response = await fetch(`${API_URL}/updateUserProfile`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				authorization: `bearer ${await getUserToken()}`,
+			},
+			body: JSON.stringify(userData),
+		});
+
+		const data = await response.json();
+		if (data.ok) {
+			console.log(data);
 			return data;
 		}
 

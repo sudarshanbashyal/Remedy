@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { returnServerError } from ".";
+import { serverError } from ".";
 import { PrismaDB } from "..";
 import { AuthRequestType } from "../Utils/Auth";
 
@@ -78,7 +78,7 @@ export const addMedicine = async (req: AuthRequestType, res: Response) => {
 			message: "Medicine Schedule Saved.",
 		});
 	} catch (error) {
-		return returnServerError(error as Error, res);
+		return serverError(error as Error, res);
 	}
 };
 
@@ -106,7 +106,7 @@ export const getMedicineList = async (req: AuthRequestType, res: Response) => {
 			data: medicineDetails,
 		});
 	} catch (error) {
-		return returnServerError(error as Error, res);
+		return serverError(error as Error, res);
 	}
 };
 
@@ -142,7 +142,7 @@ export const getMedicineDetails = async (
 			data: medicine,
 		});
 	} catch (error) {
-		return returnServerError(error as Error, res);
+		return serverError(error as Error, res);
 	}
 };
 
@@ -237,7 +237,7 @@ export const updateMedicine = async (req: AuthRequestType, res: Response) => {
 			message: "Medicine Schedule Saved.",
 		});
 	} catch (error) {
-		return returnServerError(error as Error, res);
+		return serverError(error as Error, res);
 	}
 };
 
@@ -267,6 +267,6 @@ export const getFrequencies = async (req: AuthRequestType, res: Response) => {
 			data: frequencies,
 		});
 	} catch (error) {
-		return returnServerError(error as Error, res);
+		return serverError(error as Error, res);
 	}
 };

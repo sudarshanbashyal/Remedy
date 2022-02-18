@@ -4,6 +4,7 @@ import {
 	loginUser,
 	emailExists,
 	fetchUser,
+	updateUserProfile,
 } from "../Controllers/UserController";
 import { isAuth } from "../Utils/Auth";
 
@@ -16,5 +17,7 @@ router.post("/loginUser", loginUser);
 router.post("/checkEmail", emailExists);
 
 router.get("/fetchUser", isAuth, fetchUser);
+
+router.put("/updateUserProfile", isAuth, updateUserProfile);
 
 export default router;

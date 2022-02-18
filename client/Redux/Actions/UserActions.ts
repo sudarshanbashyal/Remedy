@@ -4,6 +4,7 @@ import {
 	LOGOUT_USER,
 	MedicineType,
 	UPDATE_MEDICINE,
+	UPDATE_USER_PROFILE,
 	UserDispatchType,
 	UserType,
 } from "../Actions/UserActionTypes";
@@ -20,6 +21,7 @@ import {
 	stopScheduling,
 } from "../../Utils/Notification/notification";
 import BackgroundService from "react-native-background-actions";
+import { UserProfileType } from "../../Screens/Profile/ProfileSettings";
 
 const loginUserAction =
 	(user: UserType) => async (dispatch: Dispatch<UserDispatchType>) => {
@@ -79,9 +81,20 @@ const updateMedicineAction =
 		await BackgroundService.start(handleScheduling, bgoptions);
 	};
 
+const updateUserProfileAction =
+	(user: UserProfileType) => async (dispatch: Dispatch<UserDispatchType>) => {
+		dispatch({
+			type: UPDATE_USER_PROFILE,
+			payload: {
+				user,
+			},
+		});
+	};
+
 export {
 	loginUserAction,
 	logoutUserAction,
 	addMedicineAction,
 	updateMedicineAction,
+	updateUserProfileAction,
 };

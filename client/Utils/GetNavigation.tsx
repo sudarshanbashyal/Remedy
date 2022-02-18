@@ -1,10 +1,14 @@
 import React from "react";
 import { View, Image } from "react-native";
+import { useSelector } from "react-redux";
+import { RootStore } from "../Redux/store";
 import { colors } from "../Styles/Colors";
 import styles from "../Styles/styles";
 import { ChatBubbleIcon, GraphIcon, PillsIcon } from "../Styles/SVG/Svg";
 
 const RenderTabComponent = ({ navigationName, currentNavigation }) => {
+	const { user } = useSelector((state: RootStore) => state.userReducer);
+
 	switch (navigationName) {
 		case "ChatList":
 			return (
@@ -67,7 +71,7 @@ const RenderTabComponent = ({ navigationName, currentNavigation }) => {
 						<Image
 							style={styles.bottomTabImage}
 							source={{
-								uri: "https://avatars.githubusercontent.com/u/47313528?v=4",
+								uri: user.profilePicture,
 							}}
 						/>
 					</View>

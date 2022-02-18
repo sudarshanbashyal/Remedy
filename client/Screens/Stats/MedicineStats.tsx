@@ -56,7 +56,7 @@ const MedicineStats = () => {
 				const frequencyDates = [];
 				const frequencyValues = [];
 
-				frequency.frequencies.forEach((val) => {
+				frequency.frequencies.forEach((val: any) => {
 					frequencyDates.push(val.date);
 					frequencyValues.push(val.frequencyPerWeek);
 				});

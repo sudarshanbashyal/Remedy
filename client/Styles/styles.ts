@@ -674,7 +674,7 @@ const styles = StyleSheet.create({
 		color: colors.opaqueWhite,
 	},
 
-	registrationErrorContainer: {
+	errorContainer: {
 		marginBottom: 20,
 		borderWidth: 1,
 		borderRadius: 8,
@@ -683,7 +683,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 10,
 	},
 
-	registrationError: {
+	errorText: {
 		fontFamily: "Poppins-Regular",
 		color: colors.primaryRed,
 	},

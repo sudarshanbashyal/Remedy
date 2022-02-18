@@ -1,8 +1,11 @@
+import { UserProfileType } from "../../Screens/Profile/ProfileSettings";
+
 export const FETCH_USER = "FETCH_USER";
 export const LOGIN_USER = "LOGIN_USER";
 export const LOGOUT_USER = "LOGOUT_USER";
 export const ADD_MEDICINE = "ADD_MEDICINE";
 export const UPDATE_MEDICINE = "UPDATE_MEDICINE";
+export const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
 
 export interface DefaultUserStateType {
 	user: null | UserType;
@@ -59,8 +62,16 @@ export interface updateMedicine {
 	};
 }
 
+export interface updateUserProfile {
+	type: typeof UPDATE_USER_PROFILE;
+	payload: {
+		user: UserProfileType;
+	};
+}
+
 export type UserDispatchType =
 	| fetchUser
 	| logoutUser
 	| addMedicine
-	| updateMedicine;
+	| updateMedicine
+	| updateUserProfile;

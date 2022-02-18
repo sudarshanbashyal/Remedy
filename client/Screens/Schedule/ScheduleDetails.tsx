@@ -237,9 +237,9 @@ const ScheduleDetails = ({ route }) => {
 
 			<View style={styles.scheduleBody}>
 				{errors.length > 0 && (
-					<View style={styles.registrationErrorContainer}>
+					<View style={styles.errorContainer}>
 						{errors.map((error: string) => (
-							<Text key={error} style={styles.registrationError}>
+							<Text key={error} style={styles.errorText}>
 								{error}
 							</Text>
 						))}

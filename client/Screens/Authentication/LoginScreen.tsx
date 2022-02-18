@@ -78,10 +78,8 @@ const LoginScreen = () => {
 					<Text style={styles.loginTitle}>Login to your Account</Text>
 
 					{error && (
-						<View style={styles.registrationErrorContainer}>
-							<Text style={styles.registrationError}>
-								{error}
-							</Text>
+						<View style={styles.errorContainer}>
+							<Text style={styles.errorText}>{error}</Text>
 						</View>
 					)}
 

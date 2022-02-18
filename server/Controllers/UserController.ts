@@ -1,8 +1,10 @@
+import { UploadApiResponse } from "cloudinary";
 import { Request, Response } from "express";
-import { returnServerError } from ".";
+import { serverError } from ".";
 import { PrismaDB } from "..";
 import { AuthRequestType, generateJWTToken } from "../Utils/Auth";
 import { hashPassword, isCorrectPassword } from "../Utils/Bcrypt";
+import { PROFILE_PRESET, uploadImage } from "../Utils/Cloud";
 
 export const registerUser = async (req: Request, res: Response) => {
 	try {
@@ -42,7 +44,7 @@ export const registerUser = async (req: Request, res: Response) => {
 			user,
 		});
 	} catch (error) {
-		return returnServerError(error as Error, res);
+		return serverError(error as Error, res);
 	}
 };
 
@@ -89,7 +91,7 @@ export const loginUser = async (req: Request, res: Response) => {
 			user: { ...user, token },
 		});
 	} catch (error) {
-		return returnServerError(error as Error, res);
+		return serverError(error as Error, res);
 	}
 };
 
@@ -112,7 +114,7 @@ export const emailExists = async (req: Request, res: Response) => {
 			emailExists: true,
 		});
 	} catch (error) {
-		return returnServerError(error as Error, res);
+		return serverError(error as Error, res);
 	}
 };
 
@@ -156,6 +158,67 @@ export const fetchUser = async (req: AuthRequestType, res: Response) => {
 			user,
 		});
 	} catch (error) {
-		return returnServerError(error as Error, res);
+		return serverError(error as Error, res);
+	}
+};
+
+export const updateUserProfile = async (
+	req: AuthRequestType,
+	res: Response
+) => {
+	try {
+		const { userId } = req;
+		const { firstName, lastName, bio, dob, profilePicture } = req.body;
+
+		let imageLink = null;
+
+		// upload profile picture first
+		if (profilePicture) {
+			const encodedImage: UploadApiResponse | null = await uploadImage(
+				`data:image/jpeg;base64,${profilePicture}`,
+				PROFILE_PRESET
+			);
+
+			if (encodedImage) {
+				imageLink = encodedImage.secure_url;
+			}
+		}
+
+		// update user profile
+		const user = await PrismaDB.user.update({
+			where: {
+				userId: userId as string,
+			},
+			data: {
+				firstName,
+				lastName,
+				bio,
+				dob,
+				...(imageLink && { profilePicture: imageLink }),
+			},
+			select: {
+				firstName: true,
+				lastName: true,
+				bio: true,
+				dob: true,
+				profilePicture: true,
+			},
+		});
+
+		if (!user) {
+			return res.status(500).json({
+				ok: false,
+				error: {
+					message: "Couldn't update profile.",
+				},
+			});
+		}
+
+		return res.status(201).json({
+			ok: true,
+			data: user,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
 	}
 };

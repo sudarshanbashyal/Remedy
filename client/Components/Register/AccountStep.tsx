@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { View, Text, TextInput } from "react-native";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
+import Errors from "../Feedbacks/Errors";
 import { RegistrationStepProp } from "./ProfileStep";
 
 const AccountStep = ({
@@ -18,15 +19,7 @@ const AccountStep = ({
 		<View>
 			<Text style={styles.loginTitle}>Setup your Account</Text>
 
-			{errors.length > 0 && (
-				<View style={styles.registrationErrorContainer}>
-					{errors.map((error: string) => (
-						<Text key={error} style={styles.registrationError}>
-							{error}
-						</Text>
-					))}
-				</View>
-			)}
+			{errors.length > 0 && <Errors errors={errors} />}
 
 			<TextInput
 				value={userData.email}

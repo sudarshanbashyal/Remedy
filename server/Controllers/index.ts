@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-export const returnServerError = (e: Error, res: Response) => {
+export const serverError = (e: Error, res: Response) => {
 	console.log(e);
 
 	return res.json({

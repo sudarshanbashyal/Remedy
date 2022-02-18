@@ -5,6 +5,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { RegistrationType } from "../../Screens/Authentication/RegisterScreen";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
+import Errors from "../Feedbacks/Errors";
 
 export interface RegistrationStepProp {
 	userData: RegistrationType;
@@ -44,15 +45,7 @@ const ProfileStep = ({
 		<View>
 			<Text style={styles.loginTitle}>Enter your Details</Text>
 
-			{errors.length > 0 && (
-				<View style={styles.registrationErrorContainer}>
-					{errors.map((error: string) => (
-						<Text key={error} style={styles.registrationError}>
-							{error}
-						</Text>
-					))}
-				</View>
-			)}
+			{errors.length > 0 && <Errors errors={errors} />}
 
 			<TextInput
 				value={userData.firstName}
