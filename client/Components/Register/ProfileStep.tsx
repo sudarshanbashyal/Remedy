@@ -5,6 +5,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { RegistrationType } from "../../Screens/Authentication/RegisterScreen";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
+import { formatFullDate } from "../../Utils/FormatTime/formatTime";
 import Errors from "../Feedbacks/Errors";
 
 export interface RegistrationStepProp {
@@ -96,7 +97,7 @@ const ProfileStep = ({
 				>
 					<Text style={styles.inputStyle}>
 						{dateSelected
-							? date.getDate()
+							? formatFullDate(date)
 							: "Select Your Birthdate"}
 					</Text>
 				</TouchableOpacity>

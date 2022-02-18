@@ -18,6 +18,22 @@ export const registerUser = async (req: Request, res: Response) => {
 			profilePicture,
 		} = req.body;
 
+		let imageLink = null;
+		// upload profile picture first
+		if (profilePicture) {
+			const encodedImage: UploadApiResponse | null = await uploadImage(
+				`https://avatars.dicebear.com/api/initials/${
+					firstName[0] + lastName[0]
+				}.png`,
+				PROFILE_PRESET
+			);
+
+			if (encodedImage) {
+				imageLink = encodedImage.secure_url;
+				console.log(imageLink);
+			}
+		}
+
 		const user = await PrismaDB.user.create({
 			data: {
 				firstName,
@@ -26,7 +42,7 @@ export const registerUser = async (req: Request, res: Response) => {
 				password: await hashPassword(password),
 				gender,
 				dob: new Date(dob),
-				profilePicture,
+				profilePicture: imageLink,
 			},
 		});
 
@@ -180,9 +196,12 @@ export const updateUserProfile = async (
 			);
 
 			if (encodedImage) {
+				console.log(encodedImage);
 				imageLink = encodedImage.secure_url;
 			}
 		}
+
+		return;
 
 		// update user profile
 		const user = await PrismaDB.user.update({

@@ -3,6 +3,7 @@ import { RegistrationType } from "../Screens/Authentication/RegisterScreen";
 import { UserProfileType } from "../Screens/Profile/ProfileSettings";
 import { MedicineDataType } from "../Screens/Schedule/ScheduleDetails";
 import { getUserToken } from "../Utils/AsyncStorage/asyncStorage";
+import { generateIdenticon } from "../Utils/Identicon/identicon";
 import { showToast } from "../Utils/Toast";
 
 const API_URL = "http://192.168.1.66:3000";
@@ -31,12 +32,16 @@ export const registerUser = async (
 	userData: RegistrationType
 ): Promise<boolean> => {
 	try {
+		const userAvatar = generateIdenticon(
+			userData.firstName + userData.lastName
+		);
+
 		const response = await fetch(`${API_URL}/registerUser`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify(userData),
+			body: JSON.stringify({ ...userData, profilePicture: userAvatar }),
 		});
 
 		const data = await response.json();
