@@ -8,6 +8,7 @@ import {
 	graphConfigs,
 } from "../../Screens/Stats/MedicineStats";
 import { formatShortDate } from "../../Utils/FormatTime/formatTime";
+import NoData from "../Feedbacks/NoData";
 
 const FrequencyGraph = ({
 	frequencies,
@@ -36,7 +37,7 @@ const FrequencyGraph = ({
 	};
 
 	useEffect(() => {
-		if (!frequencies) return;
+		if (frequencies.length === 0) return;
 
 		// set medicine labels
 		const labels = [];
@@ -74,6 +75,7 @@ const FrequencyGraph = ({
 				</View>
 			</View>
 
+			{frequencies.length === 0 && <NoData />}
 			{graphData !== null && (
 				<LineChart
 					data={{

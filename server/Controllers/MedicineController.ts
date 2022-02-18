@@ -197,13 +197,29 @@ export const updateMedicine = async (req: AuthRequestType, res: Response) => {
 			});
 		}
 
-		// save frequencies with the medicine id
-		await PrismaDB.frequency.create({
-			data: {
-				medicineId: medicineId as string,
-				frequencyPerWeek: schedules.length * days.length,
+		// check if frequencies are different and save them if need be
+		const currentFrequency = await PrismaDB.frequency.findFirst({
+			where: {
+				medicineId,
 			},
+			orderBy: {
+				date: "desc",
+			},
+			take: 1,
 		});
+
+		// checking old frequency vs new frequency
+		if (
+			currentFrequency?.frequencyPerWeek !==
+			schedules.length * days.length
+		) {
+			await PrismaDB.frequency.create({
+				data: {
+					medicineId: medicineId as string,
+					frequencyPerWeek: schedules.length * days.length,
+				},
+			});
+		}
 
 		// final medicine with all the schedules
 		const finalMedicineDetails = await PrismaDB.medicine.findUnique({

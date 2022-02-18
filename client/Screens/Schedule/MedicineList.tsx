@@ -8,6 +8,7 @@ import { RootStackType } from "../../Stacks/RootStack";
 import styles from "../../Styles/styles";
 import { getMedicineList } from "../../API/api";
 import MedicineListSkeleton from "../../Components/Skeletons/MedicineListSkeleton";
+import NoData from "../../Components/Feedbacks/NoData";
 
 const MedicineList = () => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
@@ -128,13 +129,7 @@ const MedicineList = () => {
 						))}
 					</View>
 				) : (
-					<View style={styles.noMedicineContainer}>
-						<Text style={styles.noDataTitle}>No Data</Text>
-						<Text style={styles.noDataText}>
-							Hmmm, nothing to see here. Try either adding a
-							medicine or filtering differently.
-						</Text>
-					</View>
+					<NoData />
 				)}
 			</ScrollView>
 
