@@ -14,7 +14,7 @@ import {
 	UserIcon,
 } from "../../Styles/SVG/Svg";
 import { formatName } from "../../Utils/FormatName/formatName";
-import { formatShortDate } from "../../Utils/FormatTime/formatTime";
+import { formatFullDate } from "../../Utils/FormatTime/formatTime";
 
 const Profile = () => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
@@ -55,7 +55,7 @@ const Profile = () => {
 									color={colors.opaqueWhite}
 								/>
 								<Text style={styles.profileAdditionalInfo}>
-									{formatShortDate(user.dob)}
+									{formatFullDate(user.dob)}
 								</Text>
 							</View>
 

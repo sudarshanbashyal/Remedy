@@ -3,9 +3,17 @@ import { View, Dimensions, Text } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import styles from "../../Styles/styles";
 import DropDownPicker from "react-native-dropdown-picker";
-import { graphConfigs } from "../../Screens/Stats/MedicineStats";
+import {
+	FrequencyListType,
+	graphConfigs,
+} from "../../Screens/Stats/MedicineStats";
+import { formatShortDate } from "../../Utils/FormatTime/formatTime";
 
-const FrequencyGraph = ({ allStats }) => {
+const FrequencyGraph = ({
+	frequencies,
+}: {
+	frequencies: FrequencyListType[];
+}) => {
 	const [open, setOpen] = useState(false);
 	const [value, setValue] = useState(null);
 	const [items, setItems] = useState([]);
@@ -15,22 +23,35 @@ const FrequencyGraph = ({ allStats }) => {
 	const setGraphValues = (e: string) => {
 		setValue(e);
 
-		const labels = Object.keys(allStats[e]);
-		const data = Object.values(allStats[e]);
+		frequencies.forEach((frequency: FrequencyListType) => {
+			if (e === frequency.medicineId) {
+				const labels = frequency.dates.map((date) =>
+					formatShortDate(date)
+				);
+				const data = frequency.frequencyValues;
 
-		setGraphData({ labels, data });
+				setGraphData({ labels, data });
+			}
+		});
 	};
 
 	useEffect(() => {
-		const allMedicines = Object.keys(allStats).map((med) => {
-			return {
-				label: med,
-				value: med,
-			};
+		if (!frequencies) return;
+
+		// set medicine labels
+		const labels = [];
+		frequencies.forEach((frequency: FrequencyListType) => {
+			labels.push({
+				label: frequency.medicineName,
+				value: frequency.medicineId,
+			});
 		});
 
-		setItems(allMedicines);
-		setValue(allMedicines[0].label);
+		setItems(labels);
+		setValue(frequencies[0].medicineId);
+
+		// set graph values
+		console.log(frequencies);
 	}, []);
 
 	return (

@@ -195,7 +195,7 @@ export const updateMedicineDetails = async (
 	}
 };
 
-export const getFrequencies = async (): Promise<void> => {
+export const getFrequencies = async (): Promise<any> => {
 	try {
 		const response = await fetch(`${API_URL}/getFrequencies`, {
 			method: "GET",
@@ -207,7 +207,6 @@ export const getFrequencies = async (): Promise<void> => {
 
 		const data = await response.json();
 		if (data.ok) {
-			console.log(data);
 			return data;
 		}
 

@@ -229,10 +229,19 @@ export const getFrequencies = async (req: AuthRequestType, res: Response) => {
 	try {
 		const { userId } = req;
 
-		const frequencies = await PrismaDB.frequency.findMany({
+		const frequencies = await PrismaDB.medicine.findMany({
 			where: {
-				medicine: {
-					userId: userId as string,
+				userId: userId as string,
+			},
+			select: {
+				name: true,
+				medicineId: true,
+				frequencies: {
+					select: {
+						frequencyId: true,
+						date: true,
+						frequencyPerWeek: true,
+					},
 				},
 			},
 		});

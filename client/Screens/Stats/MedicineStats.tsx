@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import BottomNavigationBar from "../../Components/BottomNavigationBar";
 import styles from "../../Styles/styles";
@@ -36,36 +36,40 @@ export const chartConfig = {
 	useShadowColorFromDataset: false, // optional
 };
 
+export interface FrequencyListType {
+	medicineName: string;
+	medicineId: string;
+	dates: Date[];
+	frequencyValues: number[];
+}
+
 const MedicineStats = () => {
-	const allStats = {
-		"Medicine 1": {
-			"Jan 4": 4,
-			"Mar 5": 5,
-			"Jun 8": 6,
-		},
-		"Medicine 2": {
-			"Jan 4": 10,
-			"Mar 5": 5,
-			"Jun 8": 10,
-		},
-		"Medicine 3": {
-			"Jan 4": 1,
-			"Mar 5": 0,
-			"Jun 8": 3,
-			"Sept 15": 5,
-			"Oct 15": 3,
-			"Nov 15": 4,
-		},
-		"Medicine 4": {
-			"Jan 4": 10,
-			"Mar 5": 5,
-			"Jun 8": 10,
-		},
-	};
+	const [frequencies, setFrequencies] = useState<FrequencyListType[]>([]);
 
 	useEffect(() => {
 		(async () => {
-			const frequencies = await getFrequencies();
+			const allFrequencies: FrequencyListType[] = [];
+
+			const { data } = await getFrequencies();
+
+			data.forEach((frequency: any) => {
+				const frequencyDates = [];
+				const frequencyValues = [];
+
+				frequency.frequencies.forEach((val) => {
+					frequencyDates.push(val.date);
+					frequencyValues.push(val.frequencyPerWeek);
+				});
+
+				allFrequencies.push({
+					medicineName: frequency.name,
+					medicineId: frequency.medicineId,
+					dates: frequencyDates,
+					frequencyValues: frequencyValues,
+				});
+			});
+
+			setFrequencies(allFrequencies);
 		})();
 	}, []);
 
@@ -76,7 +80,7 @@ const MedicineStats = () => {
 					<Text style={styles.chatTitle}>My Medicine Stats</Text>
 				</View>
 
-				<FrequencyGraph allStats={allStats} />
+				<FrequencyGraph frequencies={frequencies} />
 
 				<HabitGraph />
 			</ScrollView>

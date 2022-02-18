@@ -3,11 +3,7 @@ import { Dimensions, Text, View } from "react-native";
 import styles from "../../Styles/styles";
 
 const HabitGraph = () => {
-	return (
-		<View style={styles.medicineGraphContainer}>
-			<Text>hello</Text>
-		</View>
-	);
+	return <View style={styles.medicineGraphContainer}></View>;
 };
 
 export default HabitGraph;

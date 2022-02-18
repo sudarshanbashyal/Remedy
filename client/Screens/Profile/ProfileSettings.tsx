@@ -19,7 +19,7 @@ import {
 	ImagePickerResponse,
 	launchImageLibrary,
 } from "react-native-image-picker";
-import { formatShortDate } from "../../Utils/FormatTime/formatTime";
+import { formatFullDate } from "../../Utils/FormatTime/formatTime";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import {
@@ -160,7 +160,7 @@ const ProfileSettings = () => {
 							}}
 						>
 							<Text style={styles.inputStyle}>
-								{formatShortDate(user.dob)}
+								{formatFullDate(user.dob)}
 							</Text>
 						</TouchableOpacity>
 						<DatePicker
