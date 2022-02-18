@@ -224,3 +224,24 @@ export const updateMedicine = async (req: AuthRequestType, res: Response) => {
 		return returnServerError(error as Error, res);
 	}
 };
+
+export const getFrequencies = async (req: AuthRequestType, res: Response) => {
+	try {
+		const { userId } = req;
+
+		const frequencies = await PrismaDB.frequency.findMany({
+			where: {
+				medicine: {
+					userId: userId as string,
+				},
+			},
+		});
+
+		return res.json({
+			ok: true,
+			data: frequencies,
+		});
+	} catch (error) {
+		return returnServerError(error as Error, res);
+	}
+};

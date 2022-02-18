@@ -5,8 +5,7 @@ import styles from "../../Styles/styles";
 import FrequencyGraph from "../../Components/Stats/FrequencyGraph";
 import HabitGraph from "../../Components/Stats/HabitGraph";
 import { colors } from "../../Styles/Colors";
-import { useDispatch } from "react-redux";
-import { changeNavigationAction } from "../../Redux/Actions/ApplicationActions";
+import { getFrequencies } from "../../API/api";
 
 export const graphConfigs = {
 	backgroundColor: colors.lightGray,
@@ -63,6 +62,12 @@ const MedicineStats = () => {
 			"Jun 8": 10,
 		},
 	};
+
+	useEffect(() => {
+		(async () => {
+			const frequencies = await getFrequencies();
+		})();
+	}, []);
 
 	return (
 		<View style={styles.fullContainer}>

@@ -78,10 +78,11 @@ const MedicineList = () => {
 		getAllMedicines();
 
 		setItems([
-			{ label: "All", value: "all" },
+			{ label: "All Medicine", value: "all" },
 			{ label: "Active", value: "active" },
 			{ label: "Inactive", value: "inactive" },
 		]);
+		setValue("all");
 	}, []);
 
 	return (
@@ -92,6 +93,7 @@ const MedicineList = () => {
 				<View style={styles.medicineListActions}>
 					<View style={{ width: 150 }}>
 						<DropDownPicker
+							placeholder=""
 							style={styles.lineGraphDropdown}
 							theme="DARK"
 							open={open}

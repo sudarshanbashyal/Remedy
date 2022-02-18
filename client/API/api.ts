@@ -194,3 +194,26 @@ export const updateMedicineDetails = async (
 		return null;
 	}
 };
+
+export const getFrequencies = async (): Promise<void> => {
+	try {
+		const response = await fetch(`${API_URL}/getFrequencies`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				authorization: `bearer ${await getUserToken()}`,
+			},
+		});
+
+		const data = await response.json();
+		if (data.ok) {
+			console.log(data);
+			return data;
+		}
+
+		return null;
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+};

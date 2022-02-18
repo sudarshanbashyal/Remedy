@@ -52,7 +52,7 @@ export const userReducer = (
 				...state,
 				user: {
 					...state.user,
-					medicine: newMedicines,
+					medicines: newMedicines,
 				},
 			};
 

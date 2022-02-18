@@ -1,9 +1,6 @@
 import NodeSchedule from "node-schedule";
 import PushNotification from "react-native-push-notification";
-import {
-	MedicineType,
-	ScheduleType,
-} from "../../Redux/Actions/UserActionTypes";
+import { ScheduleType } from "../../Redux/Actions/UserActionTypes";
 import EventEmitter from "events";
 import { Store } from "../../Redux/store";
 
@@ -41,9 +38,6 @@ export const createChannel = () => {
 // find a better algorithm for this function
 // find a better solution for stopping previous background tasks
 export const handleScheduling = async () => {
-	const { userReducer } = Store.getState();
-	const { medicines } = userReducer.user;
-
 	await new Promise<void>(async (resolve) => {
 		eventEmitter.on("close", () => {
 			currentJobs.forEach((job: NodeSchedule.Job) => {
@@ -52,6 +46,9 @@ export const handleScheduling = async () => {
 
 			currentJobs = [];
 		});
+
+		const { userReducer } = Store.getState();
+		const { medicines } = userReducer.user;
 
 		for (let medicine of medicines) {
 			if (!medicine.active) continue;

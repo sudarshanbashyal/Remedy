@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
 	addMedicine,
+	getFrequencies,
 	getMedicineDetails,
 	getMedicineList,
 	updateMedicine,
@@ -16,5 +17,7 @@ router.get("/getMedicineList", isAuth, getMedicineList);
 router.get("/getMedicineDetails/:medicineId", isAuth, getMedicineDetails);
 
 router.put("/updateMedicine/:medicineId", isAuth, updateMedicine);
+
+router.get("/getFrequencies", isAuth, getFrequencies);
 
 export default router;
