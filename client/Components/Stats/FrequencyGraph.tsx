@@ -37,6 +37,7 @@ const FrequencyGraph = ({
 	};
 
 	useEffect(() => {
+		console.log(frequencies);
 		if (frequencies.length === 0) return;
 
 		// set medicine labels
@@ -52,8 +53,7 @@ const FrequencyGraph = ({
 		setValue(frequencies[0].medicineId);
 
 		// set graph values
-		console.log(frequencies);
-	}, []);
+	}, [frequencies]);
 
 	return (
 		<View style={styles.medicineGraphContainer}>
