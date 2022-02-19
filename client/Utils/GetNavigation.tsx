@@ -6,8 +6,11 @@ import { colors } from "../Styles/Colors";
 import styles from "../Styles/styles";
 import { ChatBubbleIcon, GraphIcon, PillsIcon } from "../Styles/SVG/Svg";
 
-const RenderTabComponent = ({ navigationName, currentNavigation }) => {
-	const { user } = useSelector((state: RootStore) => state.userReducer);
+const RenderTabComponent = ({ navigationName }) => {
+	const {
+		userReducer: { user },
+		applicationReducer: { currentNavigation },
+	} = useSelector((state: RootStore) => state);
 
 	switch (navigationName) {
 		case "ChatList":

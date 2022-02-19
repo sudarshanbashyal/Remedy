@@ -1,5 +1,5 @@
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Image,
 	TouchableOpacity,
@@ -59,6 +59,8 @@ const ProfileSettings = () => {
 	});
 
 	const handleChange = (field: keyof UserProfileType, value: any) => {
+		console.log(field, value);
+
 		setUserData({
 			...userData,
 			[field]: value,
@@ -70,7 +72,6 @@ const ProfileSettings = () => {
 	const [datePickerOpen, setDatePickerOpen] = useState(false);
 	const [open, setOpen] = useState(false);
 
-	const [value, setValue] = useState(null);
 	const [items, setItems] = useState([
 		{ label: "Male", value: "Male" },
 		{ label: "Female", value: "Female" },
@@ -227,11 +228,11 @@ const ProfileSettings = () => {
 							value={userData.gender}
 							items={items}
 							setOpen={setOpen}
-							setValue={setValue}
-							setItems={setItems}
-							onChangeValue={(value: any) => {
-								handleChange("gender", value);
+							setValue={(val) => {
+								handleChange("gender", val());
 							}}
+							setItems={setItems}
+							listMode="SCROLLVIEW"
 						/>
 					</View>
 
@@ -246,6 +247,7 @@ const ProfileSettings = () => {
 								{formatFullDate(userData.dob)}
 							</Text>
 						</TouchableOpacity>
+
 						<DatePicker
 							modal
 							mode="date"

@@ -8,31 +8,7 @@ import { PROFILE_PRESET, uploadImage } from "../Utils/Cloud";
 
 export const registerUser = async (req: Request, res: Response) => {
 	try {
-		const {
-			firstName,
-			lastName,
-			email,
-			password,
-			gender,
-			dob,
-			profilePicture,
-		} = req.body;
-
-		let imageLink = null;
-		// upload profile picture first
-		if (profilePicture) {
-			const encodedImage: UploadApiResponse | null = await uploadImage(
-				`https://avatars.dicebear.com/api/initials/${
-					firstName[0] + lastName[0]
-				}.png`,
-				PROFILE_PRESET
-			);
-
-			if (encodedImage) {
-				imageLink = encodedImage.secure_url;
-				console.log(imageLink);
-			}
-		}
+		const { firstName, lastName, email, password, gender, dob } = req.body;
 
 		const user = await PrismaDB.user.create({
 			data: {
@@ -42,7 +18,9 @@ export const registerUser = async (req: Request, res: Response) => {
 				password: await hashPassword(password),
 				gender,
 				dob: new Date(dob),
-				profilePicture: imageLink,
+				profilePicture: `https://avatars.dicebear.com/api/initials/${
+					firstName[0] + lastName[0]
+				}.png`,
 			},
 		});
 
@@ -184,7 +162,8 @@ export const updateUserProfile = async (
 ) => {
 	try {
 		const { userId } = req;
-		const { firstName, lastName, bio, dob, profilePicture } = req.body;
+		const { firstName, lastName, bio, dob, profilePicture, gender } =
+			req.body;
 
 		let imageLink = null;
 
@@ -201,8 +180,6 @@ export const updateUserProfile = async (
 			}
 		}
 
-		return;
-
 		// update user profile
 		const user = await PrismaDB.user.update({
 			where: {
@@ -213,6 +190,7 @@ export const updateUserProfile = async (
 				lastName,
 				bio,
 				dob,
+				gender,
 				...(imageLink && { profilePicture: imageLink }),
 			},
 			select: {
@@ -221,6 +199,7 @@ export const updateUserProfile = async (
 				bio: true,
 				dob: true,
 				profilePicture: true,
+				gender: true,
 			},
 		});
 

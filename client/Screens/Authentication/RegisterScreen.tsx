@@ -66,6 +66,10 @@ const RegisterScreen = () => {
 			currentErrors.push("You must select your full birth date.");
 		}
 
+		if (new Date(userData.dob) > new Date()) {
+			currentErrors.push("Invalid birth date.");
+		}
+
 		setErrors(currentErrors);
 
 		if (currentErrors.length > 0) {

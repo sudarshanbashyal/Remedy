@@ -104,6 +104,7 @@ const MedicineList = () => {
 							setValue={setValue}
 							setItems={setItems}
 							onChangeValue={changeRenderList}
+							listMode="SCROLLVIEW"
 						/>
 					</View>
 

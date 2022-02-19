@@ -3,7 +3,6 @@ import { RegistrationType } from "../Screens/Authentication/RegisterScreen";
 import { UserProfileType } from "../Screens/Profile/ProfileSettings";
 import { MedicineDataType } from "../Screens/Schedule/ScheduleDetails";
 import { getUserToken } from "../Utils/AsyncStorage/asyncStorage";
-import { generateIdenticon } from "../Utils/Identicon/identicon";
 import { showToast } from "../Utils/Toast";
 
 const API_URL = "http://192.168.1.66:3000";
@@ -19,7 +18,6 @@ export const emailExists = async (email: string): Promise<boolean> => {
 		});
 
 		const data = await response.json();
-		console.log(data);
 
 		return data.emailExists;
 	} catch (error) {
@@ -32,16 +30,12 @@ export const registerUser = async (
 	userData: RegistrationType
 ): Promise<boolean> => {
 	try {
-		const userAvatar = generateIdenticon(
-			userData.firstName + userData.lastName
-		);
-
 		const response = await fetch(`${API_URL}/registerUser`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ ...userData, profilePicture: userAvatar }),
+			body: JSON.stringify(userData),
 		});
 
 		const data = await response.json();
@@ -70,9 +64,11 @@ export const loginUser = async (userData: LoginType): Promise<any> => {
 		});
 
 		const data = await response.json();
-		console.log(data);
+		if (data.ok) {
+			return data;
+		}
 
-		return data;
+		return null;
 	} catch (error) {
 		console.log(error);
 	}
@@ -238,7 +234,6 @@ export const updateUserProfile = async (
 
 		const data = await response.json();
 		if (data.ok) {
-			console.log(data);
 			return data;
 		}
 

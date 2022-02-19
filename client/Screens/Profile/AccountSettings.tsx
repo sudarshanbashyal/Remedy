@@ -1,7 +1,6 @@
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import React from "react";
 import {
-	Image,
 	TouchableOpacity,
 	Text,
 	TextInput,

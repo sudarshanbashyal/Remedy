@@ -32,7 +32,7 @@ const Profile = () => {
 						<Image
 							style={styles.profileInfoImage}
 							source={{
-								uri: "https://otakukart.com/wp-content/uploads/2021/12/bojji-becomes-strong.jpg",
+								uri: user.profilePicture,
 							}}
 						/>
 					</View>
@@ -42,11 +42,11 @@ const Profile = () => {
 							{formatName(user.firstName + " " + user.lastName)}
 						</Text>
 
-						{user.bio && (
+						{user.bio ? (
 							<Text style={styles.profileInfoBio}>
 								{user.bio}
 							</Text>
-						)}
+						) : null}
 
 						<View style={styles.profileInfoFlexContainer}>
 							<View style={styles.profileInfoFlexContainer}>

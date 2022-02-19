@@ -4,16 +4,19 @@ import { View, TouchableOpacity } from "react-native";
 import RenderTabComponent from "../Utils/GetNavigation";
 import { RootStackType } from "../Stacks/RootStack";
 import styles from "../Styles/styles";
-import { useSelector } from "react-redux";
-import { RootStore } from "../Redux/store";
+import { useDispatch } from "react-redux";
+import { changeNavigationAction } from "../Redux/Actions/ApplicationActions";
 
 const BottomNavigationBar = () => {
+	const dispatch = useDispatch();
+
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
-	const { currentNavigation } = useSelector(
-		(state: RootStore) => state.applicationReducer
-	);
 
 	const handleNavigation = (name: keyof RootStackType) => {
+		//dispatch action to change current navigation before actually navigating
+		dispatch(changeNavigationAction(name));
+
+		//
 		navigation.navigate(name);
 	};
 
@@ -28,10 +31,7 @@ const BottomNavigationBar = () => {
 						handleNavigation(tab as keyof RootStackType);
 					}}
 				>
-					<RenderTabComponent
-						navigationName={tab}
-						currentNavigation={currentNavigation}
-					/>
+					<RenderTabComponent navigationName={tab} />
 				</TouchableOpacity>
 			))}
 		</View>

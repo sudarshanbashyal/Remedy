@@ -68,6 +68,7 @@ const FrequencyGraph = ({
 						setValue={setValue}
 						setItems={setItems}
 						onChangeValue={setGraphValues}
+						listMode="SCROLLVIEW"
 					/>
 				</View>
 			</View>

@@ -81,11 +81,11 @@ const ProfileStep = ({
 					value={userData.gender || value}
 					items={items}
 					setOpen={setOpen}
-					setValue={setValue}
-					setItems={setItems}
-					onChangeValue={() => {
-						handleChange(value, "gender");
+					setValue={(val) => {
+						handleChange(val(), "gender");
 					}}
+					setItems={setItems}
+					listMode="SCROLLVIEW"
 				/>
 			</View>
 

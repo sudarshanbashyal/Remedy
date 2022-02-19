@@ -66,10 +66,6 @@ const ChatList = () => {
 		navigation.navigate("ChatScreen");
 	};
 
-	useEffect(() => {
-		dispatch(changeNavigationAction("ChatList"));
-	}, [focused]);
-
 	return (
 		<View style={styles.fullContainer}>
 			<ScrollView>

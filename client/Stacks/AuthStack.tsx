@@ -4,7 +4,9 @@ import LoginScreen from "../Screens/Authentication/LoginScreen";
 import RegisterScreen from "../Screens/Authentication/RegisterScreen";
 
 export type AuthStackType = {
-	Login: any;
+	Login: {
+		registeredEmail?: string;
+	};
 	Register: any;
 };
 

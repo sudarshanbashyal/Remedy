@@ -6,7 +6,7 @@ import { PrismaClient } from "@prisma/client";
 
 export const PrismaDB = new PrismaClient();
 
-const main = async () => {
+const init = async () => {
 	const app = Express();
 
 	app.use(json(), cors(), UserRouter, MedicineRouter);
@@ -16,4 +16,4 @@ const main = async () => {
 	});
 };
 
-main();
+init();
