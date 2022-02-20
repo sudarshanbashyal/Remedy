@@ -73,7 +73,16 @@ const ScheduleDetails = ({ route }) => {
 		let validData = true;
 
 		scheduleTimes.forEach((scheduleTime: ScheduleTimeType) => {
-			if (scheduleTime.minutes === null || scheduleTime.hour === null) {
+			let { minutes, hour } = scheduleTime;
+
+			minutes = minutes?.toString().trim();
+			hour = hour?.toString().trim();
+
+			if (!minutes || !hour || hour === "" || minutes === "") {
+				validData = false;
+			}
+
+			if (isNaN(+scheduleTime.minutes) || isNaN(+scheduleTime.hour)) {
 				validData = false;
 			}
 		});
@@ -89,7 +98,7 @@ const ScheduleDetails = ({ route }) => {
 		}
 
 		if (!checkScheduleDetails()) {
-			currentErrors.push("Please fill in all the schedules.");
+			currentErrors.push("Please fill in all the schedules properly.");
 		}
 
 		if (selectedDays.length === 0) {
@@ -162,16 +171,16 @@ const ScheduleDetails = ({ route }) => {
 	};
 
 	const changeTime = (index: number, type: string, event: any) => {
-		const { text: newTime } = event.nativeEvent;
+		let { text: newTime } = event.nativeEvent;
 
-		// validate time fields
-
-		// TODO:
-		// fix bug with hour time
-		// Replacate: type: 1 (oops meant to say 8), try to backspace (doesn't let you)
 		if (type == "minutes") {
-			if (+newTime > 60 || +newTime < 0) {
-				ToastAndroid.show("Invalid minutes value.", ToastAndroid.SHORT);
+			if (+newTime > 59 || +newTime < 0) {
+				ToastAndroid.show("Invalid minutes value.", ToastAndroid.LONG);
+				return;
+			}
+		} else {
+			if (+newTime > 12 || +newTime < 0) {
+				ToastAndroid.show("Invalid hour value.", ToastAndroid.LONG);
 				return;
 			}
 		}
@@ -180,8 +189,15 @@ const ScheduleDetails = ({ route }) => {
 			(time: ScheduleTimeType, currIndex: number) => {
 				if (currIndex !== index) return time;
 
-				if (type === "minutes") return { ...time, minutes: newTime };
+				if (type === "minutes") {
+					return { ...time, minutes: newTime };
+				}
 
+				// check if hour is set to 0, if yes, change it to 12
+
+				if (newTime === "0") {
+					newTime = "12";
+				}
 				return { ...time, hour: newTime };
 			}
 		);

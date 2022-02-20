@@ -16,7 +16,6 @@ const BottomNavigationBar = () => {
 		//dispatch action to change current navigation before actually navigating
 		dispatch(changeNavigationAction(name));
 
-		//
 		navigation.navigate(name);
 	};
 

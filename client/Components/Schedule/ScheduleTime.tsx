@@ -11,7 +11,7 @@ import styles from "../../Styles/styles";
 import { MinusIcon, PlusIcon } from "../../Styles/SVG/Svg";
 
 export interface ScheduleTimeType {
-	hour: number | null;
+	hour: number | string | null;
 	minutes: number | string | null;
 	half: string | null;
 }

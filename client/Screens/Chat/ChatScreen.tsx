@@ -5,6 +5,7 @@ import ChatHeader from "../../Components/Chat/ChatHeader";
 import ChatBubble from "../../Components/Chat/ChatBubble";
 import ChatInput from "../../Components/Chat/ChatInput";
 import { analyzeMessage } from "../../Utils/Diagnosis";
+import socket from "socket.io-client";
 
 export type ChatBubbleType = {
 	to: number;
@@ -52,6 +53,26 @@ const ChatScreen = () => {
 
 		setText("");
 	};
+
+	useEffect(() => {
+		const io = socket("http://192.168.1.66:3000", {
+			forceNew: true,
+		});
+
+		io.on("connect", () => {
+			io.emit("userConnected", (message) => {
+				console.log("server said:", message);
+			});
+		});
+
+		io.on("connect_error", (err) => {
+			console.log(`connect_error due to ${err.message}`);
+		});
+
+		return () => {
+			io.close();
+		};
+	}, []);
 
 	// scroll to bottom of chat by default
 	useEffect(() => {

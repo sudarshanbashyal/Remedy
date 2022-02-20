@@ -1,4 +1,15 @@
-import cloudinary from "./clouinarySetup";
+import { v2 as cloudinary } from "cloudinary";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+cloudinary.config({
+	cloud_name: process.env.CLOUDINARY_NAME,
+	api_key: process.env.CLOUDINARY_KEY,
+	api_secret: process.env.CLOUDINARY_SECRET,
+});
+
+// cloudinary setup ends here...
 
 export const PROFILE_PRESET = "profile_image";
 export const MESSAGE_PRESET = "message_image";

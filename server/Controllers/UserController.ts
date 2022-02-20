@@ -4,7 +4,7 @@ import { serverError } from ".";
 import { PrismaDB } from "..";
 import { AuthRequestType, generateJWTToken } from "../Utils/Auth";
 import { hashPassword, isCorrectPassword } from "../Utils/Bcrypt";
-import { PROFILE_PRESET, uploadImage } from "../Utils/Cloud";
+import { PROFILE_PRESET, uploadImage } from "../Utils/clouinary";
 
 export const registerUser = async (req: Request, res: Response) => {
 	try {
