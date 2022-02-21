@@ -17,6 +17,7 @@ export interface ChatPreviewInterface {
 	lastMessage: string;
 	messageTime: Date;
 	userIcon: string;
+	recipentId: string;
 }
 
 const ChatList = () => {
@@ -28,12 +29,14 @@ const ChatList = () => {
 	const handleChatNavigation = (
 		chatId: string,
 		messageWith: string,
-		profilePicture: string
+		profilePicture: string,
+		recipentId: string
 	) => {
 		navigation.navigate("ChatScreen", {
 			chatId,
 			messageWith,
 			profilePicture,
+			recipentId: recipentId,
 		});
 	};
 
@@ -59,6 +62,10 @@ const ChatList = () => {
 							: preview.secondParticipant.profilePicture,
 					lastMessage: formatText(preview.messages[0].content, 32),
 					lastMessageTime: preview.messages[0].date,
+					recipentId:
+						preview.firstParticipant.userId === user.userId
+							? preview.secondParticipant.userId
+							: preview.firstParticipant.userId,
 				});
 			});
 
@@ -84,7 +91,8 @@ const ChatList = () => {
 							handleChatNavigation(
 								chat.chatId,
 								chat.messageWith,
-								chat.userIcon
+								chat.userIcon,
+								chat.recipentId
 							);
 						}}
 					>

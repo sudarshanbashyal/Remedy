@@ -19,7 +19,8 @@ const ChatScreen = ({ route }) => {
 		(state: RootStore) => state.applicationReducer
 	);
 
-	const { chatId, messageWith, profilePicture } = route.params;
+	const { chatId, messageWith, profilePicture, recipentId } = route.params;
+
 	const [keyboardOffset, setKeyboardOffset] = useState<number>(0);
 
 	const [chats, setChats] = useState<ChatBubbleType[]>([]);
@@ -39,8 +40,8 @@ const ChatScreen = ({ route }) => {
 	const handleChat = () => {
 		socket.send(
 			JSON.stringify({
-				type: "new_message",
-				payload: text,
+				type: "send_notification",
+				payload: recipentId,
 			})
 		);
 	};

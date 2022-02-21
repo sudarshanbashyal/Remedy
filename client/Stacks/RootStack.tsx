@@ -15,6 +15,7 @@ import ProfileSettings from "../Screens/Profile/ProfileSettings";
 import MedicineList from "../Screens/Schedule/MedicineList";
 import ScheduleDetails from "../Screens/Schedule/ScheduleDetails";
 import MedicineStats from "../Screens/Stats/MedicineStats";
+import { showToast } from "../Utils/Toast";
 
 export type RootStackType = {
 	ChatList: any;
@@ -22,6 +23,7 @@ export type RootStackType = {
 		chatId: string;
 		messageWith: string;
 		profilePicture: string;
+		recipentId: string;
 	};
 	ScheduleDetails: {
 		medicineId?: any;
@@ -52,13 +54,26 @@ const RootStack = () => {
 		socket.onopen = () => {
 			socket.send(
 				JSON.stringify({
-					type: "connection_user_id",
+					type: "client_socket_connection",
 					payload: user.userId,
 				})
 			);
 		};
 
+		socket.onmessage = (message) => {
+			const { data } = message;
+			const res = JSON.parse(data);
+
+			showToast("success", res.payload);
+		};
+
 		return () => {
+			socket.send(
+				JSON.stringify({
+					type: "client_socket_close",
+					payload: user.userId,
+				})
+			);
 			socket.close();
 		};
 	}, []);

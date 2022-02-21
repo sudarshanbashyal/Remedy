@@ -5,6 +5,7 @@ import MedicineRouter from "./Routes/MedicineRoute";
 import { PrismaClient } from "@prisma/client";
 import { createServer } from "http";
 import WebSocket from "ws";
+import { addSocket, removeSocket, sendNotification } from "./Socket/hub";
 
 export const PrismaDB = new PrismaClient();
 
@@ -26,8 +27,24 @@ const init = async () => {
 	wss.on("connection", (socket: WebSocket) => {
 		socket.on("message", (incomingBuffer) => {
 			const data = JSON.parse(incomingBuffer.toString());
+			console.log(data.type);
 
-			console.log(data);
+			switch (data.type) {
+				case "client_socket_connection":
+					addSocket(data.payload, socket);
+					break;
+
+				case "send_notification":
+					sendNotification(data.payload);
+					break;
+
+				case "client_socket_close":
+					removeSocket(data.payload);
+					break;
+
+				default:
+					console.log("");
+			}
 		});
 
 		socket.on("close", () => {
