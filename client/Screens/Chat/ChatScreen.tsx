@@ -40,39 +40,22 @@ const ChatScreen = () => {
 			},
 		]);
 
-		const responseMessage = analyzeMessage(text);
-		setChats((chats) => [
-			...chats,
-			{
-				to: 1,
-				from: 0,
-				message: responseMessage.message,
-				messageTime: "7:53 am",
-			},
-		]);
-
 		setText("");
 	};
 
+	/*
 	useEffect(() => {
-		const io = socket("http://192.168.1.66:3000", {
-			forceNew: true,
-		});
+		const socket = new WebSocket("ws://192.168.1.66:3000");
 
-		io.on("connect", () => {
-			io.emit("userConnected", (message) => {
-				console.log("server said:", message);
-			});
-		});
-
-		io.on("connect_error", (err) => {
-			console.log(`connect_error due to ${err.message}`);
-		});
+		socket.onopen = () => {
+			console.log("Connected to socket server");
+		};
 
 		return () => {
-			io.close();
+			socket.close();
 		};
 	}, []);
+	*/
 
 	// scroll to bottom of chat by default
 	useEffect(() => {

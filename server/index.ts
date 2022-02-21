@@ -4,7 +4,7 @@ import UserRouter from "./Routes/UserRoute";
 import MedicineRouter from "./Routes/MedicineRoute";
 import { PrismaClient } from "@prisma/client";
 import { createServer } from "http";
-import { Server } from "socket.io";
+import WebSocket from "ws";
 
 export const PrismaDB = new PrismaClient();
 
@@ -22,15 +22,10 @@ const init = async () => {
 	// ws server config
 	const server = createServer(app);
 
-	const io = new Server(server);
-
-	io.on("connection", (socket) => {
-		console.log("socket connected: ", socket.id);
-
-		socket.on("userConnected", (cb) => {
-			console.log("hello there");
-			cb("hello");
-		});
+	const wss = new WebSocket.Server({ server });
+	wss.on("connection", (socket: WebSocket) => {
+		console.log("New socket connected: ", socket);
+		console.log(wss.clients);
 	});
 
 	server.listen(process.env.port || 3000, () => {

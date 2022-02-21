@@ -20,4 +20,6 @@ router.put("/updateMedicine/:medicineId", isAuth, updateMedicine);
 
 router.get("/getFrequencies", isAuth, getFrequencies);
 
+router.get("/getMedicineList", isAuth, getMedicineList);
+
 export default router;

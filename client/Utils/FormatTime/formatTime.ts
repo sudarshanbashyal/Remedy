@@ -7,3 +7,5 @@ export const formatFullDate = (date: Date) => {
 export const formatShortDate = (date: Date) => {
 	return moment(date).format("MMM Do");
 };
+
+export const formatMessageTime = (date: Date) => {};

@@ -243,3 +243,25 @@ export const updateUserProfile = async (
 		return null;
 	}
 };
+
+export const getMessageList = async (): Promise<any> => {
+	try {
+		const response = await fetch(`${API_URL}/getMessageList`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				authorization: `bearer ${await getUserToken()}`,
+			},
+		});
+
+		const data = await response.json();
+		if (data.ok) {
+			return data;
+		}
+
+		return null;
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+};

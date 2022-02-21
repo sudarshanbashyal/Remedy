@@ -1,70 +1,61 @@
-import {
-	NavigationProp,
-	useIsFocused,
-	useNavigation,
-} from "@react-navigation/native";
-import React, { useEffect } from "react";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { getMessageList } from "../../API/api";
 import BottomNavigationBar from "../../Components/BottomNavigationBar";
 import ChatPreview from "../../Components/Chat/ChatPreview";
-import { changeNavigationAction } from "../../Redux/Actions/ApplicationActions";
+import { RootStore } from "../../Redux/store";
 import { RootStackType } from "../../Stacks/RootStack";
 import styles from "../../Styles/styles";
 import { SearchIcon } from "../../Styles/SVG/Svg";
+import { formatText } from "../../Utils/FormatText/formatText";
 
 export interface ChatPreviewInterface {
-	messageUserName: string;
+	chatId: string;
+	messageWith: string;
 	lastMessage: string;
-	lastMessageTime?: string;
+	messageTime: Date;
 	userIcon: string;
-	unread?: boolean;
-	chatBot?: boolean;
 }
 
 const ChatList = () => {
-	const dispatch = useDispatch();
+	const { user } = useSelector((state: RootStore) => state.userReducer);
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
-	const focused = useIsFocused();
 
-	const chats: ChatPreviewInterface[] = [
-		{
-			messageUserName: "Dr. Bot",
-			lastMessage: "",
-			userIcon:
-				"https://thumbs.dreamstime.com/b/medical-friendly-android-robot-stethoscope-doctor-concept-vector-164508702.jpg",
-			chatBot: true,
-		},
-		{
-			messageUserName: "Dr. Matthew White",
-			lastMessage: "Hello there",
-			lastMessageTime: "7:53 am",
-			userIcon: "https://avatars.githubusercontent.com/u/8957173?v=4",
-			unread: true,
-		},
-		{
-			messageUserName: "Dr. Matthew White",
-			lastMessage: "Hello there",
-			lastMessageTime: "7:53 am",
-			userIcon: "https://avatars.githubusercontent.com/u/8957173?v=4",
-		},
-		{
-			messageUserName: "Dr. Matthew White",
-			lastMessage: "Hello there",
-			lastMessageTime: "7:53 am",
-			userIcon: "https://avatars.githubusercontent.com/u/8957173?v=4",
-		},
-		{
-			messageUserName: "Dr. Matthew White",
-			lastMessage: "Hello there",
-			lastMessageTime: "7:53 am",
-			userIcon: "https://avatars.githubusercontent.com/u/8957173?v=4",
-		},
-	];
+	const [chatList, setChatList] = useState<ChatPreviewInterface[]>([]);
 
 	const handleChatNavigation = () => {
 		navigation.navigate("ChatScreen");
 	};
+
+	useEffect(() => {
+		(async () => {
+			const allChats = [];
+			const { data } = await getMessageList();
+
+			data.forEach((preview) => {
+				allChats.push({
+					messageWith:
+						preview.secondParticipant.userId === user.userId
+							? preview.firstParticipant.firstName +
+							  " " +
+							  preview.firstParticipant.lastName
+							: preview.secondParticipant.firstName +
+							  " " +
+							  preview.secondParticipant.lastName,
+					userIcon:
+						preview.secondParticipant.userId === user.userId
+							? preview.firstParticipant.profilePicture
+							: preview.secondParticipant.profilePicture,
+					lastMessage: formatText(preview.messages[0].content, 35),
+					lastMessageTime: preview.messages[0].date,
+				});
+			});
+
+			setChatList(allChats);
+		})();
+	}, []);
 
 	return (
 		<View style={styles.fullContainer}>
@@ -77,9 +68,9 @@ const ChatList = () => {
 					</View>
 				</View>
 
-				{chats.map((chat: ChatPreviewInterface, index: number) => (
+				{chatList.map((chat: ChatPreviewInterface) => (
 					<TouchableOpacity
-						key={index}
+						key={chat.chatId}
 						onPress={handleChatNavigation}
 					>
 						<ChatPreview chat={chat} />

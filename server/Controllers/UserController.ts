@@ -220,3 +220,60 @@ export const updateUserProfile = async (
 		return serverError(error as Error, res);
 	}
 };
+
+export const getMessageList = async (req: AuthRequestType, res: Response) => {
+	try {
+		const { userId } = req;
+
+		const messageList = await PrismaDB.chat.findMany({
+			where: {
+				OR: [
+					{
+						firstUser: userId as string,
+					},
+					{
+						secondUser: userId as string,
+					},
+				],
+			},
+			select: {
+				chatId: true,
+				firstParticipant: {
+					select: {
+						userId: true,
+						profilePicture: true,
+						firstName: true,
+						lastName: true,
+					},
+				},
+				secondParticipant: {
+					select: {
+						userId: true,
+						profilePicture: true,
+						firstName: true,
+						lastName: true,
+					},
+				},
+				messages: {
+					select: {
+						authorId: true,
+						date: true,
+						content: true,
+						type: true,
+					},
+					orderBy: {
+						date: "desc",
+					},
+					take: 1,
+				},
+			},
+		});
+
+		return res.json({
+			ok: true,
+			data: messageList,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};

@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Image } from "react-native";
 import { ChatPreviewInterface } from "../../Screens/Chat/ChatList";
 import styles from "../../Styles/styles";
+import { formatShortDate } from "../../Utils/FormatTime/formatTime";
 
 const ChatPreview = ({ chat }: { chat: ChatPreviewInterface }) => {
 	return (
@@ -14,9 +15,7 @@ const ChatPreview = ({ chat }: { chat: ChatPreviewInterface }) => {
 			</View>
 
 			<View style={styles.chatPreviewInfo}>
-				<Text style={styles.chatPreviewName}>
-					{chat.messageUserName}
-				</Text>
+				<Text style={styles.chatPreviewName}>{chat.messageWith}</Text>
 
 				<Text style={styles.chatPreviewMessage}>
 					{chat.lastMessage ? chat.lastMessage : "No Messages Yet."}
@@ -30,10 +29,12 @@ const ChatPreview = ({ chat }: { chat: ChatPreviewInterface }) => {
 						...styles.chatPreviewTime,
 					}}
 				>
-					{chat.lastMessageTime ? chat.lastMessageTime : ""}
+					{formatShortDate(chat.messageTime)}
 				</Text>
 
-				{chat?.unread && <View style={styles.chatUnread}></View>}
+				{/*
+				chat?.unread && <View style={styles.chatUnread}></View>
+				*/}
 			</View>
 		</View>
 	);
