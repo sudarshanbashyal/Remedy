@@ -277,3 +277,35 @@ export const getMessageList = async (req: AuthRequestType, res: Response) => {
 		return serverError(error as Error, res);
 	}
 };
+
+export const getChatMessages = async (req: AuthRequestType, res: Response) => {
+	try {
+		const { chatId } = req.params;
+
+		const messages = await PrismaDB.message.findMany({
+			where: {
+				AND: [
+					{
+						chatId: chatId as string,
+					},
+				],
+			},
+			select: {
+				content: true,
+				date: true,
+				authorId: true,
+			},
+			orderBy: {
+				date: "desc",
+			},
+			take: 5,
+		});
+
+		return res.json({
+			ok: true,
+			data: messages,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};

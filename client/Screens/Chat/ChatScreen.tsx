@@ -4,23 +4,23 @@ import styles from "../../Styles/styles";
 import ChatHeader from "../../Components/Chat/ChatHeader";
 import ChatBubble from "../../Components/Chat/ChatBubble";
 import ChatInput from "../../Components/Chat/ChatInput";
-import { analyzeMessage } from "../../Utils/Diagnosis";
-import socket from "socket.io-client";
+import { getChatMessages } from "../../API/api";
 
 export type ChatBubbleType = {
-	to: number;
-	from: number;
-	message: string;
-	messageTime: string;
+	authorId: string;
+	content: string;
+	date: string;
 };
 
-const ChatScreen = () => {
-	const scrollViewRef = useRef(null);
+const ChatScreen = ({ route }) => {
+	const { chatId, messageWith, profilePicture } = route.params;
+
 	const [keyboardOffset, setKeyboardOffset] = useState<number>(0);
 
 	const [chats, setChats] = useState<ChatBubbleType[]>([]);
 	const [text, setText] = useState<string>("");
 
+	const scrollViewRef = useRef(null);
 	const handleKeyboardShow = (e: any) => {
 		setKeyboardOffset(e.endCoordinates.height);
 	};
@@ -29,19 +29,7 @@ const ChatScreen = () => {
 		setKeyboardOffset(0);
 	};
 
-	const handleChat = () => {
-		setChats((chats) => [
-			...chats,
-			{
-				to: 0,
-				from: 1,
-				message: text,
-				messageTime: "7:53am",
-			},
-		]);
-
-		setText("");
-	};
+	const handleChat = () => {};
 
 	/*
 	useEffect(() => {
@@ -56,6 +44,14 @@ const ChatScreen = () => {
 		};
 	}, []);
 	*/
+
+	useEffect(() => {
+		(async () => {
+			const { data } = await getChatMessages(chatId);
+
+			setChats(data.reverse());
+		})();
+	}, []);
 
 	// scroll to bottom of chat by default
 	useEffect(() => {
@@ -76,7 +72,7 @@ const ChatScreen = () => {
 
 	return (
 		<View style={styles.fullContainer}>
-			<ChatHeader />
+			<ChatHeader chatId={chatId} messageWith={messageWith} />
 
 			<ScrollView ref={scrollViewRef} style={{ marginBottom: 50 }}>
 				<View style={{ marginTop: 10, paddingBottom: keyboardOffset }}>
@@ -84,13 +80,14 @@ const ChatScreen = () => {
 						// check if the last message was sent by the same user, so that only one avatar is displayed.
 						const sameUser: boolean =
 							index - 1 >= 0 &&
-							chats[index].from === chats[index - 1].from;
+							chats[index].authorId === chats[index - 1].authorId;
 
 						return (
 							<ChatBubble
 								key={index}
 								chat={chat}
 								sameUser={sameUser}
+								profilePicture={profilePicture}
 							/>
 						);
 					})}

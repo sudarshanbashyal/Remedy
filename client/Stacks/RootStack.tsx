@@ -15,7 +15,11 @@ import MedicineStats from "../Screens/Stats/MedicineStats";
 
 export type RootStackType = {
 	ChatList: any;
-	ChatScreen: any;
+	ChatScreen: {
+		chatId: string;
+		messageWith: string;
+		profilePicture: string;
+	};
 	ScheduleDetails: {
 		medicineId?: any;
 	};

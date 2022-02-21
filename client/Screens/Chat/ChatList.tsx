@@ -25,8 +25,16 @@ const ChatList = () => {
 
 	const [chatList, setChatList] = useState<ChatPreviewInterface[]>([]);
 
-	const handleChatNavigation = () => {
-		navigation.navigate("ChatScreen");
+	const handleChatNavigation = (
+		chatId: string,
+		messageWith: string,
+		profilePicture: string
+	) => {
+		navigation.navigate("ChatScreen", {
+			chatId,
+			messageWith,
+			profilePicture,
+		});
 	};
 
 	useEffect(() => {
@@ -36,6 +44,7 @@ const ChatList = () => {
 
 			data.forEach((preview) => {
 				allChats.push({
+					chatId: preview.chatId,
 					messageWith:
 						preview.secondParticipant.userId === user.userId
 							? preview.firstParticipant.firstName +
@@ -48,7 +57,7 @@ const ChatList = () => {
 						preview.secondParticipant.userId === user.userId
 							? preview.firstParticipant.profilePicture
 							: preview.secondParticipant.profilePicture,
-					lastMessage: formatText(preview.messages[0].content, 35),
+					lastMessage: formatText(preview.messages[0].content, 32),
 					lastMessageTime: preview.messages[0].date,
 				});
 			});
@@ -71,7 +80,13 @@ const ChatList = () => {
 				{chatList.map((chat: ChatPreviewInterface) => (
 					<TouchableOpacity
 						key={chat.chatId}
-						onPress={handleChatNavigation}
+						onPress={() => {
+							handleChatNavigation(
+								chat.chatId,
+								chat.messageWith,
+								chat.userIcon
+							);
+						}}
 					>
 						<ChatPreview chat={chat} />
 					</TouchableOpacity>

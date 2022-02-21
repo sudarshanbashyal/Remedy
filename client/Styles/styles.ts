@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
 
 	leftChatBubbleContainer: {
 		flexDirection: "row",
-		alignItems: "center",
+		alignItems: "flex-start",
 	},
 	leftBubbleTextContainer: {
 		backgroundColor: colors.lightGray,

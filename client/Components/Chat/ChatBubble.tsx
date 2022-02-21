@@ -1,23 +1,23 @@
 import React from "react";
 import { View, Text, Image } from "react-native";
+import { useSelector } from "react-redux";
+import { RootStore } from "../../Redux/store";
 import { ChatBubbleType } from "../../Screens/Chat/ChatScreen";
 import styles from "../../Styles/styles";
 
 const ChatBubble = ({
 	chat,
 	sameUser,
+	profilePicture,
 }: {
 	chat: ChatBubbleType;
 	sameUser: boolean;
+	profilePicture: string;
 }) => {
-	const currUser = 1;
-	const currUserAvatar =
-		"https://avatars.githubusercontent.com/u/5666218?v=4";
-	const otherUserAvatar =
-		"https://avatars.githubusercontent.com/u/8957173?v=4";
+	const { user } = useSelector((state: RootStore) => state.userReducer);
 
 	const messageByMe = () => {
-		return chat.from === currUser;
+		return chat.authorId === user.userId;
 	};
 
 	return (
@@ -35,9 +35,7 @@ const ChatBubble = ({
 							<Image
 								style={styles.chatPreviewIcon}
 								source={{
-									uri: messageByMe()
-										? currUserAvatar
-										: otherUserAvatar,
+									uri: messageByMe() ? null : profilePicture,
 								}}
 							/>
 						)}
@@ -51,7 +49,7 @@ const ChatBubble = ({
 							: styles.leftBubbleTextContainer
 					}
 				>
-					<Text style={styles.leftBubbleText}>{chat.message}</Text>
+					<Text style={styles.leftBubbleText}>{chat.content}</Text>
 				</View>
 			</View>
 		</View>

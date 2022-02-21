@@ -6,7 +6,13 @@ import { colors } from "../../Styles/Colors";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackType } from "../../Stacks/RootStack";
 
-const ChatHeader = () => {
+const ChatHeader = ({
+	chatId,
+	messageWith,
+}: {
+	chatId: string;
+	messageWith: string;
+}) => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
 	const goBack = () => {
 		navigation.goBack();
@@ -23,7 +29,7 @@ const ChatHeader = () => {
 					<BackIcon size={20} color={colors.primaryRed} />
 				</TouchableOpacity>
 
-				<Text style={styles.pageHeaderText}>Dr. Matthew White</Text>
+				<Text style={styles.pageHeaderText}>{messageWith}</Text>
 			</View>
 
 			<View style={styles.pageHeaderIcons}>

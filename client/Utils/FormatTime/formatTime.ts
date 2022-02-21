@@ -8,4 +8,6 @@ export const formatShortDate = (date: Date) => {
 	return moment(date).format("MMM Do");
 };
 
-export const formatMessageTime = (date: Date) => {};
+export const formatMessageTime = (date: Date) => {
+	return "Now";
+};

@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Image } from "react-native";
 import { ChatPreviewInterface } from "../../Screens/Chat/ChatList";
 import styles from "../../Styles/styles";
-import { formatShortDate } from "../../Utils/FormatTime/formatTime";
+import { formatMessageTime } from "../../Utils/FormatTime/formatTime";
 
 const ChatPreview = ({ chat }: { chat: ChatPreviewInterface }) => {
 	return (
@@ -29,7 +29,7 @@ const ChatPreview = ({ chat }: { chat: ChatPreviewInterface }) => {
 						...styles.chatPreviewTime,
 					}}
 				>
-					{formatShortDate(chat.messageTime)}
+					{formatMessageTime(chat.messageTime)}
 				</Text>
 
 				{/*
