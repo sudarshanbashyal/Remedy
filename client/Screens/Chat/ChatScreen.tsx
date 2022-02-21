@@ -5,6 +5,8 @@ import ChatHeader from "../../Components/Chat/ChatHeader";
 import ChatBubble from "../../Components/Chat/ChatBubble";
 import ChatInput from "../../Components/Chat/ChatInput";
 import { getChatMessages } from "../../API/api";
+import { useSelector } from "react-redux";
+import { RootStore } from "../../Redux/store";
 
 export type ChatBubbleType = {
 	authorId: string;
@@ -13,12 +15,17 @@ export type ChatBubbleType = {
 };
 
 const ChatScreen = ({ route }) => {
-	const { chatId, messageWith, profilePicture } = route.params;
+	const { socket } = useSelector(
+		(state: RootStore) => state.applicationReducer
+	);
 
+	const { chatId, messageWith, profilePicture } = route.params;
 	const [keyboardOffset, setKeyboardOffset] = useState<number>(0);
 
 	const [chats, setChats] = useState<ChatBubbleType[]>([]);
 	const [text, setText] = useState<string>("");
+
+	const [firstLoad, setFirstLoad] = useState<boolean>(false);
 
 	const scrollViewRef = useRef(null);
 	const handleKeyboardShow = (e: any) => {
@@ -29,36 +36,32 @@ const ChatScreen = ({ route }) => {
 		setKeyboardOffset(0);
 	};
 
-	const handleChat = () => {};
-
-	/*
-	useEffect(() => {
-		const socket = new WebSocket("ws://192.168.1.66:3000");
-
-		socket.onopen = () => {
-			console.log("Connected to socket server");
-		};
-
-		return () => {
-			socket.close();
-		};
-	}, []);
-	*/
+	const handleChat = () => {
+		socket.send(
+			JSON.stringify({
+				type: "new_message",
+				payload: text,
+			})
+		);
+	};
 
 	useEffect(() => {
 		(async () => {
 			const { data } = await getChatMessages(chatId);
 
 			setChats(data.reverse());
+
+			// so that the screen only scrolls after all the contents have been loaded.
+			setFirstLoad(true);
 		})();
 	}, []);
 
 	// scroll to bottom of chat by default
 	useEffect(() => {
-		if (!scrollViewRef.current) return;
+		if (!scrollViewRef.current || !firstLoad) return;
 
-		scrollViewRef.current.scrollToEnd({ animated: true });
-	}, [scrollViewRef]);
+		scrollViewRef.current.scrollToEnd({ animated: false });
+	}, [scrollViewRef, firstLoad]);
 
 	useEffect(() => {
 		Keyboard.addListener("keyboardDidShow", handleKeyboardShow);

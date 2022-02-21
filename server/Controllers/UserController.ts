@@ -298,7 +298,7 @@ export const getChatMessages = async (req: AuthRequestType, res: Response) => {
 			orderBy: {
 				date: "desc",
 			},
-			take: 5,
+			take: 10,
 		});
 
 		return res.json({

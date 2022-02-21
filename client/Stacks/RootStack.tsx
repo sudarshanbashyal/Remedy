@@ -2,7 +2,10 @@ import {
 	createNativeStackNavigator,
 	NativeStackNavigationOptions,
 } from "@react-navigation/native-stack";
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { registerSocketAction } from "../Redux/Actions/ApplicationActions";
+import { RootStore } from "../Redux/store";
 import ChatList from "../Screens/Chat/ChatList";
 import ChatMedia from "../Screens/Chat/ChatMedia";
 import ChatScreen from "../Screens/Chat/ChatScreen";
@@ -37,6 +40,28 @@ const slideFromRightAnimation: NativeStackNavigationOptions = {
 
 const RootStack = () => {
 	const Stack = createNativeStackNavigator();
+	const dispatch = useDispatch();
+
+	const { user } = useSelector((state: RootStore) => state.userReducer);
+
+	// connecting to the WSS server
+	useEffect(() => {
+		const socket: WebSocket = new WebSocket("ws://192.168.1.66:3000");
+		dispatch(registerSocketAction(socket));
+
+		socket.onopen = () => {
+			socket.send(
+				JSON.stringify({
+					type: "connection_user_id",
+					payload: user.userId,
+				})
+			);
+		};
+
+		return () => {
+			socket.close();
+		};
+	}, []);
 
 	return (
 		<Stack.Navigator

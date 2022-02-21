@@ -2,6 +2,7 @@ import { Dispatch } from "redux";
 import {
 	ApplicationDispatchType,
 	CHANGE_CURRENT_NAVIGATION,
+	REGISTER_SOCKET,
 } from "./ApplicationActionTypes";
 
 const changeNavigationAction =
@@ -13,4 +14,13 @@ const changeNavigationAction =
 		});
 	};
 
-export { changeNavigationAction };
+const registerSocketAction =
+	(socket: WebSocket) =>
+	async (dispatch: Dispatch<ApplicationDispatchType>) => {
+		dispatch({
+			type: REGISTER_SOCKET,
+			payload: socket,
+		});
+	};
+
+export { changeNavigationAction, registerSocketAction };

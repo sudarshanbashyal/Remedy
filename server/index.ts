@@ -24,8 +24,15 @@ const init = async () => {
 
 	const wss = new WebSocket.Server({ server });
 	wss.on("connection", (socket: WebSocket) => {
-		console.log("New socket connected: ", socket);
-		console.log(wss.clients);
+		socket.on("message", (incomingBuffer) => {
+			const data = JSON.parse(incomingBuffer.toString());
+
+			console.log(data);
+		});
+
+		socket.on("close", () => {
+			console.log("Socket Left =(");
+		});
 	});
 
 	server.listen(process.env.port || 3000, () => {
