@@ -6,6 +6,7 @@ import {
 } from "../Actions/ApplicationActionTypes";
 
 const defaultState: DefaultApplicationStateType = {
+	currentRoute: "ChatList",
 	currentNavigation: "ChatList",
 	socket: null,
 };

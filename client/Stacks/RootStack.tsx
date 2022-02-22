@@ -15,7 +15,6 @@ import ProfileSettings from "../Screens/Profile/ProfileSettings";
 import MedicineList from "../Screens/Schedule/MedicineList";
 import ScheduleDetails from "../Screens/Schedule/ScheduleDetails";
 import MedicineStats from "../Screens/Stats/MedicineStats";
-import { showToast } from "../Utils/Toast";
 import io, { Socket } from "socket.io-client";
 
 export type RootStackType = {

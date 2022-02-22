@@ -5,6 +5,7 @@ export const REGISTER_SOCKET = "REGISTER_SOCKET";
 
 export interface DefaultApplicationStateType {
 	currentNavigation: string;
+	currentRoute: string;
 	socket: Socket<any> | null;
 }
 

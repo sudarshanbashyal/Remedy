@@ -8,6 +8,7 @@ import { getChatMessages } from "../../API/api";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import { showToast } from "../../Utils/Toast";
+import { useIsFocused } from "@react-navigation/native";
 
 export type ChatBubbleType = {
 	authorId: string;
@@ -30,7 +31,9 @@ const ChatScreen = ({ route }) => {
 
 	const [firstLoad, setFirstLoad] = useState<boolean>(false);
 
+	const focused = useIsFocused();
 	const scrollViewRef = useRef(null);
+
 	const handleKeyboardShow = (e: any) => {
 		setKeyboardOffset(e.endCoordinates.height);
 	};
@@ -50,12 +53,13 @@ const ChatScreen = ({ route }) => {
 	};
 
 	useEffect(() => {
+		// socket event to add message to the sending client's chat screen
 		socket.on("message_sent", (newMessage) => {
 			const { authorId, content, date } = newMessage;
 
 			setChats((chats) => [...chats, { authorId, date, content }]);
 		});
-	}, []);
+	}, [focused]);
 
 	useEffect(() => {
 		(async () => {

@@ -35,6 +35,8 @@ export const handleMessage = async ({
 	socket: Socket<any>;
 }) => {
 	try {
+		const recipentSocket = getSocket(recipentId);
+
 		const newMessage = await PrismaDB.message.create({
 			data: {
 				authorId,
@@ -52,6 +54,7 @@ export const handleMessage = async ({
 		});
 
 		socket.emit("message_sent", newMessage);
+		socket.to(recipentSocket).emit("message_sent", newMessage);
 	} catch (error) {
 		console.log(error);
 	}
