@@ -4,8 +4,8 @@ import UserRouter from "./Routes/UserRoute";
 import MedicineRouter from "./Routes/MedicineRoute";
 import { PrismaClient } from "@prisma/client";
 import { createServer } from "http";
-import WebSocket from "ws";
-import { addSocket, removeSocket, sendNotification } from "./Socket/hub";
+import { Server as SocketServer, Socket } from "socket.io";
+import { addSocket, handleMessage, removeSocket } from "./Socket/hub";
 
 export const PrismaDB = new PrismaClient();
 
@@ -22,33 +22,34 @@ const init = async () => {
 
 	// ws server config
 	const server = createServer(app);
+	const wss = new SocketServer(server);
 
-	const wss = new WebSocket.Server({ server });
-	wss.on("connection", (socket: WebSocket) => {
-		socket.on("message", (incomingBuffer) => {
-			const data = JSON.parse(incomingBuffer.toString());
-			console.log(data.type);
+	wss.on("connection", (socket: Socket<any>) => {
+		const socketId = socket.id;
 
-			switch (data.type) {
-				case "client_socket_connection":
-					addSocket(data.payload, socket);
-					break;
-
-				case "send_notification":
-					sendNotification(data.payload);
-					break;
-
-				case "client_socket_close":
-					removeSocket(data.payload);
-					break;
-
-				default:
-					console.log("");
-			}
+		socket.on("register_socket", (userId: string) => {
+			addSocket(userId, socketId);
 		});
 
-		socket.on("close", () => {
-			console.log("Socket Left =(");
+		socket.on("unregister_socket", (userId: string) => {
+			removeSocket(userId);
+		});
+
+		socket.on(
+			"handle_message",
+			({ authorId, content, chatId, recipentId }: any) => {
+				handleMessage({
+					authorId,
+					content,
+					chatId,
+					recipentId,
+					socket,
+				});
+			}
+		);
+
+		socket.on("socketDisconnect", () => {
+			console.log("socket disconnected");
 		});
 	});
 

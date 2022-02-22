@@ -1,4 +1,5 @@
 import { Dispatch } from "redux";
+import { Socket } from "socket.io-client";
 import {
 	ApplicationDispatchType,
 	CHANGE_CURRENT_NAVIGATION,
@@ -15,7 +16,7 @@ const changeNavigationAction =
 	};
 
 const registerSocketAction =
-	(socket: WebSocket) =>
+	(socket: Socket<any>) =>
 	async (dispatch: Dispatch<ApplicationDispatchType>) => {
 		dispatch({
 			type: REGISTER_SOCKET,

@@ -16,6 +16,7 @@ import MedicineList from "../Screens/Schedule/MedicineList";
 import ScheduleDetails from "../Screens/Schedule/ScheduleDetails";
 import MedicineStats from "../Screens/Stats/MedicineStats";
 import { showToast } from "../Utils/Toast";
+import io, { Socket } from "socket.io-client";
 
 export type RootStackType = {
 	ChatList: any;
@@ -44,37 +45,22 @@ const RootStack = () => {
 	const Stack = createNativeStackNavigator();
 	const dispatch = useDispatch();
 
-	const { user } = useSelector((state: RootStore) => state.userReducer);
+	const {
+		userReducer: { user },
+		applicationReducer: { socket },
+	} = useSelector((state: RootStore) => state);
 
 	// connecting to the WSS server
 	useEffect(() => {
-		const socket: WebSocket = new WebSocket("ws://192.168.1.66:3000");
+		const socket: Socket<any> = io("http://192.168.1.66:3000");
 		dispatch(registerSocketAction(socket));
 
-		socket.onopen = () => {
-			socket.send(
-				JSON.stringify({
-					type: "client_socket_connection",
-					payload: user.userId,
-				})
-			);
-		};
-
-		socket.onmessage = (message) => {
-			const { data } = message;
-			const res = JSON.parse(data);
-
-			showToast("success", res.payload);
-		};
+		socket.emit("register_socket", user.userId);
 
 		return () => {
-			socket.send(
-				JSON.stringify({
-					type: "client_socket_close",
-					payload: user.userId,
-				})
-			);
-			socket.close();
+			socket.emit("unregister_socket", user.userId);
+			socket.disconnect();
+			dispatch(registerSocketAction(null));
 		};
 	}, []);
 

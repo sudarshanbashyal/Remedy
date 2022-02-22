@@ -7,6 +7,7 @@ import ChatInput from "../../Components/Chat/ChatInput";
 import { getChatMessages } from "../../API/api";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
+import { showToast } from "../../Utils/Toast";
 
 export type ChatBubbleType = {
 	authorId: string;
@@ -15,9 +16,10 @@ export type ChatBubbleType = {
 };
 
 const ChatScreen = ({ route }) => {
-	const { socket } = useSelector(
-		(state: RootStore) => state.applicationReducer
-	);
+	const {
+		applicationReducer: { socket },
+		userReducer: { user },
+	} = useSelector((state: RootStore) => state);
 
 	const { chatId, messageWith, profilePicture, recipentId } = route.params;
 
@@ -38,13 +40,22 @@ const ChatScreen = ({ route }) => {
 	};
 
 	const handleChat = () => {
-		socket.send(
-			JSON.stringify({
-				type: "send_notification",
-				payload: recipentId,
-			})
-		);
+		socket.emit("handle_message", {
+			authorId: user.userId,
+			content: text,
+			chatId,
+			recipentId,
+		});
+		setText("");
 	};
+
+	useEffect(() => {
+		socket.on("message_sent", (newMessage) => {
+			const { authorId, content, date } = newMessage;
+
+			setChats((chats) => [...chats, { authorId, date, content }]);
+		});
+	}, []);
 
 	useEffect(() => {
 		(async () => {
@@ -62,7 +73,7 @@ const ChatScreen = ({ route }) => {
 		if (!scrollViewRef.current || !firstLoad) return;
 
 		scrollViewRef.current.scrollToEnd({ animated: false });
-	}, [scrollViewRef, firstLoad]);
+	}, [scrollViewRef, chats, firstLoad]);
 
 	useEffect(() => {
 		Keyboard.addListener("keyboardDidShow", handleKeyboardShow);

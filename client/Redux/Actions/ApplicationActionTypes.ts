@@ -1,9 +1,11 @@
+import { Socket } from "socket.io-client";
+
 export const CHANGE_CURRENT_NAVIGATION = "CHANGE_CURRENT_NAVIGATION";
 export const REGISTER_SOCKET = "REGISTER_SOCKET";
 
 export interface DefaultApplicationStateType {
 	currentNavigation: string;
-	socket: WebSocket | null;
+	socket: Socket<any> | null;
 }
 
 export interface ChangeNavigation {
@@ -13,7 +15,7 @@ export interface ChangeNavigation {
 
 export interface RegisterSocket {
 	type: typeof REGISTER_SOCKET;
-	payload: WebSocket;
+	payload: any;
 }
 
 export type ApplicationDispatchType = ChangeNavigation | RegisterSocket;

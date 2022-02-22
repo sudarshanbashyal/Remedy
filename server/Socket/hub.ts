@@ -1,34 +1,58 @@
-import WebSocket from "ws";
+import { PrismaDB } from "..";
+import { Socket } from "socket.io";
 
-interface RoomsType {
-	[key: string]: WebSocket | null;
+interface ActiveSocketsType {
+	[key: string]: string | string[];
 }
 
-const rooms: RoomsType = {};
+const activeSockets: ActiveSocketsType = {};
 
-export const addSocket = (id: string, socket: WebSocket) => {
-	rooms[id as keyof RoomsType] = socket;
-	console.log(id);
+export const addSocket = (id: string, socket: string) => {
+	activeSockets[id as keyof ActiveSocketsType] = socket;
+	console.log(activeSockets);
 };
 
 export const removeSocket = (id: string) => {
-	rooms[id] = null;
+	delete activeSockets[id];
+	console.log(activeSockets);
 };
 
-export const getSocket = (id: keyof RoomsType) => {
-	console.log(id);
-	return rooms[id] || null;
+export const getSocket = (id: keyof ActiveSocketsType) => {
+	return activeSockets[id];
 };
 
-export const sendNotification = (id: string) => {
-	const socket = getSocket(id as keyof RoomsType);
+export const handleMessage = async ({
+	authorId,
+	content,
+	chatId,
+	recipentId,
+	socket,
+}: {
+	authorId: string;
+	content: string;
+	chatId: string;
+	recipentId: string;
+	socket: Socket<any>;
+}) => {
+	try {
+		const newMessage = await PrismaDB.message.create({
+			data: {
+				authorId,
+				type: "Text",
+				content,
+				chatId,
+			},
+			select: {
+				authorId: true,
+				type: true,
+				chatId: true,
+				date: true,
+				content: true,
+			},
+		});
 
-	if (socket) {
-		socket.send(
-			JSON.stringify({
-				type: "ring_notification",
-				payload: "hello world",
-			})
-		);
+		socket.emit("message_sent", newMessage);
+	} catch (error) {
+		console.log(error);
 	}
 };
