@@ -43,13 +43,32 @@ const ChatBubble = ({
 				)}
 
 				<View
-					style={
-						messageByMe()
+					style={{
+						...(messageByMe()
 							? styles.rightBubbleTextContainer
-							: styles.leftBubbleTextContainer
-					}
+							: styles.leftBubbleTextContainer),
+						...(chat.type === "Image"
+							? styles.imageTextContainer
+							: {}),
+					}}
 				>
-					<Text style={styles.leftBubbleText}>{chat.content}</Text>
+					{chat.type === "Text" ? (
+						<Text style={styles.leftBubbleText}>
+							{chat.content}
+						</Text>
+					) : (
+						<View style={styles.messageImageContainer}>
+							<Image
+								style={{
+									...styles.messageImage,
+									...(messageByMe()
+										? styles.rightImage
+										: styles.leftImage),
+								}}
+								source={{ uri: chat.content }}
+							/>
+						</View>
+					)}
 				</View>
 			</View>
 		</View>

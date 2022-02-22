@@ -145,6 +145,31 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 		maxWidth: "75%",
 	},
+	imageTextContainer: {
+		paddingVertical: 0,
+		paddingHorizontal: 0,
+		backgroundColor: colors.primaryGray,
+	},
+	messageImageContainer: {
+		width: "100%",
+		height: 225,
+		flexDirection: "row",
+		alignItems: "flex-end",
+		justifyContent: "flex-end",
+	},
+	messageImage: {
+		height: "100%",
+		width: "100%",
+		resizeMode: "cover",
+	},
+	rightImage: {
+		borderRadius: 8,
+		borderBottomRightRadius: 0,
+	},
+	leftImage: {
+		borderRadius: 8,
+		borderBottomLeftRadius: 0,
+	},
 
 	chatInputContainer: {
 		position: "absolute",

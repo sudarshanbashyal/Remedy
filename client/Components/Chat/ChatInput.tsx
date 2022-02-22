@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { SetStateAction, Dispatch, useEffect, useState } from "react";
 import {
 	View,
 	Text,
@@ -12,29 +12,30 @@ import {
 	ImagePickerResponse,
 	launchImageLibrary,
 } from "react-native-image-picker";
+import { ImagePreviewType } from "../../Screens/Chat/ChatScreen";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
 import { CancelIcon, ImageIcon, SendIcon } from "../../Styles/SVG/Svg";
-
-export interface ImagePreviewType {
-	base64: string;
-	uri: string;
-	fileName: string;
-}
 
 const ChatInput = ({
 	keyboardOffset,
 	text,
 	handleChat,
 	setText,
+	imageInfo,
+	setImageInfo,
+	inputActive,
+	setInputActive,
 }: {
 	keyboardOffset: number;
 	text: string;
 	setText: any;
 	handleChat: any;
+	imageInfo: ImagePreviewType | null;
+	setImageInfo: Dispatch<SetStateAction<ImagePreviewType | null>>;
+	inputActive: boolean;
+	setInputActive: Dispatch<SetStateAction<boolean>>;
 }) => {
-	const [imageInfo, setImageInfo] = useState<ImagePreviewType | null>(null);
-	const [inputActive, setInputActive] = useState<boolean>(false);
 	const [imagePreviewStyling, setImagePreviewStyling] = useState(
 		styles.chatInput
 	);
@@ -85,6 +86,12 @@ const ChatInput = ({
 	};
 
 	useEffect(() => {
+		if (!inputActive) {
+			removeImagePreview();
+		}
+	}, [inputActive]);
+
+	useEffect(() => {
 		if (text.length > 0) {
 			setInputActive(true);
 			return;
@@ -119,7 +126,7 @@ const ChatInput = ({
 					<View style={styles.chatInputImageContainer}>
 						<Image
 							style={styles.chatInputImage}
-							source={{ uri: imageInfo.uri }}
+							source={{ uri: imageInfo?.uri || null }}
 						/>
 					</View>
 

@@ -22,7 +22,9 @@ const init = async () => {
 
 	// ws server config
 	const server = createServer(app);
-	const wss = new SocketServer(server);
+	const wss = new SocketServer(server, {
+		maxHttpBufferSize: 1e9,
+	});
 
 	wss.on("connection", (socket: Socket<any>) => {
 		const socketId = socket.id;
@@ -37,13 +39,14 @@ const init = async () => {
 
 		socket.on(
 			"handle_message",
-			({ authorId, content, chatId, recipentId }: any) => {
+			({ authorId, content, chatId, recipentId, type }: any) => {
 				handleMessage({
 					authorId,
 					content,
 					chatId,
 					recipentId,
 					socket,
+					type,
 				});
 			}
 		);

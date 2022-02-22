@@ -1,4 +1,8 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import {
+	NavigationProp,
+	useIsFocused,
+	useNavigation,
+} from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -10,6 +14,7 @@ import { RootStackType } from "../../Stacks/RootStack";
 import styles from "../../Styles/styles";
 import { SearchIcon } from "../../Styles/SVG/Svg";
 import { formatText } from "../../Utils/FormatText/formatText";
+import { handleNotification } from "../../Utils/Notification/notification";
 
 export interface ChatPreviewInterface {
 	chatId: string;
@@ -21,8 +26,13 @@ export interface ChatPreviewInterface {
 }
 
 const ChatList = () => {
-	const { user } = useSelector((state: RootStore) => state.userReducer);
+	const focused = useIsFocused();
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
+
+	const {
+		userReducer: { user },
+		applicationReducer: { socket },
+	} = useSelector((state: RootStore) => state);
 
 	const [chatList, setChatList] = useState<ChatPreviewInterface[]>([]);
 
@@ -39,6 +49,44 @@ const ChatList = () => {
 			recipentId: recipentId,
 		});
 	};
+
+	useEffect(() => {
+		if (!socket) return;
+
+		socket.on("chat_list_message", (newMessage) => {
+			let requiredChat: ChatPreviewInterface = null;
+			const otherChats: ChatPreviewInterface[] = [];
+
+			for (let chat of chatList) {
+				if (chat.chatId === newMessage.chatId) {
+					requiredChat = chat;
+				} else {
+					otherChats.push(chat);
+				}
+			}
+
+			const newChat: ChatPreviewInterface = {
+				...requiredChat,
+				lastMessage: newMessage.content,
+			};
+
+			const allChats = [newChat, ...otherChats];
+			setChatList(allChats);
+
+			// notification
+			handleNotification(
+				"New Message",
+				`${requiredChat.messageWith}: ${formatText(
+					newMessage.content,
+					30
+				)}`
+			);
+		});
+
+		return () => {
+			socket.removeListener("chat_list_message");
+		};
+	}, [chatList, socket]);
 
 	useEffect(() => {
 		(async () => {
@@ -71,7 +119,7 @@ const ChatList = () => {
 
 			setChatList(allChats);
 		})();
-	}, []);
+	}, [focused]);
 
 	return (
 		<View style={styles.fullContainer}>

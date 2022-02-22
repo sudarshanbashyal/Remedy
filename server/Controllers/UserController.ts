@@ -175,7 +175,6 @@ export const updateUserProfile = async (
 			);
 
 			if (encodedImage) {
-				console.log(encodedImage);
 				imageLink = encodedImage.secure_url;
 			}
 		}
@@ -294,6 +293,7 @@ export const getChatMessages = async (req: AuthRequestType, res: Response) => {
 				content: true,
 				date: true,
 				authorId: true,
+				type: true,
 			},
 			orderBy: {
 				date: "desc",

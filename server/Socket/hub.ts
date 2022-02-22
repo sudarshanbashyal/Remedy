@@ -1,5 +1,8 @@
 import { PrismaDB } from "..";
 import { Socket } from "socket.io";
+import { MessageType } from "@prisma/client";
+import { MESSAGE_PRESET, uploadImage } from "../Utils/clouinary";
+import { UploadApiResponse } from "cloudinary";
 
 interface ActiveSocketsType {
 	[key: string]: string | string[];
@@ -26,22 +29,37 @@ export const handleMessage = async ({
 	content,
 	chatId,
 	recipentId,
+	type,
 	socket,
 }: {
 	authorId: string;
 	content: string;
 	chatId: string;
 	recipentId: string;
+	type: string;
 	socket: Socket<any>;
 }) => {
 	try {
 		const recipentSocket = getSocket(recipentId);
 
+		let messageContent = content;
+
+		if (type === "Image") {
+			const response: UploadApiResponse | null = await uploadImage(
+				`data:image/jpeg;base64,${content}`,
+				MESSAGE_PRESET
+			);
+
+			if (response) {
+				messageContent = response.secure_url;
+			}
+		}
+
 		const newMessage = await PrismaDB.message.create({
 			data: {
 				authorId,
-				type: "Text",
-				content,
+				type: type as MessageType,
+				content: messageContent,
 				chatId,
 			},
 			select: {
@@ -53,8 +71,16 @@ export const handleMessage = async ({
 			},
 		});
 
-		socket.emit("message_sent", newMessage);
-		socket.to(recipentSocket).emit("message_sent", newMessage);
+		socket.emit("chat_screen_message", newMessage);
+
+		if (recipentSocket) {
+			socket.to(recipentSocket).emit("chat_screen_message", newMessage);
+			socket.to(recipentSocket).emit("chat_list_message", newMessage);
+
+			/*
+			socket.to(recipentSocket).emit("message_notification", newMessage);
+			*/
+		}
 	} catch (error) {
 		console.log(error);
 	}

@@ -7,14 +7,20 @@ import ChatInput from "../../Components/Chat/ChatInput";
 import { getChatMessages } from "../../API/api";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
-import { showToast } from "../../Utils/Toast";
 import { useIsFocused } from "@react-navigation/native";
 
 export type ChatBubbleType = {
 	authorId: string;
 	content: string;
 	date: string;
+	type: string;
 };
+
+export interface ImagePreviewType {
+	base64: string;
+	uri: string;
+	fileName: string;
+}
 
 const ChatScreen = ({ route }) => {
 	const {
@@ -26,10 +32,13 @@ const ChatScreen = ({ route }) => {
 
 	const [keyboardOffset, setKeyboardOffset] = useState<number>(0);
 
+	const [firstLoad, setFirstLoad] = useState<boolean>(false);
+
 	const [chats, setChats] = useState<ChatBubbleType[]>([]);
 	const [text, setText] = useState<string>("");
+	const [imageInfo, setImageInfo] = useState<ImagePreviewType | null>(null);
 
-	const [firstLoad, setFirstLoad] = useState<boolean>(false);
+	const [inputActive, setInputActive] = useState<boolean>(false);
 
 	const focused = useIsFocused();
 	const scrollViewRef = useRef(null);
@@ -43,22 +52,32 @@ const ChatScreen = ({ route }) => {
 	};
 
 	const handleChat = () => {
-		socket.emit("handle_message", {
+		const payload = {
 			authorId: user.userId,
-			content: text,
+			type: imageInfo ? "Image" : "Text",
+			content: imageInfo ? imageInfo.base64 : text,
 			chatId,
 			recipentId,
-		});
+		};
+		console.log(payload);
+		socket.emit("handle_message", payload);
+
 		setText("");
+		setImageInfo(null);
+		setInputActive(false);
 	};
 
 	useEffect(() => {
 		// socket event to add message to the sending client's chat screen
-		socket.on("message_sent", (newMessage) => {
-			const { authorId, content, date } = newMessage;
+		socket.on("chat_screen_message", (newMessage) => {
+			const { authorId, content, date, type } = newMessage;
 
-			setChats((chats) => [...chats, { authorId, date, content }]);
+			setChats((chats) => [...chats, { authorId, date, content, type }]);
 		});
+
+		return () => {
+			socket.removeAllListeners("chat_screen_message");
+		};
 	}, [focused]);
 
 	useEffect(() => {
@@ -118,6 +137,10 @@ const ChatScreen = ({ route }) => {
 				setText={setText}
 				keyboardOffset={keyboardOffset}
 				handleChat={handleChat}
+				imageInfo={imageInfo}
+				setImageInfo={setImageInfo}
+				inputActive={inputActive}
+				setInputActive={setInputActive}
 			/>
 		</View>
 	);
