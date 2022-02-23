@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 20,
 		flexDirection: "row",
 		alignItems: "center",
-		justifyContent: "space-between",
+		justifyContent: "flex-start",
 		borderBottomColor: colors.lightGray,
 		borderBottomWidth: 2,
 		paddingBottom: 20,
@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
 	chatPreviewImageContainer: {
 		height: 35,
 		width: 35,
+		marginRight: 15,
 	},
 	chatPreviewIcon: {
 		width: "100%",
@@ -67,8 +68,9 @@ const styles = StyleSheet.create({
 	},
 	chatPreviewRight: {
 		height: "100%",
-		width: "20%",
-		position: "relative",
+		position: "absolute",
+		right: 20,
+		top: 0,
 	},
 	chatPreviewTime: {
 		position: "absolute",
@@ -169,6 +171,17 @@ const styles = StyleSheet.create({
 	leftImage: {
 		borderRadius: 8,
 		borderBottomLeftRadius: 0,
+	},
+	chatScreenMessageContainer: {
+		paddingVertical: 5,
+		flexDirection: "row",
+	},
+	chatScreenMessage: {
+		width: "100%",
+		textAlign: "center",
+		fontFamily: "Poppins-Medium",
+		color: colors.opaqueWhite,
+		fontSize: 12,
 	},
 
 	chatInputContainer: {
