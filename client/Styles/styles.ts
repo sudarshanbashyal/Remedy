@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
 	},
 	chatPreviewRight: {
 		height: "100%",
-		width: "15%",
+		width: "20%",
 		position: "relative",
 	},
 	chatPreviewTime: {

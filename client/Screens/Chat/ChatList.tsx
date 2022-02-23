@@ -109,7 +109,7 @@ const ChatList = () => {
 							? preview.firstParticipant.profilePicture
 							: preview.secondParticipant.profilePicture,
 					lastMessage: formatText(preview.messages[0].content, 32),
-					lastMessageTime: preview.messages[0].date,
+					messageTime: preview.messages[0].date,
 					recipentId:
 						preview.firstParticipant.userId === user.userId
 							? preview.secondParticipant.userId
