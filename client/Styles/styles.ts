@@ -152,6 +152,14 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 0,
 		backgroundColor: colors.primaryGray,
 	},
+	messageFileContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "flex-start",
+	},
+	messageFileDownloadIcon: {
+		marginRight: 10,
+	},
 	messageImageContainer: {
 		width: "100%",
 		height: 225,
@@ -193,6 +201,11 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		backgroundColor: colors.primaryGray,
 	},
+	chatInputIconContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "flex-start",
+	},
 	chatInput: {
 		flex: 1,
 		borderRadius: 8,
@@ -214,6 +227,16 @@ const styles = StyleSheet.create({
 	chatInputImageContainer: {
 		height: "100%",
 		width: 90,
+	},
+	chatInputFileContainer: {
+		flexDirection: "column",
+		alignItems: "center",
+		justifyContent: "flex-start",
+	},
+	chatInputFileName: {
+		fontFamily: "Poppins-Medium",
+		color: colors.opaqueWhite,
+		marginTop: 5,
 	},
 	chatInputImage: {
 		height: "100%",

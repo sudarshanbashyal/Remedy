@@ -80,7 +80,7 @@ model Chat{
 	firstUser String
 	secondUser String
 	firstParticipant User @relation("firstParticipant", fields:[firstUser], references:[userId])	
-	secondParticipat User @relation("secondParticipant", fields:[secondUser], references:[userId])
+	secondParticipant User @relation("secondParticipant", fields:[secondUser], references:[userId])
 	messages Message[]
 }
 
@@ -90,6 +90,7 @@ model Message{
 	author User @relation(fields:[authorId], references:[userId])
 	date DateTime @default(now())
 	type MessageType
+	name String? @default("")
 	content String
 	chatBot Boolean @default(false)
 	seen Boolean @default(false)

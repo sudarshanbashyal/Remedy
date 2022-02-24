@@ -4,7 +4,7 @@ import { serverError } from ".";
 import { PrismaDB } from "..";
 import { AuthRequestType, generateJWTToken } from "../Utils/Auth";
 import { hashPassword, isCorrectPassword } from "../Utils/Bcrypt";
-import { PROFILE_PRESET, uploadImage } from "../Utils/clouinary";
+import { PROFILE_PRESET, uploadImage } from "../Utils/cloudinary";
 
 export const registerUser = async (req: Request, res: Response) => {
 	try {
@@ -294,6 +294,7 @@ export const getChatMessages = async (req: AuthRequestType, res: Response) => {
 				date: true,
 				authorId: true,
 				type: true,
+				name: true,
 			},
 			orderBy: {
 				date: "desc",

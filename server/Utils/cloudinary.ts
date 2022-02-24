@@ -16,11 +16,28 @@ export const MESSAGE_PRESET = "message_image";
 
 export type presetType = typeof PROFILE_PRESET | typeof MESSAGE_PRESET;
 
-export const uploadImage = async (base64: string, preset: presetType) => {
+export const uploadImage = async (
+	base64: string,
+	preset: presetType,
+	fileName: string = ""
+) => {
 	try {
-		const cloudinaryResponse = await cloudinary.uploader.upload(base64, {
+		const payload = {
+			public_id: fileName,
 			upload_preset: preset,
-		});
+			use_filename: true,
+			unique_filename: false,
+			resource_type: "auto",
+		};
+
+		if (fileName !== "") {
+			payload["public_id"] = fileName;
+		}
+
+		const cloudinaryResponse = await cloudinary.uploader.upload(
+			base64,
+			payload
+		);
 
 		if (!cloudinaryResponse) return null;
 		return cloudinaryResponse;

@@ -39,7 +39,15 @@ const init = async () => {
 
 		socket.on(
 			"handle_message",
-			({ authorId, content, chatId, recipentId, type }: any) => {
+			({
+				authorId,
+				content,
+				chatId,
+				recipentId,
+				type,
+				fileExtension,
+				name,
+			}: any) => {
 				handleMessage({
 					authorId,
 					content,
@@ -47,6 +55,8 @@ const init = async () => {
 					recipentId,
 					socket,
 					type,
+					fileExtension,
+					name,
 				});
 			}
 		);

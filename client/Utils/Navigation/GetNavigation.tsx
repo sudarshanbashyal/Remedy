@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Image } from "react-native";
 import { useSelector } from "react-redux";
-import { RootStore } from "../Redux/store";
-import { colors } from "../Styles/Colors";
-import styles from "../Styles/styles";
-import { ChatBubbleIcon, GraphIcon, PillsIcon } from "../Styles/SVG/Svg";
+import { RootStore } from "../../Redux/store";
+import { colors } from "../../Styles/Colors";
+import styles from "../../Styles/styles";
+import { ChatBubbleIcon, GraphIcon, PillsIcon } from "../../Styles/SVG/Svg";
 
 const RenderTabComponent = ({ navigationName }) => {
 	const {

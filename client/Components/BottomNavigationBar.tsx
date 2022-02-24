@@ -1,7 +1,7 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
-import RenderTabComponent from "../Utils/GetNavigation";
+import RenderTabComponent from "../Utils/Navigation/GetNavigation";
 import { RootStackType } from "../Stacks/RootStack";
 import styles from "../Styles/styles";
 import { useDispatch } from "react-redux";

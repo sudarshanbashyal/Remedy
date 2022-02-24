@@ -14,12 +14,19 @@ export type ChatBubbleType = {
 	content: string;
 	date: string;
 	type: string;
+	name: string;
 };
 
 export interface ImagePreviewType {
 	base64: string;
 	uri: string;
 	fileName: string;
+}
+
+export interface FilePreviewType {
+	base64: string;
+	fileName: string;
+	fileExtension: string;
 }
 
 const ChatScreen = ({ route }) => {
@@ -36,7 +43,9 @@ const ChatScreen = ({ route }) => {
 
 	const [chats, setChats] = useState<ChatBubbleType[]>([]);
 	const [text, setText] = useState<string>("");
+
 	const [imageInfo, setImageInfo] = useState<ImagePreviewType | null>(null);
+	const [fileInfo, setFileInfo] = useState<FilePreviewType | null>(null);
 
 	const [inputActive, setInputActive] = useState<boolean>(false);
 
@@ -52,14 +61,27 @@ const ChatScreen = ({ route }) => {
 	};
 
 	const handleChat = () => {
+		const type = fileInfo ? "File" : imageInfo ? "Image" : "Text";
+		const content = fileInfo
+			? fileInfo.base64
+			: imageInfo
+			? imageInfo.base64
+			: text;
+		const name = fileInfo
+			? fileInfo.fileName
+			: imageInfo
+			? imageInfo.fileName
+			: "";
+
 		const payload = {
 			authorId: user.userId,
-			type: imageInfo ? "Image" : "Text",
-			content: imageInfo ? imageInfo.base64 : text,
+			type,
+			content,
 			chatId,
 			recipentId,
+			fileExtension: fileInfo?.fileExtension || null,
+			name,
 		};
-		console.log(payload);
 		socket.emit("handle_message", payload);
 
 		setText("");
@@ -70,9 +92,12 @@ const ChatScreen = ({ route }) => {
 	useEffect(() => {
 		// socket event to add message to the sending client's chat screen
 		socket.on("chat_screen_message", (newMessage) => {
-			const { authorId, content, date, type } = newMessage;
+			const { authorId, content, date, type, name } = newMessage;
 
-			setChats((chats) => [...chats, { authorId, date, content, type }]);
+			setChats((chats) => [
+				...chats,
+				{ authorId, date, content, type, name },
+			]);
 		});
 
 		return () => {
@@ -141,6 +166,8 @@ const ChatScreen = ({ route }) => {
 				setImageInfo={setImageInfo}
 				inputActive={inputActive}
 				setInputActive={setInputActive}
+				fileInfo={fileInfo}
+				setFileInfo={setFileInfo}
 			/>
 		</View>
 	);

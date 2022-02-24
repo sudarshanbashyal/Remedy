@@ -18,7 +18,11 @@ const ChatPreview = ({ chat }: { chat: ChatPreviewInterface }) => {
 				<Text style={styles.chatPreviewName}>{chat.messageWith}</Text>
 
 				<Text style={styles.chatPreviewMessage}>
-					{chat.lastMessage ? chat.lastMessage : "No Messages Yet."}
+					{chat.type === "Image"
+						? `Image File`
+						: chat.lastMessage
+						? chat.lastMessage
+						: "No Messages Yet."}
 				</Text>
 			</View>
 

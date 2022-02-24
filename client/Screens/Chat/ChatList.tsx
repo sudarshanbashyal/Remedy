@@ -23,6 +23,7 @@ export interface ChatPreviewInterface {
 	messageTime: Date;
 	userIcon: string;
 	recipentId: string;
+	type: string;
 }
 
 const ChatList = () => {
@@ -114,6 +115,7 @@ const ChatList = () => {
 						preview.firstParticipant.userId === user.userId
 							? preview.secondParticipant.userId
 							: preview.firstParticipant.userId,
+					type: preview.messages[0].type,
 				});
 			});
 

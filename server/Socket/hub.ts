@@ -1,7 +1,7 @@
 import { PrismaDB } from "..";
 import { Socket } from "socket.io";
 import { MessageType } from "@prisma/client";
-import { MESSAGE_PRESET, uploadImage } from "../Utils/clouinary";
+import { MESSAGE_PRESET, uploadImage } from "../Utils/cloudinary";
 import { UploadApiResponse } from "cloudinary";
 
 interface ActiveSocketsType {
@@ -31,6 +31,8 @@ export const handleMessage = async ({
 	recipentId,
 	type,
 	socket,
+	fileExtension,
+	name,
 }: {
 	authorId: string;
 	content: string;
@@ -38,20 +40,37 @@ export const handleMessage = async ({
 	recipentId: string;
 	type: string;
 	socket: Socket<any>;
+	fileExtension: string | null;
+	name: string;
 }) => {
 	try {
 		const recipentSocket = getSocket(recipentId);
 
 		let messageContent = content;
+		let public_id = "";
+
+		if (type === "File") {
+			const response: UploadApiResponse | null = await uploadImage(
+				`data:${fileExtension};base64,${content}`,
+				MESSAGE_PRESET,
+				name
+			);
+
+			if (response) {
+				messageContent = response!.secure_url;
+				public_id = response!.public_id;
+			}
+		}
 
 		if (type === "Image") {
 			const response: UploadApiResponse | null = await uploadImage(
 				`data:image/jpeg;base64,${content}`,
-				MESSAGE_PRESET
+				MESSAGE_PRESET,
+				name
 			);
 
 			if (response) {
-				messageContent = response.secure_url;
+				messageContent = response!.secure_url;
 			}
 		}
 
@@ -61,6 +80,7 @@ export const handleMessage = async ({
 				type: type as MessageType,
 				content: messageContent,
 				chatId,
+				name: public_id,
 			},
 			select: {
 				authorId: true,
@@ -68,6 +88,7 @@ export const handleMessage = async ({
 				chatId: true,
 				date: true,
 				content: true,
+				name: true,
 			},
 		});
 

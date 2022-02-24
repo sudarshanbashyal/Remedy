@@ -3,7 +3,10 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import { ChatBubbleType } from "../../Screens/Chat/ChatScreen";
+import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
+import { DownloadIcon } from "../../Styles/SVG/Svg";
+import { formatText } from "../../Utils/FormatText/formatText";
 import {
 	formatMessageTime,
 	getDayDifference,
@@ -72,37 +75,68 @@ const ChatBubble = ({
 					</View>
 				)}
 
-				<TouchableOpacity
-					style={{
-						...(messageByMe()
-							? styles.rightBubbleTextContainer
-							: styles.leftBubbleTextContainer),
-						...(chat.type === "Image"
-							? styles.imageTextContainer
-							: {}),
-					}}
-					onPress={toggleTime}
-				>
-					<View>
-						{chat.type === "Text" ? (
-							<Text style={styles.leftBubbleText}>
-								{chat.content}
-							</Text>
-						) : (
-							<View style={styles.messageImageContainer}>
-								<Image
-									style={{
-										...styles.messageImage,
-										...(messageByMe()
-											? styles.rightImage
-											: styles.leftImage),
-									}}
-									source={{ uri: chat.content }}
+				{chat.type === "Text" && (
+					<TouchableOpacity
+						onPress={toggleTime}
+						style={
+							messageByMe()
+								? styles.rightBubbleTextContainer
+								: styles.leftBubbleTextContainer
+						}
+					>
+						<Text style={styles.leftBubbleText}>
+							{chat.content}
+						</Text>
+					</TouchableOpacity>
+				)}
+
+				{chat.type === "Image" && (
+					<TouchableOpacity
+						style={{
+							...(messageByMe()
+								? styles.rightBubbleTextContainer
+								: styles.leftBubbleTextContainer),
+							...styles.imageTextContainer,
+						}}
+					>
+						<View style={styles.messageImageContainer}>
+							<Image
+								style={{
+									...styles.messageImage,
+									...(messageByMe()
+										? styles.rightImage
+										: styles.leftImage),
+								}}
+								source={{ uri: chat.content }}
+							/>
+						</View>
+					</TouchableOpacity>
+				)}
+
+				{chat.type === "File" && (
+					<TouchableOpacity
+						style={
+							messageByMe()
+								? styles.rightBubbleTextContainer
+								: styles.leftBubbleTextContainer
+						}
+					>
+						<View style={styles.messageFileContainer}>
+							<TouchableOpacity
+								style={styles.messageFileDownloadIcon}
+							>
+								<DownloadIcon
+									size={30}
+									color={colors.primaryWhite}
 								/>
-							</View>
-						)}
-					</View>
-				</TouchableOpacity>
+							</TouchableOpacity>
+
+							<Text style={styles.leftBubbleText}>
+								{formatText(chat.name.split("/")[1], 20)}
+							</Text>
+						</View>
+					</TouchableOpacity>
+				)}
 			</View>
 		</View>
 	);
