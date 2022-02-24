@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
 	},
 	leftBubbleTextContainer: {
 		backgroundColor: colors.lightGray,
-		marginLeft: 10,
 		paddingHorizontal: 15,
 		paddingVertical: 10,
 		borderRadius: 8,
@@ -396,7 +395,7 @@ const styles = StyleSheet.create({
 		flexWrap: "wrap",
 		flexDirection: "row",
 		justifyContent: "space-between",
-		alignItems: "center",
+		alignItems: "flex-start",
 	},
 	chatFilesContainer: {
 		width: 100,
@@ -404,7 +403,7 @@ const styles = StyleSheet.create({
 		marginBottom: 20,
 		flexDirection: "column",
 		alignItems: "center",
-		justifyContent: "center",
+		justifyContent: "flex-start",
 	},
 	chatFilesImageContainer: {
 		width: "100%",
@@ -414,6 +413,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		height: "100%",
 		resizeMode: "cover",
+		borderRadius: 8,
 	},
 	chatFilesOtherContainer: {
 		width: "100%",
@@ -435,6 +435,7 @@ const styles = StyleSheet.create({
 		fontFamily: "Poppins-Medium",
 		color: colors.opaqueWhite,
 		marginTop: 10,
+		fontSize: 12,
 		textAlign: "center",
 	},
 

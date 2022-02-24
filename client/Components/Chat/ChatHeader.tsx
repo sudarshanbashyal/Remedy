@@ -19,7 +19,9 @@ const ChatHeader = ({
 	};
 
 	const goToMedia = () => {
-		navigation.navigate("ChatMedia");
+		navigation.navigate("ChatMedia", {
+			chatId,
+		});
 	};
 
 	return (

@@ -28,7 +28,9 @@ export type RootStackType = {
 	ScheduleDetails: {
 		medicineId?: any;
 	};
-	ChatMedia: any;
+	ChatMedia: {
+		chatId: string;
+	};
 	MedicineStats: any;
 	MedicineList: any;
 	Profile: any;

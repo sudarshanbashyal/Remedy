@@ -310,3 +310,39 @@ export const getChatMessages = async (req: AuthRequestType, res: Response) => {
 		return serverError(error as Error, res);
 	}
 };
+
+export const getChatMedia = async (req: AuthRequestType, res: Response) => {
+	try {
+		const { chatId } = req.params;
+
+		const chatMedia = await PrismaDB.message.findMany({
+			where: {
+				AND: [
+					{
+						chatId: chatId as string,
+					},
+					{
+						NOT: {
+							type: {
+								equals: "Text",
+							},
+						},
+					},
+				],
+			},
+			select: {
+				date: true,
+				type: true,
+				content: true,
+				name: true,
+			},
+		});
+
+		return res.json({
+			ok: true,
+			data: chatMedia,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};

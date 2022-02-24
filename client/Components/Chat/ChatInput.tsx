@@ -112,6 +112,8 @@ const ChatInput = ({
 				type: [
 					DocumentPicker.types.doc,
 					DocumentPicker.types.docx,
+					DocumentPicker.types.ppt,
+					DocumentPicker.types.pptx,
 					DocumentPicker.types.csv,
 				],
 			});

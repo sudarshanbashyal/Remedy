@@ -287,3 +287,25 @@ export const getChatMessages = async (chatId: string): Promise<any> => {
 		return null;
 	}
 };
+
+export const getChatMedia = async (chatId: string): Promise<any> => {
+	try {
+		const response = await fetch(`${API_URL}/getChatMedia/${chatId}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				authorization: `bearer ${await getUserToken()}`,
+			},
+		});
+
+		const data = await response.json();
+		if (data.ok) {
+			return data;
+		}
+
+		return null;
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+};

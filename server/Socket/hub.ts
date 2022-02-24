@@ -49,28 +49,20 @@ export const handleMessage = async ({
 		let messageContent = content;
 		let public_id = "";
 
-		if (type === "File") {
+		if (type === "File" || type == "Image") {
+			const base64DataUri =
+				type === "File"
+					? `data:${fileExtension};base64,${content}`
+					: `data:image/jpeg;base64,${content}`;
+
 			const response: UploadApiResponse | null = await uploadImage(
-				`data:${fileExtension};base64,${content}`,
+				base64DataUri,
 				MESSAGE_PRESET,
 				name
 			);
-
 			if (response) {
 				messageContent = response!.secure_url;
 				public_id = response!.public_id;
-			}
-		}
-
-		if (type === "Image") {
-			const response: UploadApiResponse | null = await uploadImage(
-				`data:image/jpeg;base64,${content}`,
-				MESSAGE_PRESET,
-				name
-			);
-
-			if (response) {
-				messageContent = response!.secure_url;
 			}
 		}
 

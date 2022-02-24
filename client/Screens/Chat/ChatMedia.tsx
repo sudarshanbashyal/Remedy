@@ -1,71 +1,58 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { getChatMedia } from "../../API/api";
 import { RootStackType } from "../../Stacks/RootStack";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
 import { BackIcon, SearchIcon } from "../../Styles/SVG/Svg";
+import { formatText } from "../../Utils/FormatText/formatText";
 
 interface MediaType {
+	content: string;
 	name: string;
+	date: Date;
 	type: string;
-	uri?: string;
-	extension?: string;
 }
 
-const dbMedias: MediaType[] = [
-	{
-		name: "Image1.png",
-		type: "image",
-		uri: "https://i.kym-cdn.com/entries/icons/original/000/031/003/cover3.jpg",
-	},
-	{
-		name: "Image2.png",
-		type: "image",
-		uri: "https://i.kym-cdn.com/entries/icons/original/000/031/003/cover3.jpg",
-	},
-	{
-		name: "medical report.doc",
-		type: "file",
-		extension: "doc",
-	},
-	{
-		name: "medical report 2.ppt",
-		type: "file",
-		extension: "ppt",
-	},
-	{
-		name: "Image3.png",
-		type: "image",
-		uri: "https://i.kym-cdn.com/entries/icons/original/000/031/003/cover3.jpg",
-	},
-];
+const ChatMedia = ({ route }) => {
+	const { chatId } = route.params;
 
-const ChatMedia = () => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
 	const goBack = () => {
 		navigation.goBack();
 	};
 
 	const [fileName, setFileName] = useState<string>("");
-	const [medias, setMedias] = useState<MediaType[]>(dbMedias);
+
+	const [medias, setMedias] = useState<MediaType[]>([]);
+	const [renderMedias, setRenderMedias] = useState<MediaType[]>([]);
 
 	const handleFileNameChange = (e: any) => {
 		const { text } = e.nativeEvent;
 		setFileName(text);
 	};
 
-	const handleSearch = () => {
-		const keyword: string = fileName.toLowerCase();
+	const getExtension = (name: string) => {
+		const fileName = name.split("/")[1];
+		return fileName.split(".")[1];
+	};
 
-		const newMedias: MediaType[] = dbMedias.filter(
-			(media: MediaType) =>
-				media.name.toLowerCase().includes(keyword) ||
-				media.extension?.toLowerCase().includes(keyword)
+	const handleSearch = () => {
+		const filteredMedias: MediaType[] = medias.filter((media: MediaType) =>
+			media.name.toLowerCase().includes(fileName.toLowerCase())
 		);
 
-		setMedias(newMedias);
+		setRenderMedias(filteredMedias);
 	};
+
+	useEffect(() => {
+		(async () => {
+			const { data } = await getChatMedia(chatId);
+			setMedias(data);
+			setRenderMedias(data);
+		})();
+	}, []);
 
 	return (
 		<View style={styles.fullContainer}>
@@ -102,28 +89,28 @@ const ChatMedia = () => {
 				</View>
 
 				<View style={styles.chatFilesLayoutContainer}>
-					{medias.map((media: any, index: number) => (
+					{renderMedias.map((media: any, index: number) => (
 						<View
 							key={media.name}
 							style={styles.chatFilesContainer}
 						>
-							{media.type === "image" ? (
+							{media.type === "Image" ? (
 								<View style={styles.chatFilesImageContainer}>
 									<Image
 										style={styles.chatFileImages}
-										source={{ uri: media.uri }}
+										source={{ uri: media.content }}
 									/>
 								</View>
 							) : (
 								<View style={styles.chatFilesOtherContainer}>
 									<Text style={styles.chatFileExtension}>
-										.{media.extension}
+										.{getExtension(media.name)}
 									</Text>
 								</View>
 							)}
 
 							<Text style={styles.chatFileName}>
-								{media.name}
+								{formatText(media.name.split("/")[1], 15)}
 							</Text>
 						</View>
 					))}

@@ -7,6 +7,7 @@ import {
 	updateUserProfile,
 	getMessageList,
 	getChatMessages,
+	getChatMedia,
 } from "../Controllers/UserController";
 import { isAuth } from "../Utils/Auth";
 
@@ -25,5 +26,7 @@ router.put("/updateUserProfile", isAuth, updateUserProfile);
 router.get("/getMessageList", isAuth, getMessageList);
 
 router.get("/getChatMessages/:chatId", isAuth, getChatMessages);
+
+router.get("/getChatMedia/:chatId", isAuth, getChatMedia);
 
 export default router;
