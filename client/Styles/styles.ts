@@ -131,6 +131,7 @@ const styles = StyleSheet.create({
 		fontFamily: "Poppins-Medium",
 		color: colors.lightWhite,
 		opacity: 0.8,
+		fontSize: 13,
 	},
 
 	rightChatBubbleContainer: {
