@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {
-	PermissionsAndroid,
-	View,
-	Text,
-	Image,
-	TouchableOpacity,
-} from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
-import RNFS, { downloadFile, DownloadResult } from "react-native-fs";
 import { RootStore } from "../../Redux/store";
 import { ChatBubbleType } from "../../Screens/Chat/ChatScreen";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
 import { DownloadIcon } from "../../Styles/SVG/Svg";
+import { handleDownload } from "../../Utils/Download/downloadFile";
 import { formatText } from "../../Utils/FormatText/formatText";
 import { formatMessageTime } from "../../Utils/FormatTime/formatTime";
-import { showToast } from "../../Utils/Toast";
 
 const ChatBubble = ({
 	chat,
@@ -40,35 +33,6 @@ const ChatBubble = ({
 
 	const messageByMe = () => {
 		return chat.authorId === user.userId;
-	};
-
-	const getRealFileName = (name: string): string => {
-		return name.split("/")[1];
-	};
-
-	const handleDownload = async () => {
-		try {
-			const granted = await PermissionsAndroid.request(
-				PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-			);
-
-			if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-				const { promise }: { promise: Promise<DownloadResult> } =
-					downloadFile({
-						fromUrl: chat.content,
-						toFile: `${
-							RNFS.DownloadDirectoryPath
-						}/${getRealFileName(chat.name)}`,
-					});
-
-				const { statusCode } = await promise;
-				if (statusCode === 200) {
-					showToast("success", "File Downloaded Successfully!");
-				}
-			}
-		} catch (error) {
-			showToast("error", "Could not download file. Please try again.");
-		}
 	};
 
 	// figure out if old message
@@ -157,7 +121,12 @@ const ChatBubble = ({
 					>
 						<View style={styles.messageFileContainer}>
 							<TouchableOpacity
-								onPress={handleDownload}
+								onPress={() => {
+									handleDownload({
+										name: chat.name,
+										content: chat.content,
+									});
+								}}
 								style={styles.messageFileDownloadIcon}
 							>
 								<DownloadIcon

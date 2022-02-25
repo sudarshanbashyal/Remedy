@@ -750,6 +750,36 @@ const styles = StyleSheet.create({
 		fontFamily: "Poppins-Regular",
 		color: colors.primaryRed,
 	},
+
+	modalContainer: {
+		flex: 0.8,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	modalImagePreview: {
+		flex: 0.8,
+		height: "100%",
+		width: "100%",
+		maxHeight: "100%",
+		maxWidth: "100%",
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	modalImage: {
+		height: "100%",
+		width: "100%",
+		resizeMode: "contain",
+	},
+	modalMediaInformationContainer: {
+		width: "100%",
+		marginBottom: 10,
+	},
+	modalText: {
+		fontFamily: "Poppins-Medium",
+		color: colors.primaryWhite,
+		fontSize: 10,
+		textAlign: "center",
+	},
 });
 
 export default styles;

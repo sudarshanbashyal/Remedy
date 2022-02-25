@@ -2,6 +2,7 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { getChatMedia } from "../../API/api";
+import MediaModal, { MediaModalType } from "../../Components/Modal/MediaModal";
 import { RootStackType } from "../../Stacks/RootStack";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
@@ -23,10 +24,29 @@ const ChatMedia = ({ route }) => {
 		navigation.goBack();
 	};
 
+	const [modalProperties, setModalProperties] =
+		useState<MediaModalType>(null);
+
 	const [fileName, setFileName] = useState<string>("");
 
 	const [medias, setMedias] = useState<MediaType[]>([]);
 	const [renderMedias, setRenderMedias] = useState<MediaType[]>([]);
+
+	const handleModalState = (media: MediaType) => {
+		const { name, type, content } = media;
+
+		setModalProperties({
+			name,
+			type,
+			content,
+			modalActive: true,
+			removeModal,
+		});
+	};
+
+	const removeModal = () => {
+		setModalProperties(null);
+	};
 
 	const handleFileNameChange = (e: any) => {
 		const { text } = e.nativeEvent;
@@ -56,6 +76,16 @@ const ChatMedia = ({ route }) => {
 
 	return (
 		<View style={styles.fullContainer}>
+			{modalProperties && (
+				<MediaModal
+					name={modalProperties.name}
+					content={modalProperties.content}
+					type={modalProperties.type}
+					modalActive={modalProperties.modalActive}
+					removeModal={removeModal}
+				/>
+			)}
+
 			<View style={styles.pageHeader}>
 				<View style={styles.pageHeaderNavigation}>
 					<TouchableOpacity onPress={goBack}>
@@ -89,8 +119,11 @@ const ChatMedia = ({ route }) => {
 				</View>
 
 				<View style={styles.chatFilesLayoutContainer}>
-					{renderMedias.map((media: any, index: number) => (
-						<View
+					{renderMedias.map((media: MediaType) => (
+						<TouchableOpacity
+							onPress={() => {
+								handleModalState(media);
+							}}
 							key={media.name}
 							style={styles.chatFilesContainer}
 						>
@@ -112,7 +145,7 @@ const ChatMedia = ({ route }) => {
 							<Text style={styles.chatFileName}>
 								{formatText(media.name.split("/")[1], 15)}
 							</Text>
-						</View>
+						</TouchableOpacity>
 					))}
 				</View>
 			</View>
