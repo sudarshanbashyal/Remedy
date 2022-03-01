@@ -804,6 +804,37 @@ const styles = StyleSheet.create({
 		fontSize: dimens.regular,
 		textAlign: "center",
 	},
+
+	rowStartContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		marginTop: dimens.regular,
+	},
+	outlineYellowButtonContainer: {
+		paddingVertical: dimens.regular,
+		paddingHorizontal: dimens.regular + 5,
+		borderWidth: 1,
+		borderRadius: dimens.small + 3,
+		borderColor: colors.primaryYellow,
+	},
+	outlineYellowButton: {
+		fontFamily: fonts.Poppins.regular,
+		color: colors.primaryYellow,
+	},
+
+	yellowButtonContainer: {
+		backgroundColor: colors.primaryYellow,
+		paddingHorizontal: dimens.regular + 5,
+		paddingVertical: dimens.regular,
+		borderRadius: dimens.small + 3,
+		flexDirection: "row",
+		alignSelf: "center",
+		justifyContent: "center",
+	},
+	yellowButton: {
+		fontFamily: fonts.Poppins.medium,
+		color: colors.primaryGray,
+	},
 });
 
 export default styles;

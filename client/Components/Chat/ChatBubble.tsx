@@ -14,10 +14,12 @@ const ChatBubble = ({
 	chat,
 	sameUser,
 	profilePicture,
+	respondLastAsked,
 }: {
 	chat: ChatBubbleType;
 	sameUser: boolean;
 	profilePicture: string;
+	respondLastAsked: (response: boolean) => void;
 }) => {
 	const { user } = useSelector((state: RootStore) => state.userReducer);
 
@@ -35,7 +37,7 @@ const ChatBubble = ({
 		return chat.authorId === user.userId;
 	};
 
-	// figure out if old message
+	// figure out if old messag
 	useEffect(() => {}, []);
 
 	return (
@@ -74,18 +76,51 @@ const ChatBubble = ({
 				)}
 
 				{chat.type === "Text" && (
-					<TouchableOpacity
-						onPress={toggleTime}
+					<View
 						style={
 							messageByMe()
 								? styles.rightBubbleTextContainer
 								: styles.leftBubbleTextContainer
 						}
 					>
-						<Text style={styles.leftBubbleText}>
-							{chat.content}
-						</Text>
-					</TouchableOpacity>
+						<TouchableOpacity onPress={toggleTime}>
+							<Text style={styles.leftBubbleText}>
+								{chat.content}
+							</Text>
+						</TouchableOpacity>
+
+						{chat.question && (
+							<View style={styles.rowStartContainer}>
+								<View style={{ marginRight: 10 }}>
+									<TouchableOpacity
+										onPress={() => {
+											respondLastAsked(true);
+										}}
+										style={
+											styles.outlineYellowButtonContainer
+										}
+									>
+										<Text
+											style={styles.outlineYellowButton}
+										>
+											Yes, I do
+										</Text>
+									</TouchableOpacity>
+								</View>
+
+								<TouchableOpacity
+									onPress={() => {
+										respondLastAsked(false);
+									}}
+									style={styles.outlineYellowButtonContainer}
+								>
+									<Text style={styles.outlineYellowButton}>
+										No, I don't
+									</Text>
+								</TouchableOpacity>
+							</View>
+						)}
+					</View>
 				)}
 
 				{chat.type === "Image" && (

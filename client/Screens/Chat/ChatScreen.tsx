@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ScrollView, View, Keyboard } from "react-native";
+import { ScrollView, View, Keyboard, Text } from "react-native";
 import styles from "../../Styles/styles";
 import ChatHeader from "../../Components/Chat/ChatHeader";
 import ChatBubble from "../../Components/Chat/ChatBubble";
@@ -8,6 +8,10 @@ import { getChatMessages } from "../../API/api";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import { useIsFocused } from "@react-navigation/native";
+import {
+	analyzeUserText,
+	displayUnansweredWarning,
+} from "../../Utils/Diagnosis/diagnosis";
 
 export type ChatBubbleType = {
 	authorId: string;
@@ -15,6 +19,7 @@ export type ChatBubbleType = {
 	date: string;
 	type: string;
 	name: string;
+	question?: boolean;
 };
 
 export interface ImagePreviewType {
@@ -65,12 +70,6 @@ const ChatScreen = ({ route }) => {
 		setText("");
 		setImageInfo(null);
 		setInputActive(false);
-	};
-
-	const analyzeChat = () => {
-		console.log(text);
-
-		resetVales();
 	};
 
 	const handleChat = () => {
@@ -147,6 +146,43 @@ const ChatScreen = ({ route }) => {
 		};
 	}, []);
 
+	// for chatbot related things
+	const [symptoms, setSymptoms] = useState<number[]>([]);
+	const [lastAsked, setLastAsked] = useState<null | number>(null);
+
+	const respondLastAsked = (response: boolean) => {
+		if (response) {
+			setSymptoms((symptoms) => [...symptoms, lastAsked]);
+		}
+
+		setLastAsked(null);
+	};
+
+	const analyzeChat = () => {
+		const userChat = {
+			authorId: user.userId,
+			content: text,
+			date: new Date().toString(),
+			type: "Text",
+			name: "",
+		};
+
+		if (lastAsked) {
+			setChats([...chats, userChat, displayUnansweredWarning()]);
+			resetVales();
+			return;
+		}
+
+		const { chat, symptomValue } = analyzeUserText(text, symptoms);
+		if (symptomValue) {
+			setLastAsked(symptomValue);
+		}
+
+		setChats((chats) => [...chats, userChat, chat]);
+
+		resetVales();
+	};
+
 	return (
 		<View style={styles.fullContainer}>
 			<ChatHeader
@@ -169,6 +205,7 @@ const ChatScreen = ({ route }) => {
 								chat={chat}
 								sameUser={sameUser}
 								profilePicture={profilePicture}
+								respondLastAsked={respondLastAsked}
 							/>
 						);
 					})}
