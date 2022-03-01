@@ -42,17 +42,21 @@ const ChatInput = ({
 	setFileInfo,
 	inputActive,
 	setInputActive,
+	chatbot,
+	analyzeChat,
 }: {
 	keyboardOffset: number;
 	text: string;
-	setText: any;
-	handleChat: any;
+	setText: Dispatch<SetStateAction<string>>;
+	handleChat: () => void;
 	imageInfo: ImagePreviewType | null;
 	setImageInfo: Dispatch<SetStateAction<ImagePreviewType | null>>;
 	fileInfo: FilePreviewType | null;
 	setFileInfo: Dispatch<SetStateAction<FilePreviewType | null>>;
 	inputActive: boolean;
 	setInputActive: Dispatch<SetStateAction<boolean>>;
+	analyzeChat: () => void;
+	chatbot: boolean;
 }) => {
 	const [imagePreviewStyling, setImagePreviewStyling] = useState(
 		styles.chatInput
@@ -161,13 +165,14 @@ const ChatInput = ({
 
 	return (
 		<View style={{ ...styles.chatInputContainer, bottom: keyboardOffset }}>
-			{!inputActive && (
+			{!inputActive && !chatbot && (
 				<View style={styles.chatInputIconContainer}>
 					<View style={{ marginRight: 10 }}>
 						<TouchableOpacity onPress={handleImagePreview}>
 							<ImageIcon size={24} color={colors.opaqueWhite} />
 						</TouchableOpacity>
 					</View>
+
 					<View style={{ marginRight: 10 }}>
 						<TouchableOpacity onPress={handleFilePreview}>
 							<PlusOutlineIcon
@@ -228,7 +233,9 @@ const ChatInput = ({
 
 			{inputActive && (
 				<View style={{ marginLeft: 10 }}>
-					<TouchableOpacity onPress={handleChat}>
+					<TouchableOpacity
+						onPress={chatbot ? analyzeChat : handleChat}
+					>
 						<SendIcon size={26} color={colors.primaryRed} />
 					</TouchableOpacity>
 				</View>

@@ -35,7 +35,8 @@ const ChatScreen = ({ route }) => {
 		userReducer: { user },
 	} = useSelector((state: RootStore) => state);
 
-	const { chatId, messageWith, profilePicture, recipentId } = route.params;
+	const { chatId, messageWith, profilePicture, recipentId, chatbot } =
+		route.params;
 
 	const [keyboardOffset, setKeyboardOffset] = useState<number>(0);
 
@@ -58,6 +59,18 @@ const ChatScreen = ({ route }) => {
 
 	const handleKeyboardHide = () => {
 		setKeyboardOffset(0);
+	};
+
+	const resetVales = () => {
+		setText("");
+		setImageInfo(null);
+		setInputActive(false);
+	};
+
+	const analyzeChat = () => {
+		console.log(text);
+
+		resetVales();
 	};
 
 	const handleChat = () => {
@@ -84,9 +97,7 @@ const ChatScreen = ({ route }) => {
 		};
 		socket.emit("handle_message", payload);
 
-		setText("");
-		setImageInfo(null);
-		setInputActive(false);
+		resetVales();
 	};
 
 	useEffect(() => {
@@ -106,6 +117,9 @@ const ChatScreen = ({ route }) => {
 	}, [focused]);
 
 	useEffect(() => {
+		// don't load older messages for now in case it's a chatbot (haven't configured db for that yet.)
+		if (chatbot) return;
+
 		(async () => {
 			const { data } = await getChatMessages(chatId);
 
@@ -135,7 +149,11 @@ const ChatScreen = ({ route }) => {
 
 	return (
 		<View style={styles.fullContainer}>
-			<ChatHeader chatId={chatId} messageWith={messageWith} />
+			<ChatHeader
+				chatbot={chatbot}
+				chatId={chatId}
+				messageWith={messageWith}
+			/>
 
 			<ScrollView ref={scrollViewRef} style={{ marginBottom: 50 }}>
 				<View style={{ marginTop: 10, paddingBottom: keyboardOffset }}>
@@ -168,6 +186,8 @@ const ChatScreen = ({ route }) => {
 				setInputActive={setInputActive}
 				fileInfo={fileInfo}
 				setFileInfo={setFileInfo}
+				chatbot={chatbot}
+				analyzeChat={analyzeChat}
 			/>
 		</View>
 	);

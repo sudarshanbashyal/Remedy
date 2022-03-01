@@ -24,7 +24,20 @@ export interface ChatPreviewInterface {
 	userIcon: string;
 	recipentId: string;
 	type: string;
+	chatbot: boolean;
 }
+
+const chatBotPreviewDetails: ChatPreviewInterface = {
+	chatId: "chatbot",
+	messageWith: "Dr. Bot",
+	lastMessage: "",
+	messageTime: new Date(),
+	userIcon:
+		"https://a1cf74336522e87f135f-2f21ace9a6cf0052456644b80fa06d4f.ssl.cf2.rackcdn.com/images/characters/large/800/Baymax.Big-Hero-6.webp",
+	recipentId: "chatbot",
+	type: "Text",
+	chatbot: true,
+};
 
 const ChatList = () => {
 	const focused = useIsFocused();
@@ -41,13 +54,15 @@ const ChatList = () => {
 		chatId: string,
 		messageWith: string,
 		profilePicture: string,
-		recipentId: string
+		recipentId: string,
+		chatbot: boolean
 	) => {
 		navigation.navigate("ChatScreen", {
 			chatId,
 			messageWith,
 			profilePicture,
 			recipentId: recipentId,
+			chatbot,
 		});
 	};
 
@@ -116,10 +131,11 @@ const ChatList = () => {
 							? preview.secondParticipant.userId
 							: preview.firstParticipant.userId,
 					type: preview.messages[0].type,
+					chatBot: false,
 				});
 			});
 
-			setChatList(allChats);
+			setChatList([chatBotPreviewDetails, ...allChats]);
 		})();
 	}, [focused]);
 
@@ -142,7 +158,8 @@ const ChatList = () => {
 								chat.chatId,
 								chat.messageWith,
 								chat.userIcon,
-								chat.recipentId
+								chat.recipentId,
+								chat.chatbot
 							);
 						}}
 					>

@@ -9,9 +9,11 @@ import { RootStackType } from "../../Stacks/RootStack";
 const ChatHeader = ({
 	chatId,
 	messageWith,
+	chatbot,
 }: {
 	chatId: string;
 	messageWith: string;
+	chatbot: string;
 }) => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
 	const goBack = () => {
@@ -34,22 +36,24 @@ const ChatHeader = ({
 				<Text style={styles.pageHeaderText}>{messageWith}</Text>
 			</View>
 
-			<View style={styles.pageHeaderIcons}>
-				<TouchableOpacity>
-					<PhoneIcon size={28} color={colors.primaryWhite} />
-				</TouchableOpacity>
+			{!chatbot && (
+				<View style={styles.pageHeaderIcons}>
+					<TouchableOpacity>
+						<PhoneIcon size={28} color={colors.primaryWhite} />
+					</TouchableOpacity>
 
-				<TouchableOpacity style={styles.pageHeaderIcon}>
-					<VideoIcon size={28} color={colors.primaryWhite} />
-				</TouchableOpacity>
+					<TouchableOpacity style={styles.pageHeaderIcon}>
+						<VideoIcon size={28} color={colors.primaryWhite} />
+					</TouchableOpacity>
 
-				<TouchableOpacity
-					style={styles.pageHeaderIcon}
-					onPress={goToMedia}
-				>
-					<MoreIcon size={24} color={colors.primaryRed} />
-				</TouchableOpacity>
-			</View>
+					<TouchableOpacity
+						style={styles.pageHeaderIcon}
+						onPress={goToMedia}
+					>
+						<MoreIcon size={24} color={colors.primaryRed} />
+					</TouchableOpacity>
+				</View>
+			)}
 		</View>
 	);
 };

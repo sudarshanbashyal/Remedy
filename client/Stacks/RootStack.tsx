@@ -24,6 +24,7 @@ export type RootStackType = {
 		messageWith: string;
 		profilePicture: string;
 		recipentId: string;
+		chatbot: boolean;
 	};
 	ScheduleDetails: {
 		medicineId?: any;
