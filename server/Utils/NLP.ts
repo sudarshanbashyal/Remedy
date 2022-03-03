@@ -12,6 +12,8 @@ export const trainModel = async () => {
 	nlp.addDocument("en", "hi", "greetings.hello");
 	nlp.addDocument("en", "howdy", "greetings.hello");
 	nlp.addDocument("en", "yo", "greetings.hello");
+	nlp.addDocument("en", "what's up", "greetings.hello");
+	nlp.addDocument("en", "how are you", "greetings.hello");
 
 	// goodbye intent
 	nlp.addDocument("en", "goodbye for now", "greetings.bye");
@@ -30,6 +32,8 @@ export const trainModel = async () => {
 	nlp.addDocument("en", "body pain", "symptom");
 	nlp.addDocument("en", "sore throat", "symptom");
 	nlp.addDocument("en", "anxiety", "symptom");
+	nlp.addDocument("en", "nausea", "symptom");
+	nlp.addDocument("en", "dizzy", "symptom");
 
 	// positive intents
 	nlp.addDocument("en", "yes", "reaction.positive");

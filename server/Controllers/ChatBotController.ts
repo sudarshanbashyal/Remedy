@@ -12,12 +12,15 @@ getNlp();
 
 export const analyzeMessageIntent = async (req: Request, res: Response) => {
 	try {
+		console.log("req:", req.body);
+
 		const { message } = req.body;
 		const response = await nlp.process("en", message);
+		console.log(response);
 
 		return res.json({
 			ok: true,
-			response,
+			data: response,
 		});
 	} catch (error) {
 		return serverError(error as Error, res);

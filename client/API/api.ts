@@ -309,3 +309,25 @@ export const getChatMedia = async (chatId: string): Promise<any> => {
 		return null;
 	}
 };
+
+export const analyzeMessageIntent = async (message: string) => {
+	try {
+		const response = await fetch(`${API_URL}/analyzeMessageIntent`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ message }),
+		});
+
+		const data = await response.json();
+		if (data.ok) {
+			return data;
+		}
+
+		return null;
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+};

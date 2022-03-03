@@ -158,7 +158,7 @@ const ChatScreen = ({ route }) => {
 		setLastAsked(null);
 	};
 
-	const analyzeChat = () => {
+	const analyzeChat = async () => {
 		const userChat = {
 			authorId: user.userId,
 			content: text,
@@ -173,7 +173,7 @@ const ChatScreen = ({ route }) => {
 			return;
 		}
 
-		const { chat, symptomValue } = analyzeUserText(text, symptoms);
+		const { chat, symptomValue } = await analyzeUserText(text, symptoms);
 		if (symptomValue) {
 			setLastAsked(symptomValue);
 		}
