@@ -1,4 +1,4 @@
-const symptoms = [
+export const symptoms = [
 	{ ID: 188, Name: "Abdominal guarding" },
 	{ ID: 10, Name: "Abdominal pain" },
 	{ ID: 223, Name: "Abdominal pain associated with menstruation" },

@@ -16,6 +16,7 @@ import MedicineList from "../Screens/Schedule/MedicineList";
 import ScheduleDetails from "../Screens/Schedule/ScheduleDetails";
 import MedicineStats from "../Screens/Stats/MedicineStats";
 import io, { Socket } from "socket.io-client";
+import { API_URL } from "../API/api";
 
 export type RootStackType = {
 	ChatList: any;
@@ -54,7 +55,7 @@ const RootStack = () => {
 
 	// connecting to the WSS server
 	useEffect(() => {
-		const socket: Socket<any> = io("http://192.168.1.66:3000");
+		const socket: Socket<any> = io(API_URL);
 		dispatch(registerSocketAction(socket));
 
 		socket.emit("register_socket", user.userId);

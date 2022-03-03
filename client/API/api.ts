@@ -5,7 +5,7 @@ import { MedicineDataType } from "../Screens/Schedule/ScheduleDetails";
 import { getUserToken } from "../Utils/AsyncStorage/asyncStorage";
 import { showToast } from "../Utils/Toast";
 
-const API_URL = "http://192.168.1.66:3000";
+export const API_URL = "http://192.168.1.67:3000";
 
 export const emailExists = async (email: string): Promise<boolean> => {
 	try {

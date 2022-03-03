@@ -2,6 +2,7 @@ import Express, { json } from "express";
 import cors from "cors";
 import UserRouter from "./Routes/UserRoute";
 import MedicineRouter from "./Routes/MedicineRoute";
+import ChatBotRouter from "./Routes/ChatBotRoute";
 import { PrismaClient } from "@prisma/client";
 import { createServer } from "http";
 import { Server as SocketServer, Socket } from "socket.io";
@@ -17,7 +18,8 @@ const init = async () => {
 		}),
 		cors(),
 		UserRouter,
-		MedicineRouter
+		MedicineRouter,
+		ChatBotRouter
 	);
 
 	// ws server config

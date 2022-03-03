@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ScrollView, View, Keyboard, Text } from "react-native";
+import { ScrollView, View, Keyboard } from "react-native";
 import styles from "../../Styles/styles";
 import ChatHeader from "../../Components/Chat/ChatHeader";
 import ChatBubble from "../../Components/Chat/ChatBubble";

@@ -44,6 +44,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const loginUser = async (req: Request, res: Response) => {
 	try {
+		console.log("user login req");
 		const { email, password } = req.body;
 
 		const user = await PrismaDB.user.findUnique({

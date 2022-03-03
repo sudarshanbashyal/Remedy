@@ -36,7 +36,7 @@ const getReply = (): {
 	symptomValue?: number;
 } => {
 	return {
-		reply: "Retard?",
+		reply: "Dabidabi doop? dabi dbbipoop??",
 		question: true,
 		symptomValue: 10,
 	};
