@@ -25,15 +25,18 @@ export const trainModel = async () => {
 
 	// symptom intent
 	nlp.addDocument("en", "i think i have fever", "symptom");
+	nlp.addDocument("en", "i am suffering from fever", "symptom");
 	nlp.addDocument("en", "my head hurts", "symptom");
 	nlp.addDocument("en", "i have been feeling weak lately", "symptom");
-	nlp.addDocument("en", "cough", "symptom");
+	nlp.addDocument("en", "coughing", "symptom");
 	nlp.addDocument("en", "sneezing", "symptom");
+	nlp.addDocument("en", "i caught a cold", "symptom");
 	nlp.addDocument("en", "body pain", "symptom");
 	nlp.addDocument("en", "sore throat", "symptom");
 	nlp.addDocument("en", "anxiety", "symptom");
 	nlp.addDocument("en", "nausea", "symptom");
 	nlp.addDocument("en", "dizzy", "symptom");
+	nlp.addDocument("en", "i feel dizzy", "symptom");
 
 	// positive intents
 	nlp.addDocument("en", "yes", "reaction.positive");
@@ -49,7 +52,6 @@ export const trainModel = async () => {
 	nlp.addDocument("en", "no", "reaction.negative");
 	nlp.addDocument("en", "nope", "reaction.negative");
 	nlp.addDocument("en", "i dont", "reaction.negative");
-	nlp.addDocument("en", "i am not experiencing that", "reaction.negative");
 	nlp.addDocument("en", "incorrect", "reaction.negative");
 	nlp.addDocument("en", "that is not the case", "reaction.negative");
 	nlp.addDocument("en", "not really", "reaction.negative");
@@ -59,6 +61,7 @@ export const trainModel = async () => {
 	// the answers for symptom intent will be generated based on user input
 	nlp.addAnswer("en", "greetings.bye", "Till next time");
 	nlp.addAnswer("en", "greetings.bye", "see you soon!");
+	nlp.addAnswer("en", "greetings.bye", "Alright then! see ya!");
 	nlp.addAnswer("en", "greetings.hello", "Hey there!");
 	nlp.addAnswer("en", "greetings.hello", "Greetings!");
 

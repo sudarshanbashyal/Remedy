@@ -147,17 +147,6 @@ const ChatScreen = ({ route }) => {
 	}, []);
 
 	// for chatbot related things
-	const [symptoms, setSymptoms] = useState<number[]>([]);
-	const [lastAsked, setLastAsked] = useState<null | number>(null);
-
-	const respondLastAsked = (response: boolean) => {
-		if (response) {
-			setSymptoms((symptoms) => [...symptoms, lastAsked]);
-		}
-
-		setLastAsked(null);
-	};
-
 	const analyzeChat = async () => {
 		const userChat = {
 			authorId: user.userId,
@@ -167,17 +156,7 @@ const ChatScreen = ({ route }) => {
 			name: "",
 		};
 
-		if (lastAsked) {
-			setChats([...chats, userChat, displayUnansweredWarning()]);
-			resetVales();
-			return;
-		}
-
-		const { chat, symptomValue } = await analyzeUserText(text, symptoms);
-		if (symptomValue) {
-			setLastAsked(symptomValue);
-		}
-
+		const { chat, symptomValue } = await analyzeUserText(text);
 		setChats((chats) => [...chats, userChat, chat]);
 
 		resetVales();

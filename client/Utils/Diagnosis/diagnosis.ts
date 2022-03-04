@@ -1,4 +1,4 @@
-import { analyzeMessageIntent } from "../../API/api";
+import { analyzeMessageIntent, reportSymptomSimilarity } from "../../API/api";
 import { ChatBubbleType } from "../../Screens/Chat/ChatScreen";
 import { retext } from "retext";
 import retextPos from "retext-pos";
@@ -9,9 +9,18 @@ export interface ChatbotReplyType {
 	symptomValue?: number;
 }
 
+const getSimilarSymptom = async (symptom: string) => {
+	const response = await reportSymptomSimilarity(symptom);
+
+	if (response.ok) {
+		return response.symptom;
+	}
+
+	return null;
+};
+
 export const analyzeUserText = async (
-	text: string,
-	previousSymptoms: number[]
+	text: string
 ): Promise<ChatbotReplyType> => {
 	// find intent here,
 
@@ -24,32 +33,43 @@ export const analyzeUserText = async (
 	};
 
 	const response = await analyzeMessageIntent(text);
-	console.log(response);
+
 	if (!response?.data) {
 		chatBotReply.content =
 			"Sorry, the chatbot is inactive right now. Please try again later.";
 		return { chat: chatBotReply };
 	}
 
-	const { intent } = response.data;
-
-	if (intent.toLowerCase() === "none") {
-		chatBotReply.content = "Sorry, could you please repeat that.";
-		return { chat: chatBotReply };
-	}
+	let { intent } = response.data;
+	intent = intent.toLowerCase();
 
 	if (intent === "greetings.hello" || intent === "greetings.bye") {
 		chatBotReply.content = response.data.answer;
 		return { chat: chatBotReply };
 	}
 
-	if (intent === "symptom") {
+	if (intent === "symptom" || intent === "none") {
 		const {
 			data: { keywords },
 		} = await retext().use(retextPos).use(retextKeywords).process(text);
 
-		chatBotReply.content = `Okay, so you said you have ${keywords[0].stem}`;
-		return { chat: chatBotReply };
+		let symptomName = text;
+
+		console.log(keywords);
+
+		if (Array.isArray(keywords) && keywords.length > 0) {
+			symptomName = keywords[0].stem;
+		}
+
+		const similarSymptom = await getSimilarSymptom(symptomName);
+		if (!similarSymptom) {
+			chatBotReply.content =
+				"Sorry, I couldn't make that up, could you please repeat that differently?";
+			return { chat: chatBotReply };
+		}
+
+		chatBotReply.content = `Okay, so you have shown the following symptom: ${similarSymptom.Name}`;
+		return { chat: chatBotReply, symptomValue: similarSymptom.ID };
 	}
 
 	chatBotReply.content = intent;

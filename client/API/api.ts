@@ -331,3 +331,21 @@ export const analyzeMessageIntent = async (message: string) => {
 		return null;
 	}
 };
+
+export const reportSymptomSimilarity = async (symptom: string) => {
+	try {
+		const response = await fetch(`${API_URL}/reportSymptomSimilarity`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ symptom }),
+		});
+
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+};
