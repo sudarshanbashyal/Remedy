@@ -27,6 +27,7 @@ class ChatBot {
 		this.currentSymptoms = {};
 		this.currentConversation = {};
 		this.chatBotReply.content = "";
+		this.chatBotReply.question = false;
 	}
 
 	async getSymptomName(symptom: string): Promise<any> {
@@ -46,34 +47,35 @@ class ChatBot {
 		// check if only one symptom is registered, if it is, ask for one more symptom.
 		if (Object.keys(this.currentSymptoms).length < 2) {
 			this.chatBotReply.content = `So, you said you have the following symptom: ${symptom}. Could you list out one more symptom?`;
-			return this.chatBotReply;
+			return Object.assign({}, this.chatBotReply);
 		}
 
 		// API call to get similar symptom here.
 		this.chatBotReply.question = true;
 		this.chatBotReply.content = this.getQuestionedReply().reply;
-
-		return this.chatBotReply;
+		return Object.assign({}, this.chatBotReply);
 	}
 
 	async analyzeUserText(text: string): Promise<ChatBubbleType> {
+		// get the user intent
 		const response = await analyzeMessageIntent(text);
 
 		if (!response?.data) {
 			this.chatBotReply.content =
 				"Sorry, the chatbot is inactive right now. Please try again later.";
 
-			return this.chatBotReply;
+			return Object.assign({}, this.chatBotReply);
 		}
 
 		let { intent } = response.data;
 		intent = intent.toLowerCase();
 
 		if (intent === GREETINGS_HELLO || intent === GREETINGS_BYE) {
+			// reset symptoms if the intent is bye
 			if (intent === GREETINGS_BYE) this.resetChatbotConvo();
 
 			this.chatBotReply.content = response.data.answer;
-			return this.chatBotReply;
+			return Object.assign({}, this.chatBotReply);
 		}
 
 		// symptom analysis start here
@@ -93,7 +95,7 @@ class ChatBot {
 			if (!similarSymptom) {
 				this.chatBotReply.content =
 					"Sorry, I couldn't match understand the symptom, could you please try again?";
-				return this.chatBotReply;
+				return Object.assign({}, this.chatBotReply);
 			}
 
 			// add the symptom information to instance variables
@@ -104,7 +106,7 @@ class ChatBot {
 		}
 
 		this.chatBotReply.content = intent;
-		return this.chatBotReply;
+		return Object.assign({}, this.chatBotReply);
 	}
 
 	getQuestionedReply = (): {
