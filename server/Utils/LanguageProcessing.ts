@@ -25,6 +25,7 @@ export const trainModel = async () => {
 
 	// symptom intent
 	nlp.addDocument("en", "i think i have fever", "symptom");
+	nlp.addDocument("en", "i have fever", "symptom");
 	nlp.addDocument("en", "i am suffering from fever", "symptom");
 	nlp.addDocument("en", "my head hurts", "symptom");
 	nlp.addDocument("en", "i have been feeling weak lately", "symptom");

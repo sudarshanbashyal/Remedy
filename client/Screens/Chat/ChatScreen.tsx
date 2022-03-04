@@ -152,7 +152,7 @@ const ChatScreen = ({ route }) => {
 			name: "",
 		};
 
-		const { chat } = await chatBot.analyzeUserText(text);
+		const chat = await chatBot.analyzeUserText(text);
 		setChats((chats) => [...chats, userChat, chat]);
 
 		resetVales();

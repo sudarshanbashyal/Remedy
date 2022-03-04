@@ -4,11 +4,6 @@ import { retext } from "retext";
 import retextPos from "retext-pos";
 import retextKeywords from "retext-keywords";
 
-export interface ChatbotReplyType {
-	chat: ChatBubbleType;
-	symptomValue?: number;
-}
-
 const GREETINGS_HELLO = "greetings.hello";
 const GREETINGS_BYE = "greetings.bye";
 const INTENT_NONE = "none";
@@ -17,12 +12,21 @@ const REACTION_POSITIVE = "reaction.positive";
 const REACTION_NEGATIVE = "reaction.negative";
 
 class ChatBot {
-	currentSymptoms: {};
+	currentSymptoms = {};
 	currentConversation: {};
+
+	chatBotReply: ChatBubbleType = {
+		authorId: "chatbot",
+		content: "",
+		date: new Date().toString(),
+		type: "Text",
+		name: "",
+	};
 
 	resetChatbotConvo(): void {
 		this.currentSymptoms = {};
 		this.currentConversation = {};
+		this.chatBotReply.content = "";
 	}
 
 	async getSymptomName(symptom: string): Promise<any> {
@@ -35,21 +39,31 @@ class ChatBot {
 		return null;
 	}
 
-	async analyzeUserText(text: string): Promise<ChatbotReplyType> {
-		const chatBotReply: ChatBubbleType = {
-			authorId: "chatbot",
-			content: "",
-			date: new Date().toString(),
-			type: "Text",
-			name: "",
-		};
+	// for when user answers with yes/no question or something??
+	async registerUserReply(answer: boolean) {}
 
+	async formReply(symptom: string): Promise<ChatBubbleType> {
+		// check if only one symptom is registered, if it is, ask for one more symptom.
+		if (Object.keys(this.currentSymptoms).length < 2) {
+			this.chatBotReply.content = `So, you said you have the following symptom: ${symptom}. Could you list out one more symptom?`;
+			return this.chatBotReply;
+		}
+
+		// API call to get similar symptom here.
+		this.chatBotReply.question = true;
+		this.chatBotReply.content = this.getQuestionedReply().reply;
+
+		return this.chatBotReply;
+	}
+
+	async analyzeUserText(text: string): Promise<ChatBubbleType> {
 		const response = await analyzeMessageIntent(text);
 
 		if (!response?.data) {
-			chatBotReply.content =
+			this.chatBotReply.content =
 				"Sorry, the chatbot is inactive right now. Please try again later.";
-			return { chat: chatBotReply };
+
+			return this.chatBotReply;
 		}
 
 		let { intent } = response.data;
@@ -58,15 +72,17 @@ class ChatBot {
 		if (intent === GREETINGS_HELLO || intent === GREETINGS_BYE) {
 			if (intent === GREETINGS_BYE) this.resetChatbotConvo();
 
-			chatBotReply.content = response.data.answer;
-			return { chat: chatBotReply };
+			this.chatBotReply.content = response.data.answer;
+			return this.chatBotReply;
 		}
 
+		// symptom analysis start here
 		if (intent === INTENT_SYMPTOM || intent === INTENT_NONE) {
 			const {
 				data: { keywords },
 			} = await retext().use(retextPos).use(retextKeywords).process(text);
 
+			// if a keyword is not detected because of one word input like "cough", just pass in the input directly
 			let symptomName = text;
 
 			if (Array.isArray(keywords) && keywords.length > 0) {
@@ -75,46 +91,31 @@ class ChatBot {
 
 			const similarSymptom = await this.getSymptomName(symptomName);
 			if (!similarSymptom) {
-				chatBotReply.content =
+				this.chatBotReply.content =
 					"Sorry, I couldn't match understand the symptom, could you please try again?";
-				return { chat: chatBotReply };
+				return this.chatBotReply;
 			}
 
-			chatBotReply.content = `Okay, so you have shown the following symptom: ${similarSymptom.Name}`;
-			return { chat: chatBotReply, symptomValue: similarSymptom.ID };
+			// add the symptom information to instance variables
+			// this information will be used to get similar symptoms/ gather final diagnosis
+			this.currentSymptoms[similarSymptom.ID] = similarSymptom.Name;
+
+			return await this.formReply(similarSymptom.Name);
 		}
 
-		chatBotReply.content = intent;
-		return { chat: chatBotReply };
-
-		/*
-
-		const { reply, question, symptomValue } = getReply();
-
-		const chatBotReply: ChatBubbleType = {
-			authorId: "chatbot",
-			content: reply,
-			date: new Date().toString(),
-			type: "Text",
-			name: "",
-			question,
-		};
-
-		if (!symptomValue) return { chat: chatBotReply };
-
-		return { chat: chatBotReply, symptomValue };
-		*/
+		this.chatBotReply.content = intent;
+		return this.chatBotReply;
 	}
 
-	getReply = (): {
+	getQuestionedReply = (): {
 		reply: string;
-		question: boolean;
-		symptomValue?: number;
 	} => {
+		const symptoms = Object.values(this.currentSymptoms);
+
 		return {
-			reply: "Dabidabi doop? dabi dbbipoop??",
-			question: true,
-			symptomValue: 10,
+			reply: `Symptoms so far: ${symptoms.join(
+				", "
+			)}. Do you also have x sickness?`,
 		};
 	};
 }
