@@ -4,7 +4,10 @@ import {
 } from "@react-navigation/native-stack";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { registerSocketAction } from "../Redux/Actions/ApplicationActions";
+import {
+	registerSocketAction,
+	registerChatbotAction,
+} from "../Redux/Actions/ApplicationActions";
 import { RootStore } from "../Redux/store";
 import ChatList from "../Screens/Chat/ChatList";
 import ChatMedia from "../Screens/Chat/ChatMedia";
@@ -52,6 +55,11 @@ const RootStack = () => {
 		userReducer: { user },
 		applicationReducer: { socket },
 	} = useSelector((state: RootStore) => state);
+
+	// register a chatbot
+	useEffect(() => {
+		dispatch(registerChatbotAction());
+	}, []);
 
 	// connecting to the WSS server
 	useEffect(() => {

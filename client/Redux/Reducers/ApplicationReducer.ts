@@ -2,6 +2,7 @@ import {
 	ApplicationDispatchType,
 	CHANGE_CURRENT_NAVIGATION,
 	DefaultApplicationStateType,
+	REGISTER_CHATBOT,
 	REGISTER_SOCKET,
 } from "../Actions/ApplicationActionTypes";
 
@@ -9,6 +10,7 @@ const defaultState: DefaultApplicationStateType = {
 	currentRoute: "ChatList",
 	currentNavigation: "ChatList",
 	socket: null,
+	chatBot: null,
 };
 
 export const applicationReducer = (
@@ -26,6 +28,12 @@ export const applicationReducer = (
 			return {
 				...state,
 				socket: action.payload,
+			};
+
+		case REGISTER_CHATBOT:
+			return {
+				...state,
+				chatBot: action.payload,
 			};
 
 		default:

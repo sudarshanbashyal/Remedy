@@ -8,10 +8,6 @@ import { getChatMessages } from "../../API/api";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import { useIsFocused } from "@react-navigation/native";
-import {
-	analyzeUserText,
-	displayUnansweredWarning,
-} from "../../Utils/Diagnosis/diagnosis";
 
 export type ChatBubbleType = {
 	authorId: string;
@@ -36,7 +32,7 @@ export interface FilePreviewType {
 
 const ChatScreen = ({ route }) => {
 	const {
-		applicationReducer: { socket },
+		applicationReducer: { socket, chatBot },
 		userReducer: { user },
 	} = useSelector((state: RootStore) => state);
 
@@ -156,7 +152,7 @@ const ChatScreen = ({ route }) => {
 			name: "",
 		};
 
-		const { chat, symptomValue } = await analyzeUserText(text);
+		const { chat } = await chatBot.analyzeUserText(text);
 		setChats((chats) => [...chats, userChat, chat]);
 
 		resetVales();
@@ -184,7 +180,7 @@ const ChatScreen = ({ route }) => {
 								chat={chat}
 								sameUser={sameUser}
 								profilePicture={profilePicture}
-								respondLastAsked={respondLastAsked}
+								respondLastAsked={() => {}}
 							/>
 						);
 					})}

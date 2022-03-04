@@ -1,8 +1,10 @@
 import { Dispatch } from "redux";
 import { Socket } from "socket.io-client";
+import ChatBot from "../../Utils/Diagnosis/diagnosis";
 import {
 	ApplicationDispatchType,
 	CHANGE_CURRENT_NAVIGATION,
+	REGISTER_CHATBOT,
 	REGISTER_SOCKET,
 } from "./ApplicationActionTypes";
 
@@ -24,4 +26,13 @@ const registerSocketAction =
 		});
 	};
 
-export { changeNavigationAction, registerSocketAction };
+const registerChatbotAction =
+	(chatbot: ChatBot = new ChatBot()) =>
+	async (dispatch: Dispatch<ApplicationDispatchType>) => {
+		dispatch({
+			type: REGISTER_CHATBOT,
+			payload: chatbot,
+		});
+	};
+
+export { changeNavigationAction, registerSocketAction, registerChatbotAction };
