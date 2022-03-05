@@ -45,6 +45,7 @@ export const trainModel = async () => {
 	nlp.addDocument("en", "you are correct", "reaction.positive");
 	nlp.addDocument("en", "precisely", "reaction.positive");
 	nlp.addDocument("en", "yep", "reaction.positive");
+	nlp.addDocument("en", "i do", "reaction.positive");
 	nlp.addDocument("en", "indeed", "reaction.positive");
 	nlp.addDocument("en", "exactly", "reaction.positive");
 	nlp.addDocument("en", "think so", "reaction.positive");

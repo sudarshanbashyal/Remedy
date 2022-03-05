@@ -349,3 +349,20 @@ export const reportSymptomSimilarity = async (symptom: string) => {
 		return null;
 	}
 };
+
+export const getSimilarSymptoms = async (symptoms: number[]) => {
+	try {
+		const response = await fetch(`${API_URL}/getSimilarSymptoms`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ symptoms }),
+		});
+
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		return null;
+	}
+};
