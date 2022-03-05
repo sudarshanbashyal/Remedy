@@ -70,35 +70,10 @@ class ChatBot {
 		return Object.assign({}, this.chatBotReply);
 	}
 
-	async getSimilarSymptom(): Promise<any> {
-		const symptomIDs = Object.keys(this.currentSymptoms).map(
-			(id: string) => +id
-		);
-		const { data } = await getSimilarSymptoms(symptomIDs);
-		console.log(data);
-		this.currentSymptoms = data;
-	}
+	async getSimilarSymptom(): Promise<any> {}
 
 	// for when user answers with yes/no question or something??
-	async registerUserReply(answer: boolean) {
-		if (answer) {
-			const { symptomName, symptomValue } =
-				this.currentConversation.symptomQuestion;
-			this.currentSymptoms[symptomValue] = symptomName;
-			return await this.formReply();
-		}
-
-		// add current symptom to rejected symptoms so they are not displayed again.
-		this.rejectedSymptoms.push(
-			this.currentConversation.symptomQuestion.symptomValue
-		);
-
-		// remove question from conversation
-		this.currentConversation.symptomQuestion = null;
-
-		// ask user about another similar symptom
-		return await this.formReply(this.proposedSymptoms[0].Name);
-	}
+	async registerUserReply(answer: boolean) {}
 
 	async formReply(symptom: string = ""): Promise<ChatBubbleType> {
 		// check if only one symptom is registered, if it is, ask for one more symptom.
@@ -158,7 +133,7 @@ class ChatBot {
 				const reaction: boolean =
 					intent === REACTION_POSITIVE ? true : false;
 
-				return await this.registerUserReply(reaction);
+				// return await this.registerUserReply(reaction);
 			}
 		}
 
