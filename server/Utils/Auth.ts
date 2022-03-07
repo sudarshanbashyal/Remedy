@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { Request, NextFunction, Response } from "express";
+import fetch from "node-fetch";
 
 dotenv.config();
 
@@ -44,4 +45,18 @@ export const isAuth = (
 
 		next();
 	}
+};
+
+export const setApiMedicToken = async () => {
+	const { API_MEDIC_KEY, API_MEDIC_SECRET } = process.env;
+
+	const response = await fetch("https://authservice.priaid.ch/login", {
+		method: "POST",
+		headers: {
+			Authorization: `Bearer ${API_MEDIC_KEY}:${API_MEDIC_SECRET}`,
+		},
+	});
+
+	const { Token } = await response.json();
+	process.env["API_MEDIC_TOKEN"] = Token;
 };
