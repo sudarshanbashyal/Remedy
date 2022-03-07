@@ -2,6 +2,9 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { Request, NextFunction, Response } from "express";
 import fetch from "node-fetch";
+import fs from "fs";
+import path from "path";
+import os from "os";
 
 dotenv.config();
 
@@ -59,4 +62,19 @@ export const setApiMedicToken = async () => {
 
 	const { Token } = await response.json();
 	process.env["API_MEDIC_TOKEN"] = Token;
+
+	// writing content to the .env file
+	const envFilePath = path.resolve(__dirname, "../.env");
+	let envContent = fs.readFileSync(envFilePath, "utf8").split(os.EOL);
+
+	envContent.forEach((env: string, index: number) => {
+		const [key] = env.split("=");
+
+		if (key.trim() === "API_MEDIC_TOKEN") {
+			envContent[index] = `${key} = "${Token}"`;
+			return;
+		}
+	});
+
+	fs.writeFileSync(envFilePath, envContent.join(os.EOL));
 };

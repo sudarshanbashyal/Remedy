@@ -88,7 +88,8 @@ export const getSimilarSymptoms = async (
 		const data = await response.json();
 
 		if (data === "Invalid token") {
-			setApiMedicToken();
+			console.log("invalid token");
+			await setApiMedicToken();
 			return await getSimilarSymptoms(req, res);
 		}
 
