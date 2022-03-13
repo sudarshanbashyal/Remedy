@@ -51,7 +51,7 @@ export const isAuth = (
 };
 
 export const setApiMedicToken = async () => {
-	const { API_MEDIC_KEY, API_MEDIC_SECRET } = process.env;
+	const { API_MEDIC_KEY, API_MEDIC_SECRET, APP_ENV } = process.env;
 
 	const response = await fetch("https://authservice.priaid.ch/login", {
 		method: "POST",
@@ -64,17 +64,20 @@ export const setApiMedicToken = async () => {
 	process.env["API_MEDIC_TOKEN"] = Token;
 
 	// writing content to the .env file
-	const envFilePath = path.resolve(__dirname, "../.env");
-	let envContent = fs.readFileSync(envFilePath, "utf8").split(os.EOL);
+	// only required for dev environment
+	if (APP_ENV!.trim() === "dev") {
+		const envFilePath = path.resolve(__dirname, "../.env");
+		let envContent = fs.readFileSync(envFilePath, "utf8").split(os.EOL);
 
-	envContent.forEach((env: string, index: number) => {
-		const [key] = env.split("=");
+		envContent.forEach((env: string, index: number) => {
+			const [key] = env.split("=");
 
-		if (key.trim() === "API_MEDIC_TOKEN") {
-			envContent[index] = `${key} = "${Token}"`;
-			return;
-		}
-	});
+			if (key.trim() === "API_MEDIC_TOKEN") {
+				envContent[index] = `${key} = "${Token}"`;
+				return;
+			}
+		});
 
-	fs.writeFileSync(envFilePath, envContent.join(os.EOL));
+		fs.writeFileSync(envFilePath, envContent.join(os.EOL));
+	}
 };

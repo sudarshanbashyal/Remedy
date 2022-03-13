@@ -5,7 +5,7 @@ import { MedicineDataType } from "../Screens/Schedule/ScheduleDetails";
 import { getUserToken } from "../Utils/AsyncStorage/asyncStorage";
 import { showToast } from "../Utils/Toast";
 
-export const API_URL = "http://192.168.1.67:3000";
+export const API_URL = "http://192.168.1.69:3000/api/v1";
 
 export const emailExists = async (email: string): Promise<boolean> => {
 	try {
@@ -350,14 +350,39 @@ export const reportSymptomSimilarity = async (symptom: string) => {
 	}
 };
 
-export const getSimilarSymptoms = async (symptoms: number[]) => {
+export const getSimilarSymptoms = async (
+	symptoms: number[],
+	dob: number,
+	gender: string
+) => {
 	try {
 		const response = await fetch(`${API_URL}/getSimilarSymptoms`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ symptoms }),
+			body: JSON.stringify({ symptoms, dob, gender }),
+		});
+
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		return null;
+	}
+};
+
+export const getDiagnosis = async (
+	symptoms: number[],
+	dob: number,
+	gender: string
+) => {
+	try {
+		const response = await fetch(`${API_URL}/getDiagnosis`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ symptoms, dob, gender }),
 		});
 
 		const data = await response.json();

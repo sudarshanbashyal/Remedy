@@ -16,11 +16,10 @@ const init = async () => {
 		json({
 			limit: "50mb",
 		}),
-		cors(),
-		UserRouter,
-		MedicineRouter,
-		ChatBotRouter
+		cors()
 	);
+
+	app.use("/api/v1", [UserRouter, MedicineRouter, ChatBotRouter]);
 
 	// ws server config
 	const server = createServer(app);

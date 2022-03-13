@@ -5,6 +5,7 @@ import stringSimilarity from "string-similarity";
 import { symptomList, SymptomListType } from "../Utils/Symptoms";
 import fetch from "node-fetch";
 import { setApiMedicToken } from "../Utils/Auth";
+import { DIAGNOSIS_TYPE, makeRequest, SYMPTOM_TYPE } from "../Utils/APIMedic";
 
 let nlp: any;
 const getNlp = async () => {
@@ -63,40 +64,18 @@ export const getSimilarSymptoms = async (
 	res: Response
 ): Promise<any> => {
 	try {
-		const { symptoms, gender, dob } = req.body;
+		return await makeRequest(SYMPTOM_TYPE, req, res);
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
 
-		const { API_MEDIC_TOKEN } = process.env;
-
-		const host = `https://healthservice.priaid.ch/symptoms/proposed?`;
-		const token = `token=${API_MEDIC_TOKEN}&`;
-		const languageQuery = `language=en-gb&`;
-		const symptomsQuery = `symptoms=[${symptoms.toString()}]&`;
-		const genderQuery = `gender=${gender}&`;
-		const dobQuery = `year_of_birth=${dob}&`;
-		const formatQuery = `format=json`;
-
-		const fullURL =
-			host +
-			token +
-			languageQuery +
-			symptomsQuery +
-			genderQuery +
-			dobQuery +
-			formatQuery;
-
-		const response = await fetch(fullURL);
-		const data = await response.json();
-
-		if (data === "Invalid token") {
-			console.log("invalid token");
-			await setApiMedicToken();
-			return await getSimilarSymptoms(req, res);
-		}
-
-		return res.json({
-			ok: true,
-			data,
-		});
+export const getDiagnosis = async (
+	req: Request,
+	res: Response
+): Promise<any> => {
+	try {
+		return await makeRequest(DIAGNOSIS_TYPE, req, res);
 	} catch (error) {
 		return serverError(error as Error, res);
 	}

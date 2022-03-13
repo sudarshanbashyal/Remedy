@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useRef } from "react";
 import { ScrollView, View, Keyboard } from "react-native";
 import styles from "../../Styles/styles";
 import ChatHeader from "../../Components/Chat/ChatHeader";
@@ -7,7 +8,6 @@ import { getChatMessages } from "../../API/api";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import { useIsFocused } from "@react-navigation/native";
-
 export type ChatBubbleType = {
 	authorId: string;
 	content: string;
@@ -151,10 +151,11 @@ const ChatScreen = ({ route }) => {
 			name: "",
 		};
 
-		const chat = await chatBot.analyzeUserText(text);
-		setChats((chats) => [...chats, userChat, chat]);
-
+		setChats((chats) => [...chats, userChat]);
 		resetVales();
+
+		const chat = await chatBot.analyzeUserText(text);
+		setChats((chats) => [...chats, chat]);
 	};
 
 	return (
