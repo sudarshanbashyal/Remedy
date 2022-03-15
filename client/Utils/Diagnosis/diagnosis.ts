@@ -106,6 +106,7 @@ class ChatBot {
 
 			if (reaction) {
 				await this.handlePositiveIntent();
+				return;
 			}
 
 			await this.handleNegativeIntent();
@@ -118,6 +119,7 @@ class ChatBot {
 
 		const { symptomValue, symptomName } =
 			this.currentConversation.symptomQuestion;
+
 		this.rejectedSymptoms[symptomValue] = symptomName;
 
 		this.setPropsedSymptomQuestion();
@@ -129,6 +131,12 @@ class ChatBot {
 		const { symptomValue, symptomName } =
 			this.currentConversation.symptomQuestion;
 		this.currentSymptoms[symptomValue] = symptomName;
+
+		// if the number of current symptoms is more than or equals to three provide diagnosis, else ask more questions
+		if (Object.keys(this.currentSymptoms).length >= 3) {
+			await this.provideDiagnosis();
+			return;
+		}
 
 		// ask question again
 		await this.analyzeSimilarSymptoms();
@@ -169,25 +177,30 @@ class ChatBot {
 			(symId: string) => +symId
 		);
 
-		const data = await getSimilarSymptoms(
+		const data = await getDiagnosis(
 			symptomsArray,
 			new Date(dob).getFullYear(),
 			gender
 		);
 
-		console.log(data);
+		if (!data.ok) {
+			this.chatBotReply.content =
+				"I couldn't diagnose your symptom =( Please talk to your doctor.";
+		}
+
+		const { proposedData } = data;
+		const diagnosisDetails = proposedData[0].Issue;
+		const { Name, ProfName } = diagnosisDetails;
+
+		this.chatBotReply.question = false;
+		this.chatBotReply.content = `I diagnose you with ${Name}, also known as ${ProfName}`;
 	}
 
-	async formReply(symptom: string = ""): Promise<ChatBubbleType> {
+	async formInitialReply(symptom: string = ""): Promise<ChatBubbleType> {
 		// check if only one symptom is registered, if it is, ask for one more symptom.
 		if (Object.keys(this.currentSymptoms).length < 2) {
 			this.chatBotReply.content = `So, you said you have the following symptom: ${symptom}. Could you list out one more symptom?`;
 
-			return this.replyToUser();
-		}
-
-		if (Object.keys(this.currentSymptoms).length >= 5) {
-			this.provideDiagnosis();
 			return this.replyToUser();
 		}
 
@@ -255,7 +268,7 @@ class ChatBot {
 			// this information will be used to get similar symptoms/ gather final diagnosis
 			this.currentSymptoms[fullSymptomName.ID] = fullSymptomName.Name;
 
-			return await this.formReply(fullSymptomName.Name);
+			return await this.formInitialReply(fullSymptomName.Name);
 		}
 
 		this.chatBotReply.content = intent;

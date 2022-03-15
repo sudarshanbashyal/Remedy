@@ -8,8 +8,12 @@ dotenv.config();
 
 export const SYMPTOM_TYPE = "SYMPTOM";
 export const DIAGNOSIS_TYPE = "DIAGNOSIS";
+export const TREATMENT_TYPE = "TREATMENT";
 
-type APIMedicRequestType = typeof SYMPTOM_TYPE | typeof DIAGNOSIS_TYPE;
+type APIMedicRequestType =
+	| typeof SYMPTOM_TYPE
+	| typeof DIAGNOSIS_TYPE
+	| typeof TREATMENT_TYPE;
 
 export const makeRequest = async (
 	type: APIMedicRequestType,
@@ -41,8 +45,6 @@ export const makeRequest = async (
 			dobQuery +
 			formatQuery;
 
-		console.log(fullURL);
-
 		const response = await fetch(fullURL);
 		const data = await response.json();
 
@@ -61,4 +63,3 @@ export const makeRequest = async (
 		return serverError(error as Error, res);
 	}
 };
-

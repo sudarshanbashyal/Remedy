@@ -3,8 +3,6 @@ import { serverError } from ".";
 import { trainModel } from "../Utils/LanguageProcessing";
 import stringSimilarity from "string-similarity";
 import { symptomList, SymptomListType } from "../Utils/Symptoms";
-import fetch from "node-fetch";
-import { setApiMedicToken } from "../Utils/Auth";
 import { DIAGNOSIS_TYPE, makeRequest, SYMPTOM_TYPE } from "../Utils/APIMedic";
 
 let nlp: any;
