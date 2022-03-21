@@ -5,6 +5,7 @@ import stringSimilarity from "string-similarity";
 import { symptomList, SymptomListType } from "../Utils/Symptoms";
 import {
 	DIAGNOSIS_TYPE,
+	ISSUE_TYPE,
 	requestMedicAPI,
 	SYMPTOM_TYPE,
 } from "../Utils/APIMedic";
@@ -66,7 +67,18 @@ export const getSimilarSymptoms = async (
 	res: Response
 ): Promise<any> => {
 	try {
-		return await requestMedicAPI(SYMPTOM_TYPE, req, res);
+		const { symptoms, gender, dob } = req.body;
+
+		const proposedData = await requestMedicAPI(SYMPTOM_TYPE, {
+			symptoms,
+			gender,
+			dob,
+		});
+
+		return res.json({
+			ok: true,
+			proposedData,
+		});
 	} catch (error) {
 		return serverError(error as Error, res);
 	}
@@ -77,7 +89,44 @@ export const getDiagnosis = async (
 	res: Response
 ): Promise<any> => {
 	try {
-		return await requestMedicAPI(DIAGNOSIS_TYPE, req, res);
+		const { symptoms, gender, dob } = req.body;
+
+		const diagnosis = await requestMedicAPI(DIAGNOSIS_TYPE, {
+			symptoms,
+			gender,
+			dob,
+		});
+
+		if (!Array.isArray(diagnosis)) {
+			return res.status(400).json({
+				ok: false,
+				error: { message: "Could not process diagnosis." },
+			});
+		}
+
+		const { ID, Name, ProfName } = diagnosis[0].Issue;
+
+		// set issue id to request body so that it can be accessed by requestMedicAPI again
+		const issueInfo = await requestMedicAPI(ISSUE_TYPE, { issueId: ID });
+
+		if (issueInfo === null) {
+			return res.status(400).json({
+				ok: false,
+				error: { message: "Could not process diagnosis." },
+			});
+		}
+
+		const { TreatmentDescription } = issueInfo;
+
+		return res.json({
+			ok: true,
+			proposedData: {
+				ID,
+				Name,
+				ProfName,
+				TreatmentDescription,
+			},
+		});
 	} catch (error) {
 		return serverError(error as Error, res);
 	}

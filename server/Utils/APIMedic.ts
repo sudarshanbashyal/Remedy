@@ -1,6 +1,4 @@
-import { Request, Response } from "express";
 import dotenv from "dotenv";
-import { serverError } from "../Controllers";
 import { setApiMedicToken } from "./Auth";
 import fetch from "node-fetch";
 
@@ -8,12 +6,19 @@ dotenv.config();
 
 export const SYMPTOM_TYPE = "SYMPTOM";
 export const DIAGNOSIS_TYPE = "DIAGNOSIS";
-export const TREATMENT_TYPE = "TREATMENT";
+export const ISSUE_TYPE = "ISSUE_INFO";
 
 type APIMedicRequestType =
 	| typeof SYMPTOM_TYPE
 	| typeof DIAGNOSIS_TYPE
-	| typeof TREATMENT_TYPE;
+	| typeof ISSUE_TYPE;
+
+export interface ApiMedicRequestBody {
+	symptoms?: string[];
+	gender?: string;
+	dob?: string;
+	issueId?: number;
+}
 
 const baseURL = "https://healthservice.priaid.ch";
 
@@ -40,28 +45,28 @@ const formRequestQuery = async (
 
 		return data;
 	} catch (error) {
+		console.log(error);
 		return null;
 	}
 };
 
 export const requestMedicAPI = async (
 	type: APIMedicRequestType,
-	req: Request,
-	res: Response
+	req: ApiMedicRequestBody
 ): Promise<any> => {
 	try {
 		let apiPath: string;
 		const additionalParams: string[] = [];
 
-		if (type === TREATMENT_TYPE) {
-			const { issueId } = req.body;
-			apiPath = `/issue/${issueId}/info?`;
+		if (type === ISSUE_TYPE) {
+			const { issueId } = req;
+			apiPath = `/issues/${issueId}/info?`;
 		} else {
 			apiPath =
 				type === SYMPTOM_TYPE ? "/symptoms/proposed?" : "/diagnosis?";
-			const { symptoms, gender, dob } = req.body;
+			const { symptoms, gender, dob } = req;
 
-			const symptomsQuery = `symptoms=[${symptoms.toString()}]&`;
+			const symptomsQuery = `symptoms=[${symptoms!.toString()}]&`;
 			const genderQuery = `gender=${
 				gender === "Other" ? "Male" : gender
 			}&`;
@@ -74,14 +79,11 @@ export const requestMedicAPI = async (
 
 		if (data === "Invalid token") {
 			await setApiMedicToken();
-			return await requestMedicAPI(type, req, res);
+			return await requestMedicAPI(type, req);
 		}
 
-		return res.json({
-			ok: true,
-			proposedData: data,
-		});
+		return data;
 	} catch (error) {
-		return serverError(error as Error, res);
+		return null;
 	}
 };
