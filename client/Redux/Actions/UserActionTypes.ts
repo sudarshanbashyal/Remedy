@@ -6,6 +6,7 @@ export const LOGOUT_USER = "LOGOUT_USER";
 export const ADD_MEDICINE = "ADD_MEDICINE";
 export const UPDATE_MEDICINE = "UPDATE_MEDICINE";
 export const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
+export const UPDATE_USER_ACCOUNT = "UPDATE_USER_ACCOUNT";
 
 export interface DefaultUserStateType {
 	user: null | UserType;
@@ -69,9 +70,15 @@ export interface updateUserProfile {
 	};
 }
 
+export interface updateUserAccount {
+	type: typeof UPDATE_USER_ACCOUNT;
+	payload: string;
+}
+
 export type UserDispatchType =
 	| fetchUser
 	| logoutUser
 	| addMedicine
 	| updateMedicine
-	| updateUserProfile;
+	| updateUserProfile
+	| updateUserAccount;

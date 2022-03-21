@@ -1,5 +1,6 @@
 import { LoginType } from "../Screens/Authentication/LoginScreen";
 import { RegistrationType } from "../Screens/Authentication/RegisterScreen";
+import { AccountSettingsType } from "../Screens/Profile/AccountSettings";
 import { UserProfileType } from "../Screens/Profile/ProfileSettings";
 import { MedicineDataType } from "../Screens/Schedule/ScheduleDetails";
 import { getUserToken } from "../Utils/AsyncStorage/asyncStorage";
@@ -230,6 +231,31 @@ export const updateUserProfile = async (
 				authorization: `bearer ${await getUserToken()}`,
 			},
 			body: JSON.stringify(userData),
+		});
+
+		const data = await response.json();
+		if (data.ok) {
+			return data;
+		}
+
+		return null;
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+};
+
+export const updateUserAccount = async (
+	accountData: AccountSettingsType
+): Promise<any> => {
+	try {
+		const response = await fetch(`${API_URL}/updateUserAccount`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				authorization: `bearer ${await getUserToken()}`,
+			},
+			body: JSON.stringify(accountData),
 		});
 
 		const data = await response.json();

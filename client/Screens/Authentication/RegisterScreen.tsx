@@ -9,6 +9,7 @@ import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
 import { BackIcon } from "../../Styles/SVG/Svg";
 import { generateIdenticon } from "../../Utils/Identicon/identicon";
+import { validateEmail } from "../../Utils/Validations/validation";
 
 export interface RegistrationType {
 	firstName: string | null;
@@ -81,12 +82,10 @@ const RegisterScreen = () => {
 
 	const checkAccountStep = async () => {
 		const currentErrors = [];
-		const emailRegex =
-			/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 		if (!userData.email) {
 			currentErrors.push("You must add your email.");
-		} else if (!userData.email.toLowerCase().match(emailRegex)) {
+		} else if (!validateEmail(userData.email)) {
 			currentErrors.push("The email you entered is not valid.");
 		} else if (await emailExists(userData.email)) {
 			currentErrors.push("The email you entered already exists.");

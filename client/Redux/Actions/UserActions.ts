@@ -4,6 +4,7 @@ import {
 	LOGOUT_USER,
 	MedicineType,
 	UPDATE_MEDICINE,
+	UPDATE_USER_ACCOUNT,
 	UPDATE_USER_PROFILE,
 	UserDispatchType,
 	UserType,
@@ -91,10 +92,19 @@ const updateUserProfileAction =
 		});
 	};
 
+const updateUserAccountAction =
+	(email: string) => async (dispatch: Dispatch<UserDispatchType>) => {
+		dispatch({
+			type: UPDATE_USER_ACCOUNT,
+			payload: email,
+		});
+	};
+
 export {
 	loginUserAction,
 	logoutUserAction,
 	addMedicineAction,
 	updateMedicineAction,
 	updateUserProfileAction,
+	updateUserAccountAction,
 };

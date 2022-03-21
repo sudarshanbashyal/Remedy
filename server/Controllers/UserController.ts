@@ -220,6 +220,47 @@ export const updateUserProfile = async (
 	}
 };
 
+export const updateUserAccount = async (
+	req: AuthRequestType,
+	res: Response
+) => {
+	try {
+		const { userId } = req;
+		const { email, password } = req.body;
+
+		const fieldsToUpdate: { email: string; password?: string } = {
+			email,
+		};
+		if (password) fieldsToUpdate["password"] = await hashPassword(password);
+
+		const user = await PrismaDB.user.update({
+			where: {
+				userId: userId as string,
+			},
+			data: fieldsToUpdate,
+			select: {
+				email: true,
+			},
+		});
+
+		if (!user) {
+			return res.status(500).json({
+				ok: false,
+				error: {
+					message: "Couldn't update user account.",
+				},
+			});
+		}
+
+		return res.status(201).json({
+			ok: true,
+			data: user,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
 export const getMessageList = async (req: AuthRequestType, res: Response) => {
 	try {
 		const { userId } = req;
