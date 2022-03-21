@@ -75,6 +75,13 @@ export const getSimilarSymptoms = async (
 			dob,
 		});
 
+		if (!Array.isArray(proposedData)) {
+			return res.status(400).json({
+				ok: false,
+				error: { message: "Could not provide similar symptoms" },
+			});
+		}
+
 		return res.json({
 			ok: true,
 			proposedData,
