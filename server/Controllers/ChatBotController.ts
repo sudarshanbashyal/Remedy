@@ -3,7 +3,11 @@ import { serverError } from ".";
 import { trainModel } from "../Utils/LanguageProcessing";
 import stringSimilarity from "string-similarity";
 import { symptomList, SymptomListType } from "../Utils/Symptoms";
-import { DIAGNOSIS_TYPE, makeRequest, SYMPTOM_TYPE } from "../Utils/APIMedic";
+import {
+	DIAGNOSIS_TYPE,
+	requestMedicAPI,
+	SYMPTOM_TYPE,
+} from "../Utils/APIMedic";
 
 let nlp: any;
 const getNlp = async () => {
@@ -62,7 +66,7 @@ export const getSimilarSymptoms = async (
 	res: Response
 ): Promise<any> => {
 	try {
-		return await makeRequest(SYMPTOM_TYPE, req, res);
+		return await requestMedicAPI(SYMPTOM_TYPE, req, res);
 	} catch (error) {
 		return serverError(error as Error, res);
 	}
@@ -73,7 +77,7 @@ export const getDiagnosis = async (
 	res: Response
 ): Promise<any> => {
 	try {
-		return await makeRequest(DIAGNOSIS_TYPE, req, res);
+		return await requestMedicAPI(DIAGNOSIS_TYPE, req, res);
 	} catch (error) {
 		return serverError(error as Error, res);
 	}

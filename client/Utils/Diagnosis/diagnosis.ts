@@ -189,11 +189,12 @@ class ChatBot {
 		}
 
 		const { proposedData } = data;
+
 		const diagnosisDetails = proposedData[0].Issue;
 		const { Name, ProfName } = diagnosisDetails;
 
 		this.chatBotReply.question = false;
-		this.chatBotReply.content = `I diagnose you with ${Name}, also known as ${ProfName}`;
+		this.chatBotReply.content = `I diagnose you with ${Name}, also known as ${ProfName}.\n Here are some medications you may want to try:`;
 	}
 
 	async formInitialReply(symptom: string = ""): Promise<ChatBubbleType> {

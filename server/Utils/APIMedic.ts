@@ -15,44 +15,66 @@ type APIMedicRequestType =
 	| typeof DIAGNOSIS_TYPE
 	| typeof TREATMENT_TYPE;
 
-export const makeRequest = async (
-	type: APIMedicRequestType,
-	req: Request,
-	res: Response
+const baseURL = "https://healthservice.priaid.ch";
+
+const formRequestQuery = async (
+	apiURL: string,
+	...queryParams: string[]
 ): Promise<any> => {
 	try {
-		const baseURL = "https://healthservice.priaid.ch";
-		const apiURL =
-			baseURL +
-			(type === SYMPTOM_TYPE ? "/symptoms/proposed?" : "/diagnosis?");
-
-		const { symptoms, gender, dob } = req.body;
 		const { API_MEDIC_TOKEN } = process.env;
-
-		const token = `token=${API_MEDIC_TOKEN}&`;
+		const hostname = baseURL + apiURL;
+		const tokenParam = `token=${API_MEDIC_TOKEN}&`;
 		const languageQuery = `language=en-gb&`;
-		const symptomsQuery = `symptoms=[${symptoms.toString()}]&`;
-		const genderQuery = `gender=${gender === "Other" ? "Male" : gender}&`;
-		const dobQuery = `year_of_birth=${dob}&`;
 		const formatQuery = `format=json`;
 
 		const fullURL =
-			apiURL +
-			token +
+			hostname +
+			tokenParam +
 			languageQuery +
-			symptomsQuery +
-			genderQuery +
-			dobQuery +
+			queryParams.join("") +
 			formatQuery;
 
 		const response = await fetch(fullURL);
 		const data = await response.json();
 
-		if (data === "Invalid token") {
-			console.log("invalid token");
+		return data;
+	} catch (error) {
+		return null;
+	}
+};
 
+export const requestMedicAPI = async (
+	type: APIMedicRequestType,
+	req: Request,
+	res: Response
+): Promise<any> => {
+	try {
+		let apiPath: string;
+		const additionalParams: string[] = [];
+
+		if (type === TREATMENT_TYPE) {
+			const { issueId } = req.body;
+			apiPath = `/issue/${issueId}/info?`;
+		} else {
+			apiPath =
+				type === SYMPTOM_TYPE ? "/symptoms/proposed?" : "/diagnosis?";
+			const { symptoms, gender, dob } = req.body;
+
+			const symptomsQuery = `symptoms=[${symptoms.toString()}]&`;
+			const genderQuery = `gender=${
+				gender === "Other" ? "Male" : gender
+			}&`;
+			const dobQuery = `year_of_birth=${dob}&`;
+
+			additionalParams.push(symptomsQuery, genderQuery, dobQuery);
+		}
+
+		const data = await formRequestQuery(apiPath, ...additionalParams);
+
+		if (data === "Invalid token") {
 			await setApiMedicToken();
-			return await makeRequest(type, req, res);
+			return await requestMedicAPI(type, req, res);
 		}
 
 		return res.json({
