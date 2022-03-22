@@ -14,12 +14,12 @@ const ChatBubble = ({
 	chat,
 	sameUser,
 	profilePicture,
-	respondLastAsked,
+	handleQAResponse,
 }: {
 	chat: ChatBubbleType;
 	sameUser: boolean;
 	profilePicture: string;
-	respondLastAsked: (response: boolean) => void;
+	handleQAResponse?: (response: boolean) => void;
 }) => {
 	const { user } = useSelector((state: RootStore) => state.userReducer);
 
@@ -93,8 +93,8 @@ const ChatBubble = ({
 							<View style={styles.rowStartContainer}>
 								<View style={{ marginRight: 10 }}>
 									<TouchableOpacity
-										onPress={() => {
-											respondLastAsked(true);
+										onPress={async () => {
+											await handleQAResponse(true);
 										}}
 										style={
 											styles.outlineYellowButtonContainer
@@ -109,8 +109,8 @@ const ChatBubble = ({
 								</View>
 
 								<TouchableOpacity
-									onPress={() => {
-										respondLastAsked(false);
+									onPress={async () => {
+										await handleQAResponse(false);
 									}}
 									style={styles.outlineYellowButtonContainer}
 								>

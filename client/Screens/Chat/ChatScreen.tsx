@@ -8,6 +8,7 @@ import { getChatMessages } from "../../API/api";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import { useIsFocused } from "@react-navigation/native";
+
 export type ChatBubbleType = {
 	authorId: string;
 	content: string;
@@ -141,7 +142,7 @@ const ChatScreen = ({ route }) => {
 		};
 	}, []);
 
-	// for chatbot related things
+	// CHATBOT LOGIC STARTS HERE
 	const analyzeChat = async () => {
 		const userChat = {
 			authorId: user.userId,
@@ -154,8 +155,21 @@ const ChatScreen = ({ route }) => {
 		setChats((chats) => [...chats, userChat]);
 		resetVales();
 
+		await replyToChatbot(text);
+	};
+
+	const replyToChatbot = async (text: string) => {
 		const chat = await chatBot.analyzeUserText(text);
 		setChats((chats) => [...chats, chat]);
+	};
+
+	const handleQAResponse = async (response: boolean): Promise<void> => {
+		if (response) {
+			await replyToChatbot("yes");
+			return;
+		}
+
+		await replyToChatbot("no");
 	};
 
 	return (
@@ -180,7 +194,7 @@ const ChatScreen = ({ route }) => {
 								chat={chat}
 								sameUser={sameUser}
 								profilePicture={profilePicture}
-								respondLastAsked={() => {}}
+								handleQAResponse={handleQAResponse}
 							/>
 						);
 					})}
