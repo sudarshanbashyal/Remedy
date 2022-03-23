@@ -12,6 +12,7 @@ import {
 import { Dispatch } from "redux";
 import { showToast } from "../../Utils/Toast";
 import {
+	remoteChatbotChats,
 	removeUserToken,
 	storeUserToken,
 } from "../../Utils/AsyncStorage/asyncStorage";
@@ -32,7 +33,9 @@ const loginUserAction =
 		});
 
 		// store JWT token in async storage
-		await storeUserToken(user.token);
+		if (user.token) {
+			await storeUserToken(user.token);
+		}
 
 		// create notification channel
 		createChannel();
@@ -49,8 +52,9 @@ const logoutUserAction = () => async (dispatch: Dispatch<UserDispatchType>) => {
 		type: LOGOUT_USER,
 	});
 
-	// remote JWT token after log out
+	// remote JWT token and chatbot chats after log out
 	await removeUserToken();
+	await remoteChatbotChats();
 
 	showToast("success", "Successfully Logged Out.");
 };

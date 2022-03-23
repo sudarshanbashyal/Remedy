@@ -8,6 +8,10 @@ import { getChatMessages } from "../../API/api";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import { useIsFocused } from "@react-navigation/native";
+import {
+	getChatbotChats,
+	storeChatbotChats,
+} from "../../Utils/AsyncStorage/asyncStorage";
 
 export type ChatBubbleType = {
 	authorId: string;
@@ -115,13 +119,24 @@ const ChatScreen = ({ route }) => {
 	}, [focused]);
 
 	useEffect(() => {
-		// don't load older messages for now in case it's a chatbot (haven't configured db for that yet.)
-		if (chatbot) return;
-
 		(async () => {
-			const { data } = await getChatMessages(chatId);
+			// if it's a chatbot, fetch the chats from async storage (if there are any)
+			// chatbot chats aren't stored in the DB
+			let previousChats = [];
 
-			setChats(data.reverse());
+			if (chatbot) {
+				const data = await getChatbotChats();
+				if (data) {
+					previousChats = JSON.parse(data);
+				}
+			} else {
+				const { data } = await getChatMessages(chatId);
+				previousChats = data;
+			}
+
+			// reverse array only if it comes from DB
+			previousChats = chatbot ? previousChats : previousChats.reverse();
+			setChats(previousChats);
 
 			// so that the screen only scrolls after all the contents have been loaded.
 			setFirstLoad(true);
@@ -156,6 +171,9 @@ const ChatScreen = ({ route }) => {
 		};
 
 		setChats((chats) => [...chats, userChat]);
+
+		// store chat in async storage
+		await storeChatbotChats(userChat);
 		resetVales();
 
 		await replyToChatbot(text);
@@ -163,6 +181,8 @@ const ChatScreen = ({ route }) => {
 
 	const replyToChatbot = async (text: string) => {
 		const chat = await chatBot.analyzeUserText(text);
+
+		await storeChatbotChats(chat);
 		setChats((chats) => [...chats, chat]);
 	};
 

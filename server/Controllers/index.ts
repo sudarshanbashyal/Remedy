@@ -1,7 +1,7 @@
 import { Response } from "express";
 
 export const serverError = (e: Error, res: Response) => {
-	console.log(e);
+	console.error(e);
 
 	return res.json({
 		ok: false,

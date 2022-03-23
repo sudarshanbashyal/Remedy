@@ -29,7 +29,6 @@ const init = async () => {
 
 	wss.on("connection", (socket: Socket<any>) => {
 		const socketId = socket.id;
-		console.log(socketId);
 
 		socket.on("register_socket", (userId: string) => {
 			addSocket(userId, socketId);

@@ -47,7 +47,6 @@ export const handleMessage = async ({
 }) => {
 	try {
 		const recipentSocket = getSocket(recipentId);
-		console.log(recipentId);
 
 		let messageContent = content;
 		let public_id = "";

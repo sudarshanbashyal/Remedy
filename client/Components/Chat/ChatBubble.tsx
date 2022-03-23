@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, TouchableOpacity, Modal } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import { ChatBubbleType } from "../../Screens/Chat/ChatScreen";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
-import { CancelIcon, DownloadIcon } from "../../Styles/SVG/Svg";
+import { DownloadIcon } from "../../Styles/SVG/Svg";
 import { getChatPreviews } from "../../Utils/Chat/getChatList";
 import { handleDownload } from "../../Utils/Download/downloadFile";
 import { formatText } from "../../Utils/FormatText/formatText";
