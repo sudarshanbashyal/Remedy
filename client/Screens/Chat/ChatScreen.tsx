@@ -16,6 +16,8 @@ export type ChatBubbleType = {
 	type: string;
 	name: string;
 	question?: boolean;
+	forwardable?: boolean;
+	chatBot?: boolean;
 };
 
 export interface ImagePreviewType {
@@ -89,6 +91,7 @@ const ChatScreen = ({ route }) => {
 			recipentId,
 			fileExtension: fileInfo?.fileExtension || null,
 			name,
+			chatBot: false,
 		};
 		socket.emit("handle_message", payload);
 

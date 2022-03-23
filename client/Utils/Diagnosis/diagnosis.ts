@@ -53,6 +53,7 @@ class ChatBot {
 		date: new Date().toString(),
 		type: "Text",
 		name: "",
+		forwardable: false,
 	};
 
 	resetChatbotConvo(): void {
@@ -60,6 +61,7 @@ class ChatBot {
 		this.currentConversation = { conversationType: CONVERSATION_START };
 		this.chatBotReply.content = "";
 		this.chatBotReply.question = false;
+		this.chatBotReply.forwardable = false;
 		this.rejectedSymptoms = [];
 		this.proposedSymptoms = [];
 	}
@@ -191,6 +193,7 @@ class ChatBot {
 		const { proposedData } = data;
 		const { Name, ProfName, TreatmentDescription } = proposedData;
 
+		this.chatBotReply.forwardable = true;
 		this.chatBotReply.question = false;
 		this.chatBotReply.content = `I diagnose you with ${Name}, also known as ${ProfName}.\n\n ${TreatmentDescription}`;
 	}

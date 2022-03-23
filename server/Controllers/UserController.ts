@@ -336,6 +336,7 @@ export const getChatMessages = async (req: AuthRequestType, res: Response) => {
 				authorId: true,
 				type: true,
 				name: true,
+				chatBot: true,
 			},
 			orderBy: {
 				date: "desc",

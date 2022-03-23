@@ -6,13 +6,13 @@ import {
 import React, { useState, useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
-import { getMessageList } from "../../API/api";
 import BottomNavigationBar from "../../Components/BottomNavigationBar";
 import ChatPreview from "../../Components/Chat/ChatPreview";
 import { RootStore } from "../../Redux/store";
 import { RootStackType } from "../../Stacks/RootStack";
 import styles from "../../Styles/styles";
 import { SearchIcon } from "../../Styles/SVG/Svg";
+import { getChatPreviews } from "../../Utils/Chat/getChatList";
 import { formatText } from "../../Utils/FormatText/formatText";
 import { handleNotification } from "../../Utils/Notification/notification";
 
@@ -106,34 +106,7 @@ const ChatList = () => {
 
 	useEffect(() => {
 		(async () => {
-			const allChats = [];
-			const { data } = await getMessageList();
-
-			data.forEach((preview) => {
-				allChats.push({
-					chatId: preview.chatId,
-					messageWith:
-						preview.secondParticipant.userId === user.userId
-							? preview.firstParticipant.firstName +
-							  " " +
-							  preview.firstParticipant.lastName
-							: preview.secondParticipant.firstName +
-							  " " +
-							  preview.secondParticipant.lastName,
-					userIcon:
-						preview.secondParticipant.userId === user.userId
-							? preview.firstParticipant.profilePicture
-							: preview.secondParticipant.profilePicture,
-					lastMessage: formatText(preview.messages[0].content, 32),
-					messageTime: preview.messages[0].date,
-					recipentId:
-						preview.firstParticipant.userId === user.userId
-							? preview.secondParticipant.userId
-							: preview.firstParticipant.userId,
-					type: preview.messages[0].type,
-					chatBot: false,
-				});
-			});
+			const allChats = await getChatPreviews(user.userId);
 
 			setChatList([chatBotPreviewDetails, ...allChats]);
 		})();

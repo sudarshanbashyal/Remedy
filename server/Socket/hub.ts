@@ -33,6 +33,7 @@ export const handleMessage = async ({
 	socket,
 	fileExtension,
 	name,
+	chatBot,
 }: {
 	authorId: string;
 	content: string;
@@ -42,9 +43,11 @@ export const handleMessage = async ({
 	socket: Socket<any>;
 	fileExtension: string | null;
 	name: string;
+	chatBot: boolean;
 }) => {
 	try {
 		const recipentSocket = getSocket(recipentId);
+		console.log(recipentId);
 
 		let messageContent = content;
 		let public_id = "";
@@ -72,6 +75,7 @@ export const handleMessage = async ({
 				type: type as MessageType,
 				content: messageContent,
 				chatId,
+				chatBot,
 				name: public_id,
 			},
 			select: {
@@ -81,6 +85,7 @@ export const handleMessage = async ({
 				date: true,
 				content: true,
 				name: true,
+				chatBot: true,
 			},
 		});
 

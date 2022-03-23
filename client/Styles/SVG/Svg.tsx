@@ -384,3 +384,20 @@ export const DownloadIcon = ({ color, size }: Props) => {
 		</Svg>
 	);
 };
+
+export const ForwardIcon = ({ color, size }: Props) => {
+	return (
+		<Svg
+			viewBox="0 0 30 30"
+			width={size}
+			height={size}
+			fill-rule="evenodd"
+			clip-rule="evenodd"
+		>
+			<Path
+				fill={color}
+				d="M14 18l10-7.088-10-6.912v3.042s-11.618 2.583-14 12.958c5.072-5.431 14-5.218 14-5.218v3.218z"
+			/>
+		</Svg>
+	);
+};

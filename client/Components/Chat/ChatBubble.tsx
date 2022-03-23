@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, Modal } from "react-native";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import { ChatBubbleType } from "../../Screens/Chat/ChatScreen";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
-import { DownloadIcon } from "../../Styles/SVG/Svg";
+import { CancelIcon, DownloadIcon } from "../../Styles/SVG/Svg";
+import { getChatPreviews } from "../../Utils/Chat/getChatList";
 import { handleDownload } from "../../Utils/Download/downloadFile";
 import { formatText } from "../../Utils/FormatText/formatText";
 import { formatMessageTime } from "../../Utils/FormatTime/formatTime";
+import ChatForwardModal from "./ChatForwardModal";
 
 const ChatBubble = ({
 	chat,
@@ -27,6 +29,9 @@ const ChatBubble = ({
 	const [oldTime, setOldTime] = useState<boolean>(false);
 	const [timeShown, setTimeShown] = useState<boolean>(false); // shows the message time on click
 
+	const [modalOpen, setModalOpen] = useState<boolean>(false);
+	const [messagePreviews, setMessagePreviews] = useState<any>([]);
+
 	const toggleTime = () => {
 		if (oldTime) return;
 
@@ -34,10 +39,17 @@ const ChatBubble = ({
 	};
 
 	const messageByMe = () => {
-		return chat.authorId === user.userId;
+		return chat.authorId === user.userId && !chat.chatBot;
 	};
 
-	// figure out if old messag
+	const forwardMessage = async () => {
+		setModalOpen(!modalOpen);
+
+		const allChats = await getChatPreviews(user.userId);
+		setMessagePreviews(allChats);
+	};
+
+	// figure out if old message
 	useEffect(() => {}, []);
 
 	return (
@@ -47,6 +59,13 @@ const ChatBubble = ({
 				position: "relative",
 			}}
 		>
+			<ChatForwardModal
+				modalOpen={modalOpen}
+				messagePreviews={messagePreviews}
+				setModalOpen={setModalOpen}
+				chat={chat}
+			/>
+
 			{timeShown && (
 				<View style={styles.chatScreenMessageContainer}>
 					<Text style={styles.chatScreenMessage}>
@@ -64,11 +83,15 @@ const ChatBubble = ({
 			>
 				{!messageByMe() && (
 					<View style={styles.chatPreviewImageContainer}>
-						{sameUser === false && (
+						{(sameUser === false || chat.chatBot) && (
 							<Image
 								style={styles.chatPreviewIcon}
 								source={{
-									uri: messageByMe() ? null : profilePicture,
+									uri: messageByMe()
+										? null
+										: chat.chatBot
+										? "https://a1cf74336522e87f135f-2f21ace9a6cf0052456644b80fa06d4f.ssl.cf2.rackcdn.com/images/characters/large/800/Baymax.Big-Hero-6.webp"
+										: profilePicture,
 								}}
 							/>
 						)}
@@ -120,6 +143,30 @@ const ChatBubble = ({
 								</TouchableOpacity>
 							</View>
 						)}
+
+						{
+							// Only display if the chat is forwardable i.e. chatbot diagnosis
+							chat.forwardable && (
+								<View style={styles.rowStartContainer}>
+									<TouchableOpacity
+										onPress={forwardMessage}
+										style={
+											styles.outlineYellowButtonContainer
+										}
+									>
+										<View style={{ marginRight: 10 }}>
+											<Text
+												style={
+													styles.outlineYellowButton
+												}
+											>
+												Forward Diagnosis
+											</Text>
+										</View>
+									</TouchableOpacity>
+								</View>
+							)
+						}
 					</View>
 				)}
 

@@ -801,14 +801,50 @@ const styles = StyleSheet.create({
 	modalText: {
 		fontFamily: fonts.Poppins.medium,
 		color: colors.primaryWhite,
-		fontSize: dimens.regular,
+		fontSize: fonts.size.regular,
 		textAlign: "center",
+	},
+
+	chatModalOuterContainer: {
+		flexDirection: "row",
+		alignItems: "flex-end",
+		justifyContent: "center",
+		padding: dimens.medium,
+	},
+	chatModalContainer: {
+		borderRadius: dimens.small,
+		backgroundColor: colors.lightGray,
+		width: "100%",
+		padding: dimens.medium,
+	},
+	chatModalTitle: {
+		color: colors.primaryWhite,
+		fontSize: fonts.size.medium,
+		fontFamily: fonts.Poppins.medium,
+	},
+	chatModalListsContainer: {
+		marginTop: dimens.medium,
+	},
+	chatModalMessageWith: {
+		fontSize: fonts.size.small,
+		fontFamily: fonts.Poppins.regular,
+		color: colors.primaryWhite,
 	},
 
 	rowStartContainer: {
 		flexDirection: "row",
 		alignItems: "center",
 		marginTop: dimens.regular,
+	},
+	allCenteredContainer: {
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	spacedApartContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
 	},
 	outlineYellowButtonContainer: {
 		paddingVertical: dimens.regular,
