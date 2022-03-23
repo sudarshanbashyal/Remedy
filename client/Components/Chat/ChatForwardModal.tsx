@@ -49,6 +49,10 @@ const ChatForwardModal = ({
 		};
 
 		socket.emit("handle_message", payload);
+
+		// close modal and show toast
+		showToast("success", "Message Successfully Forwarded.");
+		setModalOpen(false);
 	};
 
 	return (

@@ -104,6 +104,9 @@ const ChatScreen = ({ route }) => {
 
 	useEffect(() => {
 		// socket event to add message to the sending client's chat screen
+		// NOT IN CASE OF CHATBOT
+		if (chatbot) return;
+
 		socket.on("chat_screen_message", (newMessage) => {
 			const { authorId, content, date, type, name } = newMessage;
 
