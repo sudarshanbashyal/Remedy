@@ -25,6 +25,12 @@ enum UserType{
 	Admin
 }
 
+enum RequestStatusType{
+	Pending
+	Accepted
+	Rejected
+}
+
 model User{
 	userId String @id() @default(uuid())
 	firstName String
@@ -40,6 +46,8 @@ model User{
 	creatorChat Chat[] @relation("firstParticipant")
 	participantChat Chat[] @relation("secondParticipant")
 	messages Message[]
+	outgoingRequests Request[] @relation("requestTo")
+	incomingRequests Request[] @relation("requestFrom")
 }
 
 model UserRole{
@@ -99,4 +107,12 @@ model Message{
 	chat Chat @relation(fields:[chatId], references:[chatId])
 }
 
+model Request{
+	requestId String @id() @default(uuid())
+	status RequestStatusType @default(Pending)
+	firstUser String
+	secondUser String
+	requestFrom User @relation("requestFrom", fields:[firstUser], references:[userId])
+	requestTo User @relation("requestTo", fields:[secondUser], references:[userId])
+}
 
