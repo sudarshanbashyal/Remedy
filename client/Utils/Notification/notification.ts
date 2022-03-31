@@ -38,6 +38,7 @@ export const createChannel = () => {
 // find a better solution for stopping previous background tasks
 export const handleScheduling = async () => {
 	await new Promise<void>(async (resolve) => {
+		// cancel all the old jobs before registering new ones
 		eventEmitter.on("close", () => {
 			currentJobs.forEach((job: NodeSchedule.Job) => {
 				job.cancel();

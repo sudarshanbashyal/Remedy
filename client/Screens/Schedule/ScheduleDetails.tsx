@@ -238,13 +238,15 @@ const ScheduleDetails = ({ route }) => {
 
 	// fetch medicine information (if need be)
 	useEffect(() => {
-		const medicineId =
-			(route?.params && route.params.medicineId) || undefined;
+		(async () => {
+			const medicineId =
+				(route?.params && route.params.medicineId) || undefined;
 
-		if (medicineId) {
-			setMedicineId(medicineId);
-			getMedicine(medicineId);
-		}
+			if (medicineId) {
+				setMedicineId(medicineId);
+				getMedicine(medicineId);
+			}
+		})();
 	}, []);
 
 	return (
