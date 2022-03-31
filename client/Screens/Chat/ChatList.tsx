@@ -6,15 +6,17 @@ import {
 import React, { useState, useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
-import { getMessageList } from "../../API/api";
 import BottomNavigationBar from "../../Components/BottomNavigationBar";
 import ChatPreview from "../../Components/Chat/ChatPreview";
 import { RootStore } from "../../Redux/store";
 import { RootStackType } from "../../Stacks/RootStack";
 import styles from "../../Styles/styles";
 import { SearchIcon } from "../../Styles/SVG/Svg";
+import { getChatbotChats } from "../../Utils/AsyncStorage/asyncStorage";
+import { getChatPreviews } from "../../Utils/Chat/getChatList";
 import { formatText } from "../../Utils/FormatText/formatText";
 import { handleNotification } from "../../Utils/Notification/notification";
+import { ChatBubbleType } from "./ChatScreen";
 
 export interface ChatPreviewInterface {
 	chatId: string;
@@ -27,16 +29,42 @@ export interface ChatPreviewInterface {
 	chatbot: boolean;
 }
 
-const chatBotPreviewDetails: ChatPreviewInterface = {
-	chatId: "chatbot",
-	messageWith: "Dr. Bot",
-	lastMessage: "",
-	messageTime: new Date(),
-	userIcon:
-		"https://a1cf74336522e87f135f-2f21ace9a6cf0052456644b80fa06d4f.ssl.cf2.rackcdn.com/images/characters/large/800/Baymax.Big-Hero-6.webp",
-	recipentId: "chatbot",
-	type: "Text",
-	chatbot: true,
+const getLastChatbotMessage = async (): Promise<any> => {
+	let chats = await getChatbotChats();
+
+	if (!chats) return null;
+
+	chats = JSON.parse(chats);
+	return chats[chats.length - 1];
+};
+
+const formChatbotPreview = async (): Promise<ChatPreviewInterface> => {
+	const chat: ChatBubbleType | null = await getLastChatbotMessage();
+	const chatDetails = {
+		lastMessage: "No Messages Yet.",
+		messageTime: null,
+	};
+
+	if (chat) {
+		const { content, date } = chat;
+
+		chatDetails.messageTime = date;
+		chatDetails.lastMessage = formatText(content, 30);
+	}
+
+	const chatBotPreviewDetails: ChatPreviewInterface = {
+		chatId: "chatbot",
+		messageWith: "Dr. Bot",
+		lastMessage: chatDetails.lastMessage,
+		messageTime: chatDetails.messageTime,
+		userIcon:
+			"https://a1cf74336522e87f135f-2f21ace9a6cf0052456644b80fa06d4f.ssl.cf2.rackcdn.com/images/characters/large/800/Baymax.Big-Hero-6.webp",
+		recipentId: "chatbot",
+		type: "Text",
+		chatbot: true,
+	};
+
+	return chatBotPreviewDetails;
 };
 
 const ChatList = () => {
@@ -106,36 +134,10 @@ const ChatList = () => {
 
 	useEffect(() => {
 		(async () => {
-			const allChats = [];
-			const { data } = await getMessageList();
+			const allChats = await getChatPreviews(user.userId);
+			const chatbotPreview = await formChatbotPreview();
 
-			data.forEach((preview) => {
-				allChats.push({
-					chatId: preview.chatId,
-					messageWith:
-						preview.secondParticipant.userId === user.userId
-							? preview.firstParticipant.firstName +
-							  " " +
-							  preview.firstParticipant.lastName
-							: preview.secondParticipant.firstName +
-							  " " +
-							  preview.secondParticipant.lastName,
-					userIcon:
-						preview.secondParticipant.userId === user.userId
-							? preview.firstParticipant.profilePicture
-							: preview.secondParticipant.profilePicture,
-					lastMessage: formatText(preview.messages[0].content, 32),
-					messageTime: preview.messages[0].date,
-					recipentId:
-						preview.firstParticipant.userId === user.userId
-							? preview.secondParticipant.userId
-							: preview.firstParticipant.userId,
-					type: preview.messages[0].type,
-					chatBot: false,
-				});
-			});
-
-			setChatList([chatBotPreviewDetails, ...allChats]);
+			setChatList([chatbotPreview, ...allChats]);
 		})();
 	}, [focused]);
 

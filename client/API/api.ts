@@ -1,11 +1,12 @@
 import { LoginType } from "../Screens/Authentication/LoginScreen";
 import { RegistrationType } from "../Screens/Authentication/RegisterScreen";
+import { AccountSettingsType } from "../Screens/Profile/AccountSettings";
 import { UserProfileType } from "../Screens/Profile/ProfileSettings";
 import { MedicineDataType } from "../Screens/Schedule/ScheduleDetails";
 import { getUserToken } from "../Utils/AsyncStorage/asyncStorage";
 import { showToast } from "../Utils/Toast";
 
-export const API_URL = "http://192.168.1.67:3000";
+export const API_URL = "http://192.168.1.69:3000";
 
 export const emailExists = async (email: string): Promise<boolean> => {
 	try {
@@ -244,6 +245,31 @@ export const updateUserProfile = async (
 	}
 };
 
+export const updateUserAccount = async (
+	accountData: AccountSettingsType
+): Promise<any> => {
+	try {
+		const response = await fetch(`${API_URL}/updateUserAccount`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				authorization: `bearer ${await getUserToken()}`,
+			},
+			body: JSON.stringify(accountData),
+		});
+
+		const data = await response.json();
+		if (data.ok) {
+			return data;
+		}
+
+		return null;
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+};
+
 export const getMessageList = async (): Promise<any> => {
 	try {
 		const response = await fetch(`${API_URL}/getMessageList`, {
@@ -350,14 +376,39 @@ export const reportSymptomSimilarity = async (symptom: string) => {
 	}
 };
 
-export const getSimilarSymptoms = async (symptoms: number[]) => {
+export const getSimilarSymptoms = async (
+	symptoms: number[],
+	dob: number,
+	gender: string
+) => {
 	try {
 		const response = await fetch(`${API_URL}/getSimilarSymptoms`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ symptoms }),
+			body: JSON.stringify({ symptoms, dob, gender }),
+		});
+
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		return null;
+	}
+};
+
+export const getDiagnosis = async (
+	symptoms: number[],
+	dob: number,
+	gender: string
+) => {
+	try {
+		const response = await fetch(`${API_URL}/getDiagnosis`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ symptoms, dob, gender }),
 		});
 
 		const data = await response.json();

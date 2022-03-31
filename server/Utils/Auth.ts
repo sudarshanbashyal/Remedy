@@ -1,6 +1,10 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { Request, NextFunction, Response } from "express";
+import fetch from "node-fetch";
+import fs from "fs";
+import path from "path";
+import os from "os";
 
 dotenv.config();
 
@@ -43,5 +47,37 @@ export const isAuth = (
 		req.userId = payload.userId;
 
 		next();
+	}
+};
+
+export const setApiMedicToken = async () => {
+	const { API_MEDIC_KEY, API_MEDIC_SECRET, APP_ENV } = process.env;
+
+	const response = await fetch("https://authservice.priaid.ch/login", {
+		method: "POST",
+		headers: {
+			Authorization: `Bearer ${API_MEDIC_KEY}:${API_MEDIC_SECRET}`,
+		},
+	});
+
+	const { Token } = await response.json();
+	process.env["API_MEDIC_TOKEN"] = Token;
+
+	// writing content to the .env file
+	// only required for dev environment
+	if (APP_ENV!.trim() === "dev") {
+		const envFilePath = path.resolve(__dirname, "../.env");
+		let envContent = fs.readFileSync(envFilePath, "utf8").split(os.EOL);
+
+		envContent.forEach((env: string, index: number) => {
+			const [key] = env.split("=");
+
+			if (key.trim() === "API_MEDIC_TOKEN") {
+				envContent[index] = `${key} = "${Token}"`;
+				return;
+			}
+		});
+
+		fs.writeFileSync(envFilePath, envContent.join(os.EOL));
 	}
 };

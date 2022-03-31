@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ScrollView, View, Keyboard } from "react-native";
 import styles from "../../Styles/styles";
 import ChatHeader from "../../Components/Chat/ChatHeader";
@@ -8,6 +8,10 @@ import { getChatMessages } from "../../API/api";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import { useIsFocused } from "@react-navigation/native";
+import {
+	getChatbotChats,
+	storeChatbotChats,
+} from "../../Utils/AsyncStorage/asyncStorage";
 
 export type ChatBubbleType = {
 	authorId: string;
@@ -16,6 +20,8 @@ export type ChatBubbleType = {
 	type: string;
 	name: string;
 	question?: boolean;
+	forwardable?: boolean;
+	chatBot?: boolean;
 };
 
 export interface ImagePreviewType {
@@ -89,6 +95,7 @@ const ChatScreen = ({ route }) => {
 			recipentId,
 			fileExtension: fileInfo?.fileExtension || null,
 			name,
+			chatBot: false,
 		};
 		socket.emit("handle_message", payload);
 
@@ -97,6 +104,9 @@ const ChatScreen = ({ route }) => {
 
 	useEffect(() => {
 		// socket event to add message to the sending client's chat screen
+		// NOT IN CASE OF CHATBOT
+		if (chatbot) return;
+
 		socket.on("chat_screen_message", (newMessage) => {
 			const { authorId, content, date, type, name } = newMessage;
 
@@ -112,13 +122,24 @@ const ChatScreen = ({ route }) => {
 	}, [focused]);
 
 	useEffect(() => {
-		// don't load older messages for now in case it's a chatbot (haven't configured db for that yet.)
-		if (chatbot) return;
-
 		(async () => {
-			const { data } = await getChatMessages(chatId);
+			// if it's a chatbot, fetch the chats from async storage (if there are any)
+			// chatbot chats aren't stored in the DB
+			let previousChats = [];
 
-			setChats(data.reverse());
+			if (chatbot) {
+				const data = await getChatbotChats();
+				if (data) {
+					previousChats = JSON.parse(data);
+				}
+			} else {
+				const { data } = await getChatMessages(chatId);
+				previousChats = data;
+			}
+
+			// reverse array only if it comes from DB
+			previousChats = chatbot ? previousChats : previousChats.reverse();
+			setChats(previousChats);
 
 			// so that the screen only scrolls after all the contents have been loaded.
 			setFirstLoad(true);
@@ -142,7 +163,7 @@ const ChatScreen = ({ route }) => {
 		};
 	}, []);
 
-	// for chatbot related things
+	// CHATBOT LOGIC STARTS HERE
 	const analyzeChat = async () => {
 		const userChat = {
 			authorId: user.userId,
@@ -152,10 +173,29 @@ const ChatScreen = ({ route }) => {
 			name: "",
 		};
 
-		const chat = await chatBot.analyzeUserText(text);
-		setChats((chats) => [...chats, userChat, chat]);
+		setChats((chats) => [...chats, userChat]);
 
+		// store chat in async storage
+		await storeChatbotChats(userChat);
 		resetVales();
+
+		await replyToChatbot(text);
+	};
+
+	const replyToChatbot = async (text: string) => {
+		const chat = await chatBot.analyzeUserText(text);
+
+		await storeChatbotChats(chat);
+		setChats((chats) => [...chats, chat]);
+	};
+
+	const handleQAResponse = async (response: boolean): Promise<void> => {
+		if (response) {
+			await replyToChatbot("yes");
+			return;
+		}
+
+		await replyToChatbot("no");
 	};
 
 	return (
@@ -180,7 +220,7 @@ const ChatScreen = ({ route }) => {
 								chat={chat}
 								sameUser={sameUser}
 								profilePicture={profilePicture}
-								respondLastAsked={() => {}}
+								handleQAResponse={handleQAResponse}
 							/>
 						);
 					})}

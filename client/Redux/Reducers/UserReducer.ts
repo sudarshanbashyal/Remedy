@@ -5,6 +5,7 @@ import {
 	LOGOUT_USER,
 	MedicineType,
 	UPDATE_MEDICINE,
+	UPDATE_USER_ACCOUNT,
 	UPDATE_USER_PROFILE,
 	UserDispatchType,
 } from "../Actions/UserActionTypes";
@@ -63,6 +64,15 @@ export const userReducer = (
 				user: {
 					...state.user,
 					...action.payload.user,
+				},
+			};
+
+		case UPDATE_USER_ACCOUNT:
+			return {
+				...state,
+				user: {
+					...state.user,
+					email: action.payload,
 				},
 			};
 

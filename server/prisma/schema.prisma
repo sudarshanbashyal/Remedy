@@ -94,6 +94,7 @@ model Message{
 	content String
 	chatBot Boolean @default(false)
 	seen Boolean @default(false)
+	forwardable Boolean @default(false)
 	chatId String
 	chat Chat @relation(fields:[chatId], references:[chatId])
 }

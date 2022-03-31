@@ -16,11 +16,10 @@ const init = async () => {
 		json({
 			limit: "50mb",
 		}),
-		cors(),
-		UserRouter,
-		MedicineRouter,
-		ChatBotRouter
+		cors()
 	);
+
+	app.use([UserRouter, MedicineRouter, ChatBotRouter]);
 
 	// ws server config
 	const server = createServer(app);
@@ -48,6 +47,7 @@ const init = async () => {
 				recipentId,
 				type,
 				fileExtension,
+				chatBot,
 				name,
 			}: any) => {
 				handleMessage({
@@ -59,6 +59,7 @@ const init = async () => {
 					type,
 					fileExtension,
 					name,
+					chatBot,
 				});
 			}
 		);

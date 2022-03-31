@@ -3,7 +3,12 @@ import { serverError } from ".";
 import { trainModel } from "../Utils/LanguageProcessing";
 import stringSimilarity from "string-similarity";
 import { symptomList, SymptomListType } from "../Utils/Symptoms";
-import fetch from "node-fetch";
+import {
+	DIAGNOSIS_TYPE,
+	ISSUE_TYPE,
+	requestMedicAPI,
+	SYMPTOM_TYPE,
+} from "../Utils/APIMedic";
 
 let nlp: any;
 const getNlp = async () => {
@@ -57,35 +62,77 @@ export const reportSymptomSimilarity = async (req: Request, res: Response) => {
 	}
 };
 
-export const getSimilarSymptoms = async (req: Request, res: Response) => {
+export const getSimilarSymptoms = async (
+	req: Request,
+	res: Response
+): Promise<any> => {
 	try {
 		const { symptoms, gender, dob } = req.body;
 
-		const { SYMPTOM_API_KEY } = process.env;
+		const proposedData = await requestMedicAPI(SYMPTOM_TYPE, {
+			symptoms,
+			gender,
+			dob,
+		});
 
-		const host = `https://healthservice.priaid.ch/symptoms/proposed?`;
-		const token = `token=${SYMPTOM_API_KEY}&`;
-		const languageQuery = `language=en-gb&`;
-		const symptomsQuery = `symptoms=[${symptoms.toString()}]&`;
-		const genderQuery = `gender=${gender}&`;
-		const dobQuery = `year_of_birth=${dob}&`;
-		const formatQuery = `format=json`;
-
-		const fullURL =
-			host +
-			token +
-			languageQuery +
-			symptomsQuery +
-			genderQuery +
-			dobQuery +
-			formatQuery;
-
-		const response = await fetch(fullURL);
-		const data = await response.json();
+		if (!Array.isArray(proposedData)) {
+			return res.status(400).json({
+				ok: false,
+				error: { message: "Could not provide similar symptoms" },
+			});
+		}
 
 		return res.json({
 			ok: true,
-			data,
+			proposedData,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
+export const getDiagnosis = async (
+	req: Request,
+	res: Response
+): Promise<any> => {
+	try {
+		const { symptoms, gender, dob } = req.body;
+
+		const diagnosis = await requestMedicAPI(DIAGNOSIS_TYPE, {
+			symptoms,
+			gender,
+			dob,
+		});
+
+		if (!Array.isArray(diagnosis)) {
+			return res.status(400).json({
+				ok: false,
+				error: { message: "Could not process diagnosis." },
+			});
+		}
+
+		const { ID, Name, ProfName } = diagnosis[0].Issue;
+
+		// set issue id to request body so that it can be accessed by requestMedicAPI again
+		const issueInfo = await requestMedicAPI(ISSUE_TYPE, { issueId: ID });
+
+		if (issueInfo === null) {
+			return res.status(400).json({
+				ok: false,
+				error: { message: "Could not process diagnosis." },
+			});
+		}
+
+		const { TreatmentDescription } = issueInfo;
+
+		return res.json({
+			ok: true,
+			proposedData: {
+				ID,
+				Name,
+				ProfName,
+				TreatmentDescription,
+			},
 		});
 	} catch (error) {
 		return serverError(error as Error, res);

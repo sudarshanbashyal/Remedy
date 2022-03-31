@@ -44,7 +44,6 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const loginUser = async (req: Request, res: Response) => {
 	try {
-		console.log("user login req");
 		const { email, password } = req.body;
 
 		const user = await PrismaDB.user.findUnique({
@@ -221,6 +220,47 @@ export const updateUserProfile = async (
 	}
 };
 
+export const updateUserAccount = async (
+	req: AuthRequestType,
+	res: Response
+) => {
+	try {
+		const { userId } = req;
+		const { email, password } = req.body;
+
+		const fieldsToUpdate: { email: string; password?: string } = {
+			email,
+		};
+		if (password) fieldsToUpdate["password"] = await hashPassword(password);
+
+		const user = await PrismaDB.user.update({
+			where: {
+				userId: userId as string,
+			},
+			data: fieldsToUpdate,
+			select: {
+				email: true,
+			},
+		});
+
+		if (!user) {
+			return res.status(500).json({
+				ok: false,
+				error: {
+					message: "Couldn't update user account.",
+				},
+			});
+		}
+
+		return res.status(201).json({
+			ok: true,
+			data: user,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
 export const getMessageList = async (req: AuthRequestType, res: Response) => {
 	try {
 		const { userId } = req;
@@ -296,6 +336,7 @@ export const getChatMessages = async (req: AuthRequestType, res: Response) => {
 				authorId: true,
 				type: true,
 				name: true,
+				chatBot: true,
 			},
 			orderBy: {
 				date: "desc",

@@ -8,6 +8,7 @@ import {
 	getMessageList,
 	getChatMessages,
 	getChatMedia,
+	updateUserAccount,
 } from "../Controllers/UserController";
 import { isAuth } from "../Utils/Auth";
 
@@ -22,6 +23,8 @@ router.post("/checkEmail", emailExists);
 router.get("/fetchUser", isAuth, fetchUser);
 
 router.put("/updateUserProfile", isAuth, updateUserProfile);
+
+router.put("/updateUserAccount", isAuth, updateUserAccount);
 
 router.get("/getMessageList", isAuth, getMessageList);
 

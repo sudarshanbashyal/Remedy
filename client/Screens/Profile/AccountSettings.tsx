@@ -1,5 +1,5 @@
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import React from "react";
+import React, { useState } from "react";
 import {
 	TouchableOpacity,
 	Text,
@@ -8,18 +8,74 @@ import {
 	View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUserAction } from "../../Redux/Actions/UserActions";
+import Errors from "../../Components/Feedbacks/Errors";
+import {
+	logoutUserAction,
+	updateUserAccountAction,
+} from "../../Redux/Actions/UserActions";
 import { RootStore } from "../../Redux/store";
 import { RootStackType } from "../../Stacks/RootStack";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
 import { BackIcon } from "../../Styles/SVG/Svg";
+import { validateEmail } from "../../Utils/Validations/validation";
+import { updateUserAccount } from "../../API/api";
+import { showToast } from "../../Utils/Toast";
+
+export interface AccountSettingsType {
+	email: string;
+	password?: string;
+	confirmPassword?: string;
+}
 
 const AccountSettings = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
 
 	const { user } = useSelector((state: RootStore) => state.userReducer);
+
+	const [errors, setErrors] = useState<string[]>([]);
+	const [accountData, setAccountData] = useState<AccountSettingsType>({
+		email: user.email,
+		password: "",
+		confirmPassword: "",
+	});
+
+	const handleChange = (key: keyof AccountSettingsType, e: any) => {
+		const { text } = e.nativeEvent;
+		setAccountData({ ...accountData, [key]: text });
+	};
+
+	const validateFields = (): boolean => {
+		const fieldErrors: string[] = [];
+
+		if (!validateEmail(accountData.email)) {
+			fieldErrors.push("Please enter a valid email.");
+		}
+
+		if (accountData.password.length || accountData.confirmPassword.length) {
+			if (accountData.password !== accountData.confirmPassword) {
+				fieldErrors.push(
+					"Please enter the same passwords in both fields."
+				);
+			}
+		}
+
+		setErrors(fieldErrors);
+		return fieldErrors.length === 0;
+	};
+
+	const handleSubmit = async () => {
+		if (!validateFields()) return;
+
+		const responseData = await updateUserAccount(accountData);
+		if (responseData.ok) {
+			showToast("success", "Account Successfully Updated.");
+			dispatch(updateUserAccountAction(responseData.data.email));
+		} else {
+			showToast("error", "Could not update account.");
+		}
+	};
 
 	const goBack = () => {
 		navigation.goBack();
@@ -44,22 +100,39 @@ const AccountSettings = () => {
 					</View>
 				</View>
 
+				<View style={{ paddingHorizontal: 20 }}>
+					{errors.length > 0 && <Errors errors={errors} />}
+				</View>
+
 				<View style={styles.profileContainer}>
 					<TextInput
-						value={user.email}
+						value={accountData.email}
 						placeholder="Email Address"
 						style={styles.inputStyle}
 						placeholderTextColor={colors.opaqueWhite}
+						onChange={(e) => {
+							handleChange("email", e);
+						}}
 					/>
 					<TextInput
 						placeholder="Password"
+						value={accountData.password}
+						secureTextEntry={true}
 						style={styles.inputStyle}
 						placeholderTextColor={colors.opaqueWhite}
+						onChange={(e) => {
+							handleChange("password", e);
+						}}
 					/>
 					<TextInput
 						placeholder="Confirm Password"
+						value={accountData.confirmPassword}
+						secureTextEntry={true}
 						style={styles.inputStyle}
 						placeholderTextColor={colors.opaqueWhite}
+						onChange={(e) => {
+							handleChange("confirmPassword", e);
+						}}
 					/>
 
 					<View style={styles.profileActionsContainer}>
@@ -70,9 +143,12 @@ const AccountSettings = () => {
 							<Text style={styles.whiteTextButton}>Cancel</Text>
 						</TouchableOpacity>
 
-						<View style={styles.blueButtonContainer}>
+						<TouchableOpacity
+							style={styles.blueButtonContainer}
+							onPress={handleSubmit}
+						>
 							<Text style={styles.blueButton}>Save Account</Text>
-						</View>
+						</TouchableOpacity>
 					</View>
 
 					<View style={styles.logOutContainer}>

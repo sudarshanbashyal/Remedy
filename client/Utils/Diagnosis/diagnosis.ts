@@ -1,5 +1,6 @@
 import {
 	analyzeMessageIntent,
+	getDiagnosis,
 	getSimilarSymptoms,
 	reportSymptomSimilarity,
 } from "../../API/api";
@@ -7,6 +8,7 @@ import { ChatBubbleType } from "../../Screens/Chat/ChatScreen";
 import { retext } from "retext";
 import retextPos from "retext-pos";
 import retextKeywords from "retext-keywords";
+import { Store } from "../../Redux/store";
 
 const GREETINGS_HELLO = "greetings.hello";
 const GREETINGS_BYE = "greetings.bye";
@@ -30,13 +32,19 @@ interface ChatbotConversationType {
 	} | null;
 }
 
+const {
+	userReducer: {
+		user: { dob, gender },
+	},
+} = Store.getState();
+
 class ChatBot {
 	currentSymptoms = {};
 	currentConversation: ChatbotConversationType = {
 		conversationType: CONVERSATION_START,
 		symptomQuestion: null,
 	};
-	rejectedSymptoms = [];
+	rejectedSymptoms = {};
 	proposedSymptoms: { Name: string; ID: number }[] = [];
 
 	chatBotReply: ChatBubbleType = {
@@ -45,6 +53,7 @@ class ChatBot {
 		date: new Date().toString(),
 		type: "Text",
 		name: "",
+		forwardable: false,
 	};
 
 	resetChatbotConvo(): void {
@@ -52,6 +61,7 @@ class ChatBot {
 		this.currentConversation = { conversationType: CONVERSATION_START };
 		this.chatBotReply.content = "";
 		this.chatBotReply.question = false;
+		this.chatBotReply.forwardable = false;
 		this.rejectedSymptoms = [];
 		this.proposedSymptoms = [];
 	}
@@ -67,66 +77,137 @@ class ChatBot {
 	}
 
 	replyToUser(): ChatBubbleType {
-		return Object.assign({}, this.chatBotReply);
+		return { ...this.chatBotReply };
 	}
 
-	async getSimilarSymptom(): Promise<any> {
-		const symptomIDs = Object.keys(this.currentSymptoms).map(
-			(id: string) => +id
+	async analyzeSimilarSymptoms(): Promise<any> {
+		const symptomsArray: number[] = Object.keys(this.currentSymptoms).map(
+			(symId: string) => +symId
 		);
-		const { data } = await getSimilarSymptoms(symptomIDs);
-		console.log(data);
-		this.currentSymptoms = data;
+
+		const data = await getSimilarSymptoms(
+			symptomsArray,
+			new Date(dob).getFullYear(),
+			gender
+		);
+
+		if (data.ok) {
+			// suggest similar symptoms
+			this.proposedSymptoms = data.proposedData;
+
+			// ask question about the symptom
+			this.setPropsedSymptomQuestion();
+		}
 	}
 
 	// for when user answers with yes/no question or something??
-	async registerUserReply(answer: boolean) {
-		if (answer) {
-			const { symptomName, symptomValue } =
-				this.currentConversation.symptomQuestion;
-			this.currentSymptoms[symptomValue] = symptomName;
-			return await this.formReply();
+	async registerUserReply(intent: string) {
+		if (this.currentConversation.symptomQuestion) {
+			const reaction: boolean =
+				intent === REACTION_POSITIVE ? true : false;
+
+			if (reaction) {
+				await this.handlePositiveIntent();
+				return;
+			}
+
+			await this.handleNegativeIntent();
 		}
-
-		// add current symptom to rejected symptoms so they are not displayed again.
-		this.rejectedSymptoms.push(
-			this.currentConversation.symptomQuestion.symptomValue
-		);
-
-		// remove question from conversation
-		this.currentConversation.symptomQuestion = null;
-
-		// ask user about another similar symptom
-		return await this.formReply(this.proposedSymptoms[0].Name);
 	}
 
-	async formReply(symptom: string = ""): Promise<ChatBubbleType> {
+	async handleNegativeIntent() {
+		// if the intent is negative i.e. user didn't suffer from the suggested symptom, loop through other proposed symptom
+		// add symptom in question to rejected list, and cycle through other proposed symptoms
+
+		const { symptomValue, symptomName } =
+			this.currentConversation.symptomQuestion;
+
+		this.rejectedSymptoms[symptomValue] = symptomName;
+
+		this.setPropsedSymptomQuestion();
+	}
+
+	async handlePositiveIntent() {
+		// if the intent to the question was positive, add the current symptom in question to current symptom list
+		// and then, look for other related symptoms
+		const { symptomValue, symptomName } =
+			this.currentConversation.symptomQuestion;
+		this.currentSymptoms[symptomValue] = symptomName;
+
+		// if the number of current symptoms is more than or equals to three provide diagnosis, else ask more questions
+		if (Object.keys(this.currentSymptoms).length >= 5) {
+			await this.provideDiagnosis();
+			return;
+		}
+
+		// ask question again
+		await this.analyzeSimilarSymptoms();
+	}
+
+	setPropsedSymptomQuestion = () => {
+		for (let symptom of this.proposedSymptoms) {
+			if (
+				!this.rejectedSymptoms[symptom.ID] &&
+				!this.currentSymptoms[symptom.ID]
+			) {
+				this.currentConversation = {
+					conversationType: CONVERSATION_SYMPTOM,
+					symptomQuestion: {
+						symptomName: symptom.Name,
+						symptomValue: symptom.ID,
+					},
+				};
+
+				// write content
+				const { reply } = this.getQuestionedReply(symptom.Name);
+				this.chatBotReply.content = reply;
+				this.chatBotReply.question = true;
+
+				return;
+			}
+		}
+
+		// edge case: user doesn't suffer from any of the propsed symptoms.
+		// Provide the diagnosis here
+		this.provideDiagnosis();
+	};
+
+	async provideDiagnosis() {
+		this.currentConversation.symptomQuestion = null;
+
+		const symptomsArray: number[] = Object.keys(this.currentSymptoms).map(
+			(symId: string) => +symId
+		);
+
+		const data = await getDiagnosis(
+			symptomsArray,
+			new Date(dob).getFullYear(),
+			gender
+		);
+
+		if (!data.ok) {
+			this.chatBotReply.content =
+				"I couldn't diagnose your symptom =( Please talk to your doctor.";
+		}
+
+		const { proposedData } = data;
+		const { Name, ProfName, TreatmentDescription } = proposedData;
+
+		this.chatBotReply.forwardable = true;
+		this.chatBotReply.question = false;
+		this.chatBotReply.content = `I diagnose you with ${Name}, also known as ${ProfName}.\n\n ${TreatmentDescription}`;
+	}
+
+	async formInitialReply(symptom: string = ""): Promise<ChatBubbleType> {
 		// check if only one symptom is registered, if it is, ask for one more symptom.
 		if (Object.keys(this.currentSymptoms).length < 2) {
 			this.chatBotReply.content = `So, you said you have the following symptom: ${symptom}. Could you list out one more symptom?`;
+
 			return this.replyToUser();
 		}
 
-		if (Object.keys(this.currentSymptoms).length >= 5) {
-			this.chatBotReply.content = "Okay, that's enough symptoms bro.";
-			return this.replyToUser();
-		}
-
-		// API call to get similar symptom here.
-		// register the new symptom in current conversation object.
-		// when the user answers with positive or negative intent, registerUserReply() will be called, and the symptom will either be added to currentSymptoms or discarded
-		await this.getSimilarSymptom();
-
-		this.currentConversation.symptomQuestion = {
-			symptomName: this.proposedSymptoms[0].Name,
-			symptomValue: this.proposedSymptoms[0].ID,
-		};
-
-		// ask question about the new symptom
-		this.chatBotReply.question = true;
-		this.chatBotReply.content = this.getQuestionedReply(
-			this.currentConversation.symptomQuestion.symptomName
-		).reply;
+		// suggest similar symptom according to the currentSymptomsArray
+		await this.analyzeSimilarSymptoms();
 
 		return this.replyToUser();
 	}
@@ -154,20 +235,19 @@ class ChatBot {
 		}
 
 		if (intent === REACTION_POSITIVE || intent === REACTION_NEGATIVE) {
-			if (this.currentConversation.symptomQuestion) {
-				const reaction: boolean =
-					intent === REACTION_POSITIVE ? true : false;
-
-				return await this.registerUserReply(reaction);
-			}
+			await this.registerUserReply(intent);
+			return this.replyToUser();
 		}
 
 		// symptom analysis start here
 		if (intent === INTENT_SYMPTOM || intent === INTENT_NONE) {
 			// if question asked by the chatbot is active, ask user to answer the question first
 			if (this.currentConversation.symptomQuestion) {
+				// turn off questioned reply
+				this.chatBotReply.question = null;
+
 				this.chatBotReply.content =
-					"Please, answer the above question before continuing.";
+					"Please answer the above question before continuing.";
 				return this.replyToUser();
 			}
 
@@ -182,18 +262,18 @@ class ChatBot {
 				symptomName = keywords[0].stem;
 			}
 
-			const similarSymptom = await this.getSymptomName(symptomName);
-			if (!similarSymptom) {
+			const fullSymptomName = await this.getSymptomName(symptomName);
+			if (!fullSymptomName) {
 				this.chatBotReply.content =
-					"Sorry, I couldn't match understand the symptom, could you please try again?";
+					"Sorry, I couldn't understand the symptom, could you please try again?";
 				return this.replyToUser();
 			}
 
 			// add the symptom information to instance variables
 			// this information will be used to get similar symptoms/ gather final diagnosis
-			this.currentSymptoms[similarSymptom.ID] = similarSymptom.Name;
+			this.currentSymptoms[fullSymptomName.ID] = fullSymptomName.Name;
 
-			return await this.formReply(similarSymptom.Name);
+			return await this.formInitialReply(fullSymptomName.Name);
 		}
 
 		this.chatBotReply.content = intent;
@@ -210,7 +290,7 @@ class ChatBot {
 		return {
 			reply: `Symptoms so far: ${symptoms.join(
 				", "
-			)}. Are you also experiencing ${symptom}?`,
+			)}. Are you also experiencing: ${symptom}?`,
 		};
 	};
 }
