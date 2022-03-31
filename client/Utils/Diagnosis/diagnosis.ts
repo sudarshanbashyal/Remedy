@@ -135,7 +135,7 @@ class ChatBot {
 		this.currentSymptoms[symptomValue] = symptomName;
 
 		// if the number of current symptoms is more than or equals to three provide diagnosis, else ask more questions
-		if (Object.keys(this.currentSymptoms).length >= 3) {
+		if (Object.keys(this.currentSymptoms).length >= 5) {
 			await this.provideDiagnosis();
 			return;
 		}
@@ -243,8 +243,11 @@ class ChatBot {
 		if (intent === INTENT_SYMPTOM || intent === INTENT_NONE) {
 			// if question asked by the chatbot is active, ask user to answer the question first
 			if (this.currentConversation.symptomQuestion) {
+				// turn off questioned reply
+				this.chatBotReply.question = null;
+
 				this.chatBotReply.content =
-					"Please, answer the above question before continuing.";
+					"Please answer the above question before continuing.";
 				return this.replyToUser();
 			}
 

@@ -6,8 +6,8 @@ import { Store } from "../../Redux/store";
 
 export const bgoptions = {
 	taskName: "Client Running",
-	taskTitle: "Client Running in background",
-	taskDesc: "Client  Descrption I guess?",
+	taskTitle: "Client Running in Background.",
+	taskDesc: "",
 	taskIcon: {
 		name: "ic_launcher",
 		type: "mipmap",
@@ -35,7 +35,6 @@ export const createChannel = () => {
 };
 
 // TODO:
-// find a better algorithm for this function
 // find a better solution for stopping previous background tasks
 export const handleScheduling = async () => {
 	await new Promise<void>(async (resolve) => {

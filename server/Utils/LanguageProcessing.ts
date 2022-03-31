@@ -64,8 +64,16 @@ export const trainModel = async () => {
 	nlp.addAnswer("en", "greetings.bye", "Till next time");
 	nlp.addAnswer("en", "greetings.bye", "see you soon!");
 	nlp.addAnswer("en", "greetings.bye", "Alright then! see ya!");
-	nlp.addAnswer("en", "greetings.hello", "Hey there!");
-	nlp.addAnswer("en", "greetings.hello", "Greetings!");
+	nlp.addAnswer(
+		"en",
+		"greetings.hello",
+		"Hey there! Please tell me your symptoms."
+	);
+	nlp.addAnswer(
+		"en",
+		"greetings.hello",
+		"Greetings! You can start by telling me your symptom."
+	);
 
 	await nlp.train();
 
