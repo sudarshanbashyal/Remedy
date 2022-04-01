@@ -1,13 +1,13 @@
 import React from "react";
 import { Text, TouchableOpacity, View, Image } from "react-native";
-import { RequestItemType } from "../../Screens/Chat/RequestScreen";
+import { RequestItemType } from "../../Screens/Chat/PatientRequestScreen";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
 import { SendIcon, TickIcon } from "../../Styles/SVG/Svg";
 import { formatName } from "../../Utils/FormatName/formatName";
 import { formatText } from "../../Utils/FormatText/formatText";
 
-const RequestItem = ({
+const PatientRequestItem = ({
 	doctor,
 	requests,
 	sendMessageRequest,
@@ -58,4 +58,4 @@ const RequestItem = ({
 	);
 };
 
-export default RequestItem;
+export default PatientRequestItem;

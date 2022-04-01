@@ -478,13 +478,60 @@ export const getIncomingRequests = async (
 
 		const requests = await PrismaDB.request.findMany({
 			where: {
-				receivingUser: userId as string,
+				AND: [
+					{
+						receivingUser: userId as string,
+					},
+					{
+						status: "Pending",
+					},
+				],
+			},
+			include: {
+				requestFrom: {
+					select: {
+						userId: true,
+						firstName: true,
+						lastName: true,
+						profilePicture: true,
+					},
+				},
 			},
 		});
 
 		return res.json({
 			ok: true,
 			data: requests,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
+export const changeRequestStatus = async (
+	req: AuthRequestType,
+	res: Response
+) => {
+	try {
+		const { id } = req.params;
+		const { status } = req.body;
+
+		const updatedRequest = await PrismaDB.request.update({
+			where: {
+				requestId: id as string,
+			},
+			data: {
+				status,
+			},
+			select: {
+				requestId: true,
+				status: true,
+			},
+		});
+
+		return res.status(201).json({
+			ok: true,
+			data: updatedRequest,
 		});
 	} catch (error) {
 		return serverError(error as Error, res);

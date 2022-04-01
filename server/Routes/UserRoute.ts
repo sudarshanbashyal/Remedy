@@ -12,6 +12,7 @@ import {
 	getDoctors,
 	addMessageRequest,
 	getIncomingRequests,
+	changeRequestStatus,
 } from "../Controllers/UserController";
 import { isAuth } from "../Utils/Auth";
 
@@ -40,5 +41,7 @@ router.post("/getDoctors", isAuth, getDoctors);
 router.post("/addMessageRequest", isAuth, addMessageRequest);
 
 router.post("/getIncomingRequests", isAuth, getIncomingRequests);
+
+router.put("/changeRequestStatus/:id", isAuth, changeRequestStatus);
 
 export default router;

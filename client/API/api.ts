@@ -1,3 +1,4 @@
+import { RequestStatusType } from "../Components/Chat/DoctorRequestItem";
 import { LoginType } from "../Screens/Authentication/LoginScreen";
 import { RegistrationType } from "../Screens/Authentication/RegisterScreen";
 import { AccountSettingsType } from "../Screens/Profile/AccountSettings";
@@ -466,6 +467,32 @@ export const getIncomingRequests = async () => {
 				authorization: `bearer ${await getUserToken()}`,
 			},
 		});
+
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		return null;
+	}
+};
+
+export const changeRequestStatus = async (
+	requestId: string,
+	status: RequestStatusType
+) => {
+	try {
+		const response = await fetch(
+			`${API_URL}/changeRequestStatus/${requestId}`,
+			{
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+					authorization: `bearer ${await getUserToken()}`,
+				},
+				body: JSON.stringify({
+					status,
+				}),
+			}
+		);
 
 		const data = await response.json();
 		return data;
