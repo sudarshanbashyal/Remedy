@@ -513,6 +513,7 @@ export const changeRequestStatus = async (
 	res: Response
 ) => {
 	try {
+		const { userId } = req;
 		const { id } = req.params;
 		const { status } = req.body;
 
@@ -524,10 +525,21 @@ export const changeRequestStatus = async (
 				status,
 			},
 			select: {
+				sendingUser: true,
 				requestId: true,
 				status: true,
 			},
 		});
+
+		// if the request was accepted, create a new chat
+		if (status === "Accepted") {
+			await PrismaDB.chat.create({
+				data: {
+					firstUser: userId as string,
+					secondUser: updatedRequest.sendingUser,
+				},
+			});
+		}
 
 		return res.status(201).json({
 			ok: true,
