@@ -20,6 +20,7 @@ import ScheduleDetails from "../Screens/Schedule/ScheduleDetails";
 import MedicineStats from "../Screens/Stats/MedicineStats";
 import io, { Socket } from "socket.io-client";
 import { API_URL } from "../API/api";
+import RequestScreen from "../Screens/Chat/RequestScreen";
 
 export type RootStackType = {
 	ChatList: any;
@@ -41,6 +42,7 @@ export type RootStackType = {
 	Profile: any;
 	ProfileSettings: any;
 	AccountSettings: any;
+	RequestScreen: any;
 };
 
 const slideFromRightAnimation: NativeStackNavigationOptions = {
@@ -53,7 +55,6 @@ const RootStack = () => {
 
 	const {
 		userReducer: { user },
-		applicationReducer: { socket },
 	} = useSelector((state: RootStore) => state);
 
 	// register a chatbot
@@ -109,6 +110,11 @@ const RootStack = () => {
 				name="AccountSettings"
 				options={slideFromRightAnimation}
 				component={AccountSettings}
+			/>
+			<Stack.Screen
+				name="RequestScreen"
+				options={slideFromRightAnimation}
+				component={RequestScreen}
 			/>
 		</Stack.Navigator>
 	);

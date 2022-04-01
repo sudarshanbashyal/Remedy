@@ -193,7 +193,7 @@ export const updateMedicineDetails = async (
 
 		return null;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return null;
 	}
 };
@@ -215,7 +215,7 @@ export const getFrequencies = async (): Promise<any> => {
 
 		return null;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return null;
 	}
 };
@@ -240,7 +240,7 @@ export const updateUserProfile = async (
 
 		return null;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return null;
 	}
 };
@@ -265,7 +265,7 @@ export const updateUserAccount = async (
 
 		return null;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return null;
 	}
 };
@@ -287,7 +287,7 @@ export const getMessageList = async (): Promise<any> => {
 
 		return null;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return null;
 	}
 };
@@ -309,7 +309,7 @@ export const getChatMessages = async (chatId: string): Promise<any> => {
 
 		return null;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return null;
 	}
 };
@@ -331,7 +331,7 @@ export const getChatMedia = async (chatId: string): Promise<any> => {
 
 		return null;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return null;
 	}
 };
@@ -353,7 +353,7 @@ export const analyzeMessageIntent = async (message: string) => {
 
 		return null;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return null;
 	}
 };
@@ -371,7 +371,7 @@ export const reportSymptomSimilarity = async (symptom: string) => {
 		const data = await response.json();
 		return data;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return null;
 	}
 };
@@ -393,6 +393,7 @@ export const getSimilarSymptoms = async (
 		const data = await response.json();
 		return data;
 	} catch (error) {
+		console.error(error);
 		return null;
 	}
 };
@@ -409,6 +410,61 @@ export const getDiagnosis = async (
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({ symptoms, dob, gender }),
+		});
+
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+};
+
+export const getDoctors = async (name: string) => {
+	try {
+		const response = await fetch(`${API_URL}/getDoctors`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				authorization: `bearer ${await getUserToken()}`,
+			},
+			body: JSON.stringify({ name }),
+		});
+
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+};
+
+export const addMessageRequest = async (receivingUser: string) => {
+	try {
+		const response = await fetch(`${API_URL}/addMessageRequest`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				authorization: `bearer ${await getUserToken()}`,
+			},
+			body: JSON.stringify({ receivingUser }),
+		});
+
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		return null;
+	}
+};
+
+export const getIncomingRequests = async () => {
+	try {
+		const response = await fetch(`${API_URL}/getIncomingRequests`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				authorization: `bearer ${await getUserToken()}`,
+			},
 		});
 
 		const data = await response.json();

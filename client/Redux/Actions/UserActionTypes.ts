@@ -8,6 +8,15 @@ export const UPDATE_MEDICINE = "UPDATE_MEDICINE";
 export const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
 export const UPDATE_USER_ACCOUNT = "UPDATE_USER_ACCOUNT";
 
+export const PATIENT_TYPE = "Patient";
+export const DOCTOR_TYPE = "Doctor";
+export const ADMIN_TYPE = "Admin";
+
+type UserRoleType =
+	| typeof PATIENT_TYPE
+	| typeof DOCTOR_TYPE
+	| typeof ADMIN_TYPE;
+
 export interface DefaultUserStateType {
 	user: null | UserType;
 }
@@ -23,6 +32,7 @@ export interface UserType {
 	medicines?: MedicineType[];
 	profilePicture: string;
 	token: string;
+	role: UserRoleType;
 }
 
 export interface MedicineType {

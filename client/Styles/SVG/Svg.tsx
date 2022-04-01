@@ -401,3 +401,51 @@ export const ForwardIcon = ({ color, size }: Props) => {
 		</Svg>
 	);
 };
+
+export const BasicPlusIcon = ({ color, size }: Props) => {
+	return (
+		<Svg
+			viewBox="0 0 30 30"
+			width={size}
+			height={size}
+			fill-rule="evenodd"
+			clip-rule="evenodd"
+		>
+			<Path fill={color} d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z" />
+		</Svg>
+	);
+};
+
+export const TickIcon = ({ color, size }: Props) => {
+	return (
+		<Svg
+			viewBox="0 0 30 30"
+			width={size}
+			height={size}
+			fill-rule="evenodd"
+			clip-rule="evenodd"
+		>
+			<Path
+				fill={color}
+				d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.959 17l-4.5-4.319 1.395-1.435 3.08 2.937 7.021-7.183 1.422 1.409-8.418 8.591z"
+			/>
+		</Svg>
+	);
+};
+
+export const MailIcon = ({ color, size }: Props) => {
+	return (
+		<Svg
+			viewBox="0 0 30 30"
+			width={size}
+			height={size}
+			fill-rule="evenodd"
+			clip-rule="evenodd"
+		>
+			<Path
+				fill={color}
+				d="M0 3v18h24v-18h-24zm21.518 2l-9.518 7.713-9.518-7.713h19.036zm-19.518 14v-11.817l10 8.104 10-8.104v11.817h-20z"
+			/>
+		</Svg>
+	);
+};

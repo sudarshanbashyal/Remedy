@@ -1,10 +1,3 @@
-/*
-  Warnings:
-
-  - Changed the type of `gender` on the `User` table. No cast exists, the column would be dropped and recreated, which cannot be done if there is data, since the column is required.
-  - Changed the type of `name` on the `UserRole` table. No cast exists, the column would be dropped and recreated, which cannot be done if there is data, since the column is required.
-
-*/
 -- CreateEnum
 CREATE TYPE "Gender" AS ENUM ('Male', 'Female', 'Other');
 
@@ -12,15 +5,35 @@ CREATE TYPE "Gender" AS ENUM ('Male', 'Female', 'Other');
 CREATE TYPE "MessageType" AS ENUM ('Text', 'Image', 'File');
 
 -- CreateEnum
-CREATE TYPE "UserType" AS ENUM ('User', 'Doctor', 'Admin');
+CREATE TYPE "UserType" AS ENUM ('Patient', 'Doctor', 'Admin');
 
--- AlterTable
-ALTER TABLE "User" DROP COLUMN "gender",
-ADD COLUMN     "gender" "Gender" NOT NULL;
+-- CreateEnum
+CREATE TYPE "RequestStatusType" AS ENUM ('Pending', 'Accepted', 'Rejected');
 
--- AlterTable
-ALTER TABLE "UserRole" DROP COLUMN "name",
-ADD COLUMN     "name" "UserType" NOT NULL;
+-- CreateTable
+CREATE TABLE "User" (
+    "userId" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "bio" TEXT,
+    "profilePicture" TEXT,
+    "dob" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "role" "UserType" NOT NULL DEFAULT E'Patient',
+    "gender" "Gender" NOT NULL,
+    "verified" BOOLEAN NOT NULL DEFAULT true,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("userId")
+);
+
+-- CreateTable
+CREATE TABLE "UserRole" (
+    "roleId" TEXT NOT NULL,
+    "name" "UserType" NOT NULL,
+
+    CONSTRAINT "UserRole_pkey" PRIMARY KEY ("roleId")
+);
 
 -- CreateTable
 CREATE TABLE "Medicine" (
@@ -29,6 +42,7 @@ CREATE TABLE "Medicine" (
     "description" TEXT,
     "active" BOOLEAN NOT NULL DEFAULT true,
     "userId" TEXT NOT NULL,
+    "days" INTEGER[],
 
     CONSTRAINT "Medicine_pkey" PRIMARY KEY ("medicineId")
 );
@@ -36,7 +50,6 @@ CREATE TABLE "Medicine" (
 -- CreateTable
 CREATE TABLE "Schedule" (
     "scheduleId" TEXT NOT NULL,
-    "day" INTEGER NOT NULL,
     "hour" INTEGER NOT NULL,
     "minutes" INTEGER NOT NULL,
     "medicineId" TEXT NOT NULL,
@@ -48,7 +61,7 @@ CREATE TABLE "Schedule" (
 CREATE TABLE "Frequency" (
     "frequencyId" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "frequencyForWeek" INTEGER NOT NULL,
+    "frequencyPerWeek" INTEGER NOT NULL,
     "medicineId" TEXT NOT NULL,
 
     CONSTRAINT "Frequency_pkey" PRIMARY KEY ("frequencyId")
@@ -69,12 +82,28 @@ CREATE TABLE "Message" (
     "authorId" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "type" "MessageType" NOT NULL,
+    "name" TEXT DEFAULT E'',
     "content" TEXT NOT NULL,
     "chatBot" BOOLEAN NOT NULL DEFAULT false,
     "seen" BOOLEAN NOT NULL DEFAULT false,
+    "forwardable" BOOLEAN NOT NULL DEFAULT false,
+    "chatId" TEXT NOT NULL,
 
     CONSTRAINT "Message_pkey" PRIMARY KEY ("messageId")
 );
+
+-- CreateTable
+CREATE TABLE "Request" (
+    "requestId" TEXT NOT NULL,
+    "status" "RequestStatusType" NOT NULL DEFAULT E'Pending',
+    "firstUser" TEXT NOT NULL,
+    "secondUser" TEXT NOT NULL,
+
+    CONSTRAINT "Request_pkey" PRIMARY KEY ("requestId")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- AddForeignKey
 ALTER TABLE "Medicine" ADD CONSTRAINT "Medicine_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -93,3 +122,12 @@ ALTER TABLE "Chat" ADD CONSTRAINT "Chat_secondUser_fkey" FOREIGN KEY ("secondUse
 
 -- AddForeignKey
 ALTER TABLE "Message" ADD CONSTRAINT "Message_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Message" ADD CONSTRAINT "Message_chatId_fkey" FOREIGN KEY ("chatId") REFERENCES "Chat"("chatId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Request" ADD CONSTRAINT "Request_firstUser_fkey" FOREIGN KEY ("firstUser") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Request" ADD CONSTRAINT "Request_secondUser_fkey" FOREIGN KEY ("secondUser") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;

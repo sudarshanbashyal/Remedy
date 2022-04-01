@@ -53,6 +53,7 @@ const LoginScreen = () => {
 				token,
 				bio,
 				profilePicture,
+				role,
 			} = data.user;
 
 			dispatch(
@@ -67,6 +68,7 @@ const LoginScreen = () => {
 					token,
 					bio,
 					profilePicture,
+					role,
 				})
 			);
 		}

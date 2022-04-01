@@ -20,7 +20,7 @@ enum MessageType{
 }
 
 enum UserType{
-	User
+	Patient
 	Doctor
 	Admin
 }
@@ -40,14 +40,15 @@ model User{
 	bio String?
 	profilePicture String?
 	dob DateTime @default(now())
+	role UserType @default(Patient)
 	gender Gender
 	verified Boolean @default(true)
 	medicines Medicine[]
 	creatorChat Chat[] @relation("firstParticipant")
 	participantChat Chat[] @relation("secondParticipant")
 	messages Message[]
-	outgoingRequests Request[] @relation("requestTo")
-	incomingRequests Request[] @relation("requestFrom")
+	outgoingRequests Request[] @relation("requestFrom")
+	incomingRequests Request[] @relation("requestTo")
 }
 
 model UserRole{
@@ -110,9 +111,9 @@ model Message{
 model Request{
 	requestId String @id() @default(uuid())
 	status RequestStatusType @default(Pending)
-	firstUser String
-	secondUser String
-	requestFrom User @relation("requestFrom", fields:[firstUser], references:[userId])
-	requestTo User @relation("requestTo", fields:[secondUser], references:[userId])
+	sendingUser String
+	receivingUser String
+	requestFrom User @relation("requestFrom", fields:[sendingUser], references:[userId])
+	requestTo User @relation("requestTo", fields:[receivingUser], references:[userId])
 }
 

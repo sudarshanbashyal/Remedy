@@ -831,6 +831,25 @@ const styles = StyleSheet.create({
 		color: colors.primaryWhite,
 	},
 
+	messageRequestContainer: {
+		paddingHorizontal: dimens.medium,
+	},
+	doctorTitle: {
+		fontFamily: fonts.Poppins.regular,
+		color: colors.opaqueWhite,
+		fontSize: fonts.size.small,
+	},
+
+	requestIndicatorTextContainer: {
+		backgroundColor: colors.primaryRed,
+		height: dimens.small,
+		width: dimens.small,
+		borderRadius: dimens.small / 2,
+		alignItems: "center",
+		justifyContent: "center",
+		marginLeft: dimens.small,
+	},
+
 	rowStartContainer: {
 		flexDirection: "row",
 		alignItems: "center",

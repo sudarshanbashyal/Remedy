@@ -20,13 +20,16 @@ export const getChatPreviews = async (userId: string): Promise<any> => {
 				preview.secondParticipant.userId === userId
 					? preview.firstParticipant.profilePicture
 					: preview.secondParticipant.profilePicture,
-			lastMessage: formatText(preview.messages[0].content, 32),
-			messageTime: preview.messages[0].date,
+			lastMessage:
+				(preview.messages[0] &&
+					formatText(preview.messages[0]?.content, 32)) ||
+				"No Messages Yet.",
+			messageTime: preview.messages[0]?.date || null,
 			recipentId:
 				preview.firstParticipant.userId === userId
 					? preview.secondParticipant.userId
 					: preview.firstParticipant.userId,
-			type: preview.messages[0].type,
+			type: preview.messages[0]?.type || "Text",
 			chatBot: false,
 		});
 	});

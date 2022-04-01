@@ -8,10 +8,13 @@ import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import BottomNavigationBar from "../../Components/BottomNavigationBar";
 import ChatPreview from "../../Components/Chat/ChatPreview";
+import RequestIndicator from "../../Components/Chat/RequestIndicator";
+import { DOCTOR_TYPE } from "../../Redux/Actions/UserActionTypes";
 import { RootStore } from "../../Redux/store";
 import { RootStackType } from "../../Stacks/RootStack";
+import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
-import { SearchIcon } from "../../Styles/SVG/Svg";
+import { BasicPlusIcon, MailIcon } from "../../Styles/SVG/Svg";
 import { getChatbotChats } from "../../Utils/AsyncStorage/asyncStorage";
 import { getChatPreviews } from "../../Utils/Chat/getChatList";
 import { formatText } from "../../Utils/FormatText/formatText";
@@ -21,7 +24,7 @@ import { ChatBubbleType } from "./ChatScreen";
 export interface ChatPreviewInterface {
 	chatId: string;
 	messageWith: string;
-	lastMessage: string;
+	lastMessage: string | null;
 	messageTime: Date;
 	userIcon: string;
 	recipentId: string;
@@ -147,8 +150,21 @@ const ChatList = () => {
 				<View style={styles.chatTitleContainer}>
 					<Text style={styles.chatTitle}>My Chats</Text>
 
-					<View style={{ marginTop: 10 }}>
-						<SearchIcon size={20} color="white" />
+					<View>
+						{user.role === DOCTOR_TYPE ? (
+							<RequestIndicator />
+						) : (
+							<TouchableOpacity
+								onPress={() => {
+									navigation.navigate("RequestScreen");
+								}}
+							>
+								<BasicPlusIcon
+									size={20}
+									color={colors.opaqueWhite}
+								/>
+							</TouchableOpacity>
+						)}
 					</View>
 				</View>
 

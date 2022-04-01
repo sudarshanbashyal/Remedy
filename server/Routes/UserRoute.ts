@@ -9,6 +9,9 @@ import {
 	getChatMessages,
 	getChatMedia,
 	updateUserAccount,
+	getDoctors,
+	addMessageRequest,
+	getIncomingRequests,
 } from "../Controllers/UserController";
 import { isAuth } from "../Utils/Auth";
 
@@ -31,5 +34,11 @@ router.get("/getMessageList", isAuth, getMessageList);
 router.get("/getChatMessages/:chatId", isAuth, getChatMessages);
 
 router.get("/getChatMedia/:chatId", isAuth, getChatMedia);
+
+router.post("/getDoctors", isAuth, getDoctors);
+
+router.post("/addMessageRequest", isAuth, addMessageRequest);
+
+router.post("/getIncomingRequests", isAuth, getIncomingRequests);
 
 export default router;

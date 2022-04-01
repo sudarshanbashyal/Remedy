@@ -68,6 +68,7 @@ const StackRenderer = () => {
 						token,
 						bio,
 						profilePicture,
+						role,
 					} = user;
 
 					dispatch(
@@ -82,6 +83,7 @@ const StackRenderer = () => {
 							token,
 							bio,
 							profilePicture,
+							role,
 						})
 					);
 				}

@@ -8,4 +8,5 @@ export const colors = {
 	primaryWhite: "#F6F3FC",
 	lightWhite: "#F3F3F3",
 	opaqueWhite: "#898B8F",
+	primaryGreen: "#24c200",
 };

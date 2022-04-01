@@ -388,3 +388,105 @@ export const getChatMedia = async (req: AuthRequestType, res: Response) => {
 		return serverError(error as Error, res);
 	}
 };
+
+export const getDoctors = async (req: AuthRequestType, res: Response) => {
+	try {
+		const { userId } = req;
+		const { name } = req.body;
+
+		const [firstName, lastName] = name.split(" ");
+
+		const doctors = await PrismaDB.user.findMany({
+			where: {
+				AND: [
+					{
+						role: "Doctor",
+					},
+					{
+						firstName: {
+							contains: firstName,
+							mode: "insensitive",
+						},
+					},
+					{
+						lastName: {
+							contains: lastName || "",
+							mode: "insensitive",
+						},
+					},
+				],
+			},
+			select: {
+				userId: true,
+				firstName: true,
+				lastName: true,
+				profilePicture: true,
+			},
+		});
+
+		const outgoingRequests = await PrismaDB.request.findMany({
+			where: {
+				sendingUser: userId as string,
+			},
+		});
+
+		return res.json({
+			ok: true,
+			data: {
+				doctors,
+				requests: outgoingRequests,
+			},
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
+export const addMessageRequest = async (
+	req: AuthRequestType,
+	res: Response
+) => {
+	try {
+		const { userId } = req;
+		const { receivingUser } = req.body;
+
+		const request = await PrismaDB.request.create({
+			data: {
+				sendingUser: userId as string,
+				receivingUser: receivingUser as string,
+			},
+			select: {
+				requestId: true,
+			},
+		});
+
+		return res.status(201).json({
+			ok: true,
+			data: request,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
+export const getIncomingRequests = async (
+	req: AuthRequestType,
+	res: Response
+) => {
+	try {
+		const { userId } = req;
+
+		const requests = await PrismaDB.request.findMany({
+			where: {
+				receivingUser: userId as string,
+			},
+		});
+
+		return res.json({
+			ok: true,
+			data: requests,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
