@@ -51,9 +51,9 @@ const styles = StyleSheet.create({
 		marginBottom: dimens.xxLarge,
 		paddingHorizontal: dimens.medium,
 	},
-	chatTitle: {
+	mailScreenTitle: {
 		fontFamily: fonts.Poppins.bold,
-		color: colors.primaryRed,
+		color: colors.primaryWhite,
 		fontSize: fonts.size.medium,
 	},
 	chatPreview: {

@@ -195,7 +195,11 @@ class ChatBot {
 
 		this.chatBotReply.forwardable = true;
 		this.chatBotReply.question = false;
-		this.chatBotReply.content = `I diagnose you with ${Name}, also known as ${ProfName}.\n\n ${TreatmentDescription}`;
+		this.chatBotReply.content = `Your symptoms were: ${Object.values(
+			this.currentSymptoms
+		).join(
+			", "
+		)}. \n\nI diagnose you with ${Name}, also known as ${ProfName}.\n\n ${TreatmentDescription}`;
 	}
 
 	async formInitialReply(symptom: string = ""): Promise<ChatBubbleType> {

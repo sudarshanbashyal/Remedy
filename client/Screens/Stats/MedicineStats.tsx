@@ -77,7 +77,9 @@ const MedicineStats = () => {
 		<View style={styles.fullContainer}>
 			<ScrollView>
 				<View style={styles.medicineStatsContainer}>
-					<Text style={styles.chatTitle}>My Medicine Stats</Text>
+					<Text style={styles.mailScreenTitle}>
+						My Medicine Stats
+					</Text>
 				</View>
 
 				<FrequencyGraph frequencies={frequencies} />

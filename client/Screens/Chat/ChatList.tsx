@@ -148,7 +148,7 @@ const ChatList = () => {
 		<View style={styles.fullContainer}>
 			<ScrollView>
 				<View style={styles.chatTitleContainer}>
-					<Text style={styles.chatTitle}>My Chats</Text>
+					<Text style={styles.mailScreenTitle}>My Chats</Text>
 
 					<View>
 						{user.role === DOCTOR_TYPE ? (
