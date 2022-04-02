@@ -61,7 +61,10 @@ const PatientRequestScreen = () => {
 			setRequests({ ...requests, [receivingUser]: data.requestId });
 
 			showToast("success", "Request successfully sent.");
+			return;
 		}
+
+		showToast("error", "Could send message request.");
 	};
 
 	return (

@@ -90,6 +90,7 @@ const DoctorRequestScreen = () => {
 				<View>
 					{requests.map((request: DoctorRequestItemType) => (
 						<DoctorRequestItem
+							key={request.requestId}
 							patient={request}
 							handleRequestResponse={handleRequestResponse}
 						/>

@@ -466,3 +466,20 @@ export const CrossIcon = ({ color, size }: Props) => {
 		</Svg>
 	);
 };
+
+export const RefreshIcon = ({ color, size }: Props) => {
+	return (
+		<Svg
+			viewBox="0 0 30 30"
+			width={size}
+			height={size}
+			fill-rule="evenodd"
+			clip-rule="evenodd"
+		>
+			<Path
+				fill={color}
+				d="M13.5 2c-5.629 0-10.212 4.436-10.475 10h-3.025l4.537 5.917 4.463-5.917h-2.975c.26-3.902 3.508-7 7.475-7 4.136 0 7.5 3.364 7.5 7.5s-3.364 7.5-7.5 7.5c-2.381 0-4.502-1.119-5.876-2.854l-1.847 2.449c1.919 2.088 4.664 3.405 7.723 3.405 5.798 0 10.5-4.702 10.5-10.5s-4.702-10.5-10.5-10.5z"
+			/>
+		</Svg>
+	);
+};

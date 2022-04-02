@@ -23,7 +23,7 @@ export const emailExists = async (email: string): Promise<boolean> => {
 
 		return data.emailExists;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return true;
 	}
 };
@@ -72,7 +72,7 @@ export const loginUser = async (userData: LoginType): Promise<any> => {
 
 		return null;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 	}
 };
 
@@ -93,7 +93,7 @@ export const fetchUser = async (token: string): Promise<any> => {
 
 		return null;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return null;
 	}
 };
@@ -118,7 +118,7 @@ export const addMedicine = async (
 
 		return null;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return null;
 	}
 };
@@ -140,7 +140,7 @@ export const getMedicineList = async (): Promise<any> => {
 
 		return null;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return null;
 	}
 };
@@ -165,7 +165,7 @@ export const getMedicineDetails = async (medicineId: string): Promise<any> => {
 
 		return null;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return null;
 	}
 };

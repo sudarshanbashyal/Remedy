@@ -9,6 +9,8 @@ import styles from "../../Styles/styles";
 import { getMedicineList } from "../../API/api";
 import MedicineListSkeleton from "../../Components/Skeletons/MedicineListSkeleton";
 import NoData from "../../Components/Feedbacks/NoData";
+import { RefreshIcon } from "../../Styles/SVG/Svg";
+import { colors } from "../../Styles/Colors";
 
 const MedicineList = () => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
@@ -71,6 +73,13 @@ const MedicineList = () => {
 		setRenderMedicineList(newList);
 	};
 
+	const refreshList = async () => {
+		setMedicineList([]);
+		setIsLoading(true);
+
+		await getAllMedicines();
+	};
+
 	useEffect(() => {
 		setRenderMedicineList(medicineList);
 	}, [medicineList]);
@@ -89,7 +98,13 @@ const MedicineList = () => {
 	return (
 		<View style={styles.fullContainer}>
 			<ScrollView style={styles.medicineListContainer}>
-				<Text style={styles.chatTitle}>My Medicine List</Text>
+				<View style={styles.spacedApartContainer}>
+					<Text style={styles.chatTitle}>My Medicine List</Text>
+
+					<TouchableOpacity onPress={refreshList}>
+						<RefreshIcon size={24} color={colors.opaqueWhite} />
+					</TouchableOpacity>
+				</View>
 
 				<View style={styles.medicineListActions}>
 					<View style={{ width: 150 }}>
