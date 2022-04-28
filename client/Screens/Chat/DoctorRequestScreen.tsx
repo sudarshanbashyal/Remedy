@@ -1,7 +1,13 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { changeRequestStatus, getIncomingRequests } from "../../API/api";
+import { makeApiCall } from "../../API/api";
+import {
+	CHANGE_REQUEST_STATUS,
+	GET_INCOMING_REQUESTS,
+	HTTP_POST,
+	HTTP_PUT,
+} from "../../API/apiTypes";
 import DoctorRequestItem, {
 	RequestStatusType,
 } from "../../Components/Chat/DoctorRequestItem";
@@ -31,7 +37,14 @@ const DoctorRequestScreen = () => {
 		requestId: string,
 		status: RequestStatusType
 	) => {
-		const apiResponse = await changeRequestStatus(requestId, status);
+		const apiResponse = await makeApiCall({
+			endpoint: CHANGE_REQUEST_STATUS,
+			httpAction: HTTP_PUT,
+			auth: true,
+			body: { status },
+			queryParams: [requestId],
+		});
+
 		if (apiResponse.ok) {
 			// remove request from list after response from user
 			const unrespondedRequests: DoctorRequestItemType[] =
@@ -50,7 +63,12 @@ const DoctorRequestScreen = () => {
 
 	useEffect(() => {
 		(async () => {
-			const apiResponse = await getIncomingRequests();
+			const apiResponse = await makeApiCall({
+				endpoint: GET_INCOMING_REQUESTS,
+				httpAction: HTTP_POST,
+				auth: true,
+			});
+
 			if (apiResponse.ok) {
 				const requestItems: DoctorRequestItemType[] = [];
 

@@ -14,7 +14,7 @@ import { RootStore } from "../../Redux/store";
 import { RootStackType } from "../../Stacks/RootStack";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
-import { BasicPlusIcon, MailIcon } from "../../Styles/SVG/Svg";
+import { BasicPlusIcon } from "../../Styles/SVG/Svg";
 import { getChatbotChats } from "../../Utils/AsyncStorage/asyncStorage";
 import { getChatPreviews } from "../../Utils/Chat/getChatList";
 import { formatText } from "../../Utils/FormatText/formatText";

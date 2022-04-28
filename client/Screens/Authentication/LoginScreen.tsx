@@ -3,11 +3,13 @@ import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useDispatch } from "react-redux";
-import { loginUser } from "../../API/api";
+import { makeApiCall } from "../../API/api";
+import { HTTP_POST, LOGIN_USER } from "../../API/apiTypes";
 import { loginUserAction } from "../../Redux/Actions/UserActions";
 import { AuthStackType } from "../../Stacks/AuthStack";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
+import { showToast } from "../../Utils/Toast";
 
 export interface LoginType {
 	email: string;
@@ -38,10 +40,13 @@ const LoginScreen = () => {
 	const handleLogin = async () => {
 		setError(null);
 
-		const data = await loginUser(userData);
-		if (!data.ok) {
-			setError("Invalid email or password.");
-		} else {
+		const apiResponse = await makeApiCall({
+			endpoint: LOGIN_USER,
+			httpAction: HTTP_POST,
+			body: userData,
+		});
+
+		if (apiResponse?.ok) {
 			const {
 				userId,
 				firstName,
@@ -54,7 +59,7 @@ const LoginScreen = () => {
 				bio,
 				profilePicture,
 				role,
-			} = data.user;
+			} = apiResponse.data;
 
 			dispatch(
 				loginUserAction({
@@ -71,7 +76,11 @@ const LoginScreen = () => {
 					role,
 				})
 			);
+
+			return;
 		}
+
+		showToast("error", "Could not login right now");
 	};
 
 	return (

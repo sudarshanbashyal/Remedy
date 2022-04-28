@@ -19,8 +19,9 @@ import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
 import { BackIcon } from "../../Styles/SVG/Svg";
 import { validateEmail } from "../../Utils/Validations/validation";
-import { updateUserAccount } from "../../API/api";
+import { makeApiCall } from "../../API/api";
 import { showToast } from "../../Utils/Toast";
+import { HTTP_PUT, UPDATE_USER_ACCOUNT } from "../../API/apiTypes";
 
 export interface AccountSettingsType {
 	email: string;
@@ -68,10 +69,16 @@ const AccountSettings = () => {
 	const handleSubmit = async () => {
 		if (!validateFields()) return;
 
-		const responseData = await updateUserAccount(accountData);
-		if (responseData.ok) {
+		const apiResponse = await makeApiCall({
+			endpoint: UPDATE_USER_ACCOUNT,
+			httpAction: HTTP_PUT,
+			auth: true,
+			body: { accountData },
+		});
+
+		if (apiResponse.ok) {
 			showToast("success", "Account Successfully Updated.");
-			dispatch(updateUserAccountAction(responseData.data.email));
+			dispatch(updateUserAccountAction(apiResponse.data.email));
 		} else {
 			showToast("error", "Could not update account.");
 		}

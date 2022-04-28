@@ -7,9 +7,10 @@ import Toast, { BaseToast } from "react-native-toast-message";
 import { StatusBar } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "./Redux/store";
-import { getUserToken } from "./Utils/AsyncStorage/asyncStorage";
-import { fetchUser } from "./API/api";
+import { makeApiCall } from "./API/api";
 import { loginUserAction } from "./Redux/Actions/UserActions";
+import { HTTP_GET, FETCH_USER } from "./API/apiTypes";
+import { showToast } from "./Utils/Toast";
 
 const StackRenderer = () => {
 	const dispatch = useDispatch();
@@ -51,42 +52,42 @@ const StackRenderer = () => {
 
 	useEffect(() => {
 		(async () => {
-			const token = await getUserToken();
+			const apiResponse = await makeApiCall({
+				endpoint: FETCH_USER,
+				httpAction: HTTP_GET,
+				auth: true,
+			});
 
-			if (token) {
-				const user = await fetchUser(token);
+			if (apiResponse?.ok) {
+				const {
+					userId,
+					firstName,
+					lastName,
+					email,
+					gender,
+					dob,
+					medicines,
+					token,
+					bio,
+					profilePicture,
+					role,
+				} = apiResponse.data;
 
-				if (user) {
-					const {
+				dispatch(
+					loginUserAction({
 						userId,
 						firstName,
 						lastName,
 						email,
-						gender,
 						dob,
+						gender,
 						medicines,
 						token,
 						bio,
 						profilePicture,
 						role,
-					} = user;
-
-					dispatch(
-						loginUserAction({
-							userId,
-							firstName,
-							lastName,
-							email,
-							dob,
-							gender,
-							medicines,
-							token,
-							bio,
-							profilePicture,
-							role,
-						})
-					);
-				}
+					})
+				);
 			}
 		})();
 	}, []);

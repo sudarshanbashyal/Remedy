@@ -7,7 +7,12 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
-import { addMessageRequest, getDoctors } from "../../API/api";
+import { makeApiCall } from "../../API/api";
+import {
+	ADD_MESSAGE_REQUEST,
+	GET_DOCTORS,
+	HTTP_POST,
+} from "../../API/apiTypes";
 import PatientRequestItem from "../../Components/Chat/PatientRequestItem";
 import { RootStackType } from "../../Stacks/RootStack";
 import { colors } from "../../Styles/Colors";
@@ -34,9 +39,14 @@ const PatientRequestScreen = () => {
 	};
 
 	const handleSearch = async () => {
-		const apiResponse = await getDoctors(searchQuery);
+		const apiResponse = await makeApiCall({
+			endpoint: GET_DOCTORS,
+			httpAction: HTTP_POST,
+			auth: true,
+			body: { name: searchQuery },
+		});
 
-		if (apiResponse) {
+		if (apiResponse.ok) {
 			const { doctors, requests } = apiResponse.data;
 
 			const requestsMap = {};
@@ -55,7 +65,13 @@ const PatientRequestScreen = () => {
 	};
 
 	const sendMessageRequest = async (receivingUser: string) => {
-		const apiResponse = await addMessageRequest(receivingUser);
+		const apiResponse = await makeApiCall({
+			endpoint: ADD_MESSAGE_REQUEST,
+			httpAction: HTTP_POST,
+			auth: true,
+			body: { receivingUser },
+		});
+
 		if (apiResponse.ok) {
 			const { data } = apiResponse;
 			setRequests({ ...requests, [receivingUser]: data.requestId });

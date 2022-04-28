@@ -5,7 +5,9 @@ import styles from "../../Styles/styles";
 import FrequencyGraph from "../../Components/Stats/FrequencyGraph";
 import HabitGraph from "../../Components/Stats/HabitGraph";
 import { colors } from "../../Styles/Colors";
-import { getFrequencies } from "../../API/api";
+import { makeApiCall } from "../../API/api";
+import { GET_FREQUENCIES, HTTP_GET } from "../../API/apiTypes";
+import { showToast } from "../../Utils/Toast";
 
 export const graphConfigs = {
 	backgroundColor: colors.lightGray,
@@ -50,26 +52,35 @@ const MedicineStats = () => {
 		(async () => {
 			const allFrequencies: FrequencyListType[] = [];
 
-			const { data } = await getFrequencies();
-
-			data.forEach((frequency: any) => {
-				const frequencyDates = [];
-				const frequencyValues = [];
-
-				frequency.frequencies.forEach((val: any) => {
-					frequencyDates.push(val.date);
-					frequencyValues.push(val.frequencyPerWeek);
-				});
-
-				allFrequencies.push({
-					medicineName: frequency.name,
-					medicineId: frequency.medicineId,
-					dates: frequencyDates,
-					frequencyValues: frequencyValues,
-				});
+			const apiResponse = await makeApiCall({
+				endpoint: GET_FREQUENCIES,
+				httpAction: HTTP_GET,
+				auth: true,
 			});
 
-			setFrequencies(allFrequencies);
+			if (apiResponse.ok) {
+				apiResponse.data.forEach((frequency: any) => {
+					const frequencyDates = [];
+					const frequencyValues = [];
+
+					frequency.frequencies.forEach((val: any) => {
+						frequencyDates.push(val.date);
+						frequencyValues.push(val.frequencyPerWeek);
+					});
+
+					allFrequencies.push({
+						medicineName: frequency.name,
+						medicineId: frequency.medicineId,
+						dates: frequencyDates,
+						frequencyValues: frequencyValues,
+					});
+				});
+
+				setFrequencies(allFrequencies);
+				return;
+			}
+
+			showToast("error", "Could not retrieve data");
 		})();
 	}, []);
 

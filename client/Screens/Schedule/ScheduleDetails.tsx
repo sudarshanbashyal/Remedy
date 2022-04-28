@@ -16,17 +16,21 @@ import ScheduleDays from "../../Components/Schedule/ScheduleDays";
 import ScheduleHeader from "../../Components/Schedule/ScheduleHeader";
 import ScheuleTime from "../../Components/Schedule/ScheduleTime";
 import { ScheduleTimeType } from "../../Components/Schedule/ScheduleTime";
-import {
-	addMedicine,
-	getMedicineDetails,
-	updateMedicineDetails,
-} from "../../API/api";
+import { makeApiCall } from "../../API/api";
 import { useDispatch } from "react-redux";
 import {
 	addMedicineAction,
 	updateMedicineAction,
 } from "../../Redux/Actions/UserActions";
 import { showToast } from "../../Utils/Toast";
+import {
+	ADD_MEDICINE,
+	GET_MEDICINE_DETAILS,
+	UPDATE_MEDICINE_DETAILS,
+	HTTP_GET,
+	HTTP_POST,
+	HTTP_PUT,
+} from "../../API/apiTypes";
 
 const emptySchedule: ScheduleTimeType = {
 	hour: null,
@@ -118,13 +122,18 @@ const ScheduleDetails = ({ route }) => {
 		const validFields = validateFields();
 		if (!validFields) return;
 
-		const { data } = await addMedicine({
-			...medicineData,
-			days: selectedDays,
-			schedules: scheduleTimes,
+		const apiResponse = await makeApiCall({
+			endpoint: ADD_MEDICINE,
+			httpAction: HTTP_POST,
+			auth: true,
+			body: {
+				...medicineData,
+				days: selectedDays,
+				schedules: scheduleTimes,
+			},
 		});
-
-		if (data) {
+		if (apiResponse.ok) {
+			const { data } = apiResponse;
 			dispatch(addMedicineAction(data));
 			showToast("success", "Medicine Schedule Successfully Added.");
 		}
@@ -134,16 +143,26 @@ const ScheduleDetails = ({ route }) => {
 		const validFields = validateFields();
 		if (!validFields) return;
 
-		const { data } = await updateMedicineDetails(medicineId, {
-			...medicineData,
-			days: selectedDays,
-			schedules: scheduleTimes,
+		const apiResponse = await makeApiCall({
+			endpoint: UPDATE_MEDICINE_DETAILS,
+			httpAction: HTTP_PUT,
+			auth: true,
+			queryParams: [medicineId],
+			body: {
+				...medicineData,
+				days: selectedDays,
+				schedules: scheduleTimes,
+			},
 		});
 
-		if (data) {
+		if (apiResponse.ok) {
+			const { data } = apiResponse;
 			dispatch(updateMedicineAction(medicineId, data));
 			showToast("success", "Medicine Schedule Successfully Updated.");
+			return;
 		}
+
+		showToast("error", "Could not update medicine.");
 	};
 
 	const addNewTime = (): void => {
@@ -194,7 +213,6 @@ const ScheduleDetails = ({ route }) => {
 				}
 
 				// check if hour is set to 0, if yes, change it to 12
-
 				if (newTime === "0") {
 					newTime = "12";
 				}
@@ -206,13 +224,19 @@ const ScheduleDetails = ({ route }) => {
 	};
 
 	const getMedicine = async (medicineId: string) => {
-		const { data } = await getMedicineDetails(medicineId);
+		const apiResponse = await makeApiCall({
+			endpoint: GET_MEDICINE_DETAILS,
+			httpAction: HTTP_GET,
+			auth: true,
+			queryParams: [medicineId],
+		});
 
-		if (!data) {
+		if (!apiResponse.ok) {
 			showToast("error", "The medicine couldn't be fetched.");
 			return;
 		}
 
+		const { data } = apiResponse;
 		const { active, days, description, name } = data;
 		setMedicineData({
 			name,

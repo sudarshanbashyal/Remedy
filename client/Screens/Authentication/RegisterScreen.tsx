@@ -1,7 +1,8 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { emailExists, registerUser } from "../../API/api";
+import { makeApiCall } from "../../API/api";
+import { CHECK_EMAIL, HTTP_POST, REGISTER_USER } from "../../API/apiTypes";
 import AccountStep from "../../Components/Register/AccountStep";
 import ProfileStep from "../../Components/Register/ProfileStep";
 import { AuthStackType } from "../../Stacks/AuthStack";
@@ -9,6 +10,7 @@ import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
 import { BackIcon } from "../../Styles/SVG/Svg";
 import { generateIdenticon } from "../../Utils/Identicon/identicon";
+import { showToast } from "../../Utils/Toast";
 import { validateEmail } from "../../Utils/Validations/validation";
 
 export interface RegistrationType {
@@ -87,7 +89,16 @@ const RegisterScreen = () => {
 			currentErrors.push("You must add your email.");
 		} else if (!validateEmail(userData.email)) {
 			currentErrors.push("The email you entered is not valid.");
-		} else if (await emailExists(userData.email)) {
+		}
+
+		// check if email already exists
+		const apiResponse = await makeApiCall({
+			endpoint: CHECK_EMAIL,
+			httpAction: HTTP_POST,
+			body: { email: userData.email },
+		});
+
+		if (apiResponse?.data?.emailExists) {
 			currentErrors.push("The email you entered already exists.");
 		}
 
@@ -109,21 +120,32 @@ const RegisterScreen = () => {
 	};
 
 	const handleRegistration = async () => {
-		const correctEntries = checkAccountStep();
+		const correctEntries = await checkAccountStep();
 		if (!correctEntries) return;
 
 		const avatar = generateIdenticon(
 			userData.firstName + userData.lastName
 		);
 
-		const registration = await registerUser({
-			...userData,
-			profilePicture: avatar,
+		const apiResponse = await makeApiCall({
+			endpoint: REGISTER_USER,
+			httpAction: HTTP_POST,
+			body: {
+				...userData,
+				profilePicture: avatar,
+			},
 		});
 
-		if (registration) {
+		if (apiResponse?.ok) {
 			navigation.navigate("Login");
+			showToast("success", "Your account was successfully created.");
+			return;
 		}
+
+		showToast(
+			"error",
+			"Your account could not be registered. Please try again."
+		);
 	};
 
 	const goNext = () => {

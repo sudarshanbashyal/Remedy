@@ -55,7 +55,7 @@ export const reportSymptomSimilarity = async (req: Request, res: Response) => {
 
 		return res.json({
 			ok: true,
-			symptom: symptomList[bestMatchIndex],
+			data: symptomList[bestMatchIndex],
 		});
 	} catch (error) {
 		return serverError(error as Error, res);
@@ -84,7 +84,7 @@ export const getSimilarSymptoms = async (
 
 		return res.json({
 			ok: true,
-			proposedData,
+			data: proposedData,
 		});
 	} catch (error) {
 		return serverError(error as Error, res);
@@ -127,7 +127,7 @@ export const getDiagnosis = async (
 
 		return res.json({
 			ok: true,
-			proposedData: {
+			data: {
 				ID,
 				Name,
 				ProfName,

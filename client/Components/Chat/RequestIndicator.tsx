@@ -1,7 +1,8 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 import { TouchableOpacity, View } from "react-native";
-import { getIncomingRequests } from "../../API/api";
+import { makeApiCall } from "../../API/api";
+import { GET_INCOMING_REQUESTS, HTTP_POST } from "../../API/apiTypes";
 import { RootStackType } from "../../Stacks/RootStack";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
@@ -14,7 +15,11 @@ const RequestIndicator = () => {
 	useEffect(() => {
 		// get message requests
 		(async () => {
-			const apiResponse = await getIncomingRequests();
+			const apiResponse = await makeApiCall({
+				endpoint: GET_INCOMING_REQUESTS,
+				httpAction: HTTP_POST,
+				auth: true,
+			});
 
 			if (apiResponse.ok) {
 				setRequestsNo(apiResponse.data.length);

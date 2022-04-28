@@ -1,13 +1,15 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { getChatMedia } from "../../API/api";
+import { makeApiCall } from "../../API/api";
+import { GET_CHAT_MEDIA, HTTP_GET } from "../../API/apiTypes";
 import MediaModal, { MediaModalType } from "../../Components/Modal/MediaModal";
 import { RootStackType } from "../../Stacks/RootStack";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
 import { BackIcon, SearchIcon } from "../../Styles/SVG/Svg";
 import { formatText } from "../../Utils/FormatText/formatText";
+import { showToast } from "../../Utils/Toast";
 
 interface MediaType {
 	content: string;
@@ -68,9 +70,20 @@ const ChatMedia = ({ route }) => {
 
 	useEffect(() => {
 		(async () => {
-			const { data } = await getChatMedia(chatId);
-			setMedias(data);
-			setRenderMedias(data);
+			const apiResponse = await makeApiCall({
+				endpoint: GET_CHAT_MEDIA,
+				httpAction: HTTP_GET,
+				auth: true,
+				queryParams: [chatId],
+			});
+
+			if (apiResponse.ok) {
+				const { data } = apiResponse;
+				setMedias(data);
+				setRenderMedias(data);
+			} else {
+				showToast("error", "Could not retrieve media.");
+			}
 		})();
 	}, []);
 

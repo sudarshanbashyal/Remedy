@@ -1,14 +1,16 @@
-import {
-	analyzeMessageIntent,
-	getDiagnosis,
-	getSimilarSymptoms,
-	reportSymptomSimilarity,
-} from "../../API/api";
+import { makeApiCall } from "../../API/api";
 import { ChatBubbleType } from "../../Screens/Chat/ChatScreen";
 import { retext } from "retext";
 import retextPos from "retext-pos";
 import retextKeywords from "retext-keywords";
 import { Store } from "../../Redux/store";
+import {
+	ANALYZE_MESSAGE_INTENT,
+	GET_DIAGNOSIS,
+	GET_SIMILAR_SYMPTOMS,
+	HTTP_POST,
+	REPORT_SYMPTOM_SIMILARITY,
+} from "../../API/apiTypes";
 
 const GREETINGS_HELLO = "greetings.hello";
 const GREETINGS_BYE = "greetings.bye";
@@ -67,10 +69,15 @@ class ChatBot {
 	}
 
 	async getSymptomName(symptom: string): Promise<any> {
-		const response = await reportSymptomSimilarity(symptom);
+		const apiResponse = await makeApiCall({
+			endpoint: REPORT_SYMPTOM_SIMILARITY,
+			httpAction: HTTP_POST,
+			body: { symptom },
+		});
 
-		if (response.ok) {
-			return response.symptom;
+		if (apiResponse.ok) {
+			const { data } = apiResponse;
+			return data;
 		}
 
 		return null;
@@ -85,15 +92,19 @@ class ChatBot {
 			(symId: string) => +symId
 		);
 
-		const data = await getSimilarSymptoms(
-			symptomsArray,
-			new Date(dob).getFullYear(),
-			gender
-		);
+		const apiResponse = await makeApiCall({
+			endpoint: GET_SIMILAR_SYMPTOMS,
+			httpAction: HTTP_POST,
+			body: {
+				symptoms: symptomsArray,
+				dob: new Date(dob).getFullYear(),
+				gender,
+			},
+		});
 
-		if (data.ok) {
+		if (apiResponse.ok) {
 			// suggest similar symptoms
-			this.proposedSymptoms = data.proposedData;
+			this.proposedSymptoms = apiResponse.data;
 
 			// ask question about the symptom
 			this.setPropsedSymptomQuestion();
@@ -179,19 +190,24 @@ class ChatBot {
 			(symId: string) => +symId
 		);
 
-		const data = await getDiagnosis(
-			symptomsArray,
-			new Date(dob).getFullYear(),
-			gender
-		);
+		const apiResponse = await makeApiCall({
+			endpoint: GET_DIAGNOSIS,
+			httpAction: HTTP_POST,
+			body: {
+				symptoms: symptomsArray,
+				dob: new Date(dob).getFullYear(),
+				gender,
+			},
+		});
 
-		if (!data.ok) {
+		if (!apiResponse.ok) {
 			this.chatBotReply.content =
 				"I couldn't diagnose your symptom =( Please talk to your doctor.";
+			return;
 		}
 
-		const { proposedData } = data;
-		const { Name, ProfName, TreatmentDescription } = proposedData;
+		const { data } = apiResponse;
+		const { Name, ProfName, TreatmentDescription } = data;
 
 		this.chatBotReply.forwardable = true;
 		this.chatBotReply.question = false;
@@ -218,23 +234,28 @@ class ChatBot {
 
 	async analyzeUserText(text: string): Promise<ChatBubbleType> {
 		// get the user intent
-		const response = await analyzeMessageIntent(text);
+		const apiResponse = await makeApiCall({
+			endpoint: ANALYZE_MESSAGE_INTENT,
+			httpAction: HTTP_POST,
+			body: { message: text },
+		});
+		console.log(apiResponse);
 
-		if (!response?.data) {
+		if (!apiResponse?.ok) {
 			this.chatBotReply.content =
 				"Sorry, the chatbot is inactive right now. Please try again later.";
 
 			return this.replyToUser();
 		}
 
-		let { intent } = response.data;
+		let { intent } = apiResponse.data;
 		intent = intent.toLowerCase();
 
 		if (intent === GREETINGS_HELLO || intent === GREETINGS_BYE) {
 			// reset symptoms if the intent is bye
 			if (intent === GREETINGS_BYE) this.resetChatbotConvo();
 
-			this.chatBotReply.content = response.data.answer;
+			this.chatBotReply.content = apiResponse.data.answer;
 			return this.replyToUser();
 		}
 
@@ -267,6 +288,7 @@ class ChatBot {
 			}
 
 			const fullSymptomName = await this.getSymptomName(symptomName);
+
 			if (!fullSymptomName) {
 				this.chatBotReply.content =
 					"Sorry, I couldn't understand the symptom, could you please try again?";

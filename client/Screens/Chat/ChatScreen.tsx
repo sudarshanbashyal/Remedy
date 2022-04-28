@@ -4,7 +4,7 @@ import styles from "../../Styles/styles";
 import ChatHeader from "../../Components/Chat/ChatHeader";
 import ChatBubble from "../../Components/Chat/ChatBubble";
 import ChatInput from "../../Components/Chat/ChatInput";
-import { getChatMessages } from "../../API/api";
+import { makeApiCall } from "../../API/api";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import { useIsFocused } from "@react-navigation/native";
@@ -12,6 +12,7 @@ import {
 	getChatbotChats,
 	storeChatbotChats,
 } from "../../Utils/AsyncStorage/asyncStorage";
+import { GET_CHAT_MESSAGES, HTTP_GET } from "../../API/apiTypes";
 
 export type ChatBubbleType = {
 	authorId: string;
@@ -133,8 +134,17 @@ const ChatScreen = ({ route }) => {
 					previousChats = JSON.parse(data);
 				}
 			} else {
-				const { data } = await getChatMessages(chatId);
-				previousChats = data;
+				const apiResponse = await makeApiCall({
+					endpoint: GET_CHAT_MESSAGES,
+					httpAction: HTTP_GET,
+					auth: true,
+					queryParams: [chatId],
+				});
+
+				if (apiResponse.ok) {
+					const { data } = apiResponse;
+					previousChats = data;
+				}
 			}
 
 			// reverse array only if it comes from DB

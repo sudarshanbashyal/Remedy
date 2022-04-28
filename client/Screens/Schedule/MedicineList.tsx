@@ -6,11 +6,12 @@ import BottomNavigationBar from "../../Components/BottomNavigationBar";
 import MedicineListElement from "../../Components/Schedule/MedicineListElement";
 import { RootStackType } from "../../Stacks/RootStack";
 import styles from "../../Styles/styles";
-import { getMedicineList } from "../../API/api";
+import { makeApiCall } from "../../API/api";
 import MedicineListSkeleton from "../../Components/Skeletons/MedicineListSkeleton";
 import NoData from "../../Components/Feedbacks/NoData";
 import { RefreshIcon } from "../../Styles/SVG/Svg";
 import { colors } from "../../Styles/Colors";
+import { GET_MEDICINE_LIST, HTTP_GET } from "../../API/apiTypes";
 
 const MedicineList = () => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
@@ -38,10 +39,15 @@ const MedicineList = () => {
 
 	const getAllMedicines = async () => {
 		const newMedicineList = [];
-		const allMedicines = await getMedicineList();
 
-		if (allMedicines) {
-			const { data } = allMedicines;
+		const apiResponse = await makeApiCall({
+			endpoint: GET_MEDICINE_LIST,
+			httpAction: HTTP_GET,
+			auth: true,
+		});
+
+		if (apiResponse.ok) {
+			const { data } = apiResponse;
 
 			data.forEach((med: any) => {
 				newMedicineList.push({
@@ -56,7 +62,6 @@ const MedicineList = () => {
 			setMedicineList(newMedicineList);
 		}
 
-		// set isloading false
 		setIsLoading(false);
 	};
 

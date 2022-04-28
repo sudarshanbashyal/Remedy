@@ -1,5 +1,5 @@
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
 	Image,
 	TouchableOpacity,
@@ -23,9 +23,10 @@ import { formatFullDate } from "../../Utils/FormatTime/formatTime";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import Errors from "../../Components/Feedbacks/Errors";
-import { updateUserProfile } from "../../API/api";
+import { makeApiCall } from "../../API/api";
 import { updateUserProfileAction } from "../../Redux/Actions/UserActions";
 import { showToast } from "../../Utils/Toast";
+import { HTTP_PUT, UPDATE_USER_PROFILE } from "../../API/apiTypes";
 
 export interface UserProfileType {
 	firstName: string;
@@ -59,8 +60,6 @@ const ProfileSettings = () => {
 	});
 
 	const handleChange = (field: keyof UserProfileType, value: any) => {
-		console.log(field, value);
-
 		setUserData({
 			...userData,
 			[field]: value,
@@ -116,15 +115,27 @@ const ProfileSettings = () => {
 		const validData: boolean = validateData();
 		if (!validData) return;
 
-		const { data } = await updateUserProfile({
-			...userData,
-			profilePicture: encodedImage,
+		const apiResponse = await makeApiCall({
+			endpoint: UPDATE_USER_PROFILE,
+			httpAction: HTTP_PUT,
+			auth: true,
+			body: {
+				userData: {
+					...userData,
+					profilePicture: encodedImage,
+				},
+			},
 		});
 
-		if (data) {
+		if (apiResponse.ok) {
+			const { data } = apiResponse;
+
 			dispatch(updateUserProfileAction(data));
 			showToast("success", "Profile successfully updated.");
+			return;
 		}
+
+		showToast("error", "Could not update profile");
 	};
 
 	return (

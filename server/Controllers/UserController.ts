@@ -35,7 +35,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
 		return res.status(201).json({
 			ok: true,
-			user,
+			data: user,
 		});
 	} catch (error) {
 		return serverError(error as Error, res);
@@ -82,7 +82,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
 		return res.json({
 			ok: true,
-			user: { ...user, token },
+			data: { ...user, token },
 		});
 	} catch (error) {
 		return serverError(error as Error, res);
@@ -105,7 +105,9 @@ export const emailExists = async (req: Request, res: Response) => {
 
 		return res.status(400).json({
 			ok: false,
-			emailExists: true,
+			data: {
+				emailExists: true,
+			},
 		});
 	} catch (error) {
 		return serverError(error as Error, res);
@@ -149,7 +151,7 @@ export const fetchUser = async (req: AuthRequestType, res: Response) => {
 
 		return res.json({
 			ok: true,
-			user,
+			data: user,
 		});
 	} catch (error) {
 		return serverError(error as Error, res);
@@ -163,7 +165,7 @@ export const updateUserProfile = async (
 	try {
 		const { userId } = req;
 		const { firstName, lastName, bio, dob, profilePicture, gender } =
-			req.body;
+			req.body.userData;
 
 		let imageLink = null;
 
@@ -226,7 +228,7 @@ export const updateUserAccount = async (
 ) => {
 	try {
 		const { userId } = req;
-		const { email, password } = req.body;
+		const { email, password } = req.body.accountData;
 
 		const fieldsToUpdate: { email: string; password?: string } = {
 			email,
