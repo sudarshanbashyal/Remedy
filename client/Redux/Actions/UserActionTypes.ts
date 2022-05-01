@@ -45,7 +45,7 @@ export interface MedicineType {
 }
 
 export interface ScheduleType {
-	scheuleId: string;
+	scheduleId: string;
 	hour: number;
 	minutes: number;
 	medicineId: string;

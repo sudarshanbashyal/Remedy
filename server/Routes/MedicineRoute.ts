@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
 	addMedicine,
 	getFrequencies,
+	getIntake,
 	getMedicineDetails,
 	getMedicineList,
 	updateMedicine,
@@ -21,5 +22,7 @@ router.put("/updateMedicine/:medicineId", isAuth, updateMedicine);
 router.get("/getFrequencies", isAuth, getFrequencies);
 
 router.get("/getMedicineList", isAuth, getMedicineList);
+
+router.post("/getIntake", getIntake);
 
 export default router;

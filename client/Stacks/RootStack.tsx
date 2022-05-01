@@ -21,6 +21,7 @@ import MedicineStats from "../Screens/Stats/MedicineStats";
 import io, { Socket } from "socket.io-client";
 import { API_URL } from "../API/api";
 import RequestScreen from "../Screens/Chat/RequestScreen";
+import IntakeRegister from "../Screens/Schedule/IntakeRegister";
 
 export type RootStackType = {
 	ChatList: any;
@@ -43,6 +44,7 @@ export type RootStackType = {
 	ProfileSettings: any;
 	AccountSettings: any;
 	RequestScreen: any;
+	IntakeRegister: any;
 };
 
 const slideFromRightAnimation: NativeStackNavigationOptions = {
@@ -83,6 +85,7 @@ const RootStack = () => {
 			}}
 		>
 			<Stack.Screen name="ChatList" component={ChatList} />
+
 			<Stack.Screen
 				name="ChatScreen"
 				options={slideFromRightAnimation}
@@ -98,19 +101,27 @@ const RootStack = () => {
 				options={slideFromRightAnimation}
 				component={ChatMedia}
 			/>
+
+			<Stack.Screen name="IntakeRegister" component={IntakeRegister} />
+
 			<Stack.Screen name="MedicineStats" component={MedicineStats} />
+
 			<Stack.Screen name="MedicineList" component={MedicineList} />
+
 			<Stack.Screen name="Profile" component={Profile} />
+
 			<Stack.Screen
 				name="ProfileSettings"
 				options={slideFromRightAnimation}
 				component={ProfileSettings}
 			/>
+
 			<Stack.Screen
 				name="AccountSettings"
 				options={slideFromRightAnimation}
 				component={AccountSettings}
 			/>
+
 			<Stack.Screen
 				name="RequestScreen"
 				options={slideFromRightAnimation}

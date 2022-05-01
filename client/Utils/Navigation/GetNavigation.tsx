@@ -4,7 +4,12 @@ import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
-import { ChatBubbleIcon, GraphIcon, PillsIcon } from "../../Styles/SVG/Svg";
+import {
+	CalendarTickIcon,
+	ChatBubbleIcon,
+	GraphIcon,
+	PillsIcon,
+} from "../../Styles/SVG/Svg";
 
 const RenderTabComponent = ({ navigationName }) => {
 	const {
@@ -22,10 +27,7 @@ const RenderTabComponent = ({ navigationName }) => {
 							currentNavigation
 						)}
 					></View>
-					<ChatBubbleIcon
-						size={24}
-						color={getColor(navigationName, currentNavigation)}
-					/>
+					<ChatBubbleIcon size={24} color={colors.primaryWhite} />
 				</View>
 			);
 
@@ -38,10 +40,20 @@ const RenderTabComponent = ({ navigationName }) => {
 							currentNavigation
 						)}
 					></View>
-					<PillsIcon
-						size={35}
-						color={getColor(navigationName, currentNavigation)}
-					/>
+					<PillsIcon size={35} color={colors.primaryWhite} />
+				</View>
+			);
+
+		case "IntakeRegister":
+			return (
+				<View style={styles.bottomTabIconContainer}>
+					<View
+						style={currentNavigationTab(
+							navigationName,
+							currentNavigation
+						)}
+					></View>
+					<CalendarTickIcon size={32} color={colors.primaryWhite} />
 				</View>
 			);
 
@@ -54,10 +66,7 @@ const RenderTabComponent = ({ navigationName }) => {
 							currentNavigation
 						)}
 					></View>
-					<GraphIcon
-						size={24}
-						color={getColor(navigationName, currentNavigation)}
-					/>
+					<GraphIcon size={24} color={colors.primaryWhite} />
 				</View>
 			);
 
@@ -81,15 +90,6 @@ const RenderTabComponent = ({ navigationName }) => {
 				</View>
 			);
 	}
-};
-
-const getColor = (
-	navigationName: string,
-	currentNavigation: string
-): string => {
-	if (navigationName === currentNavigation) return colors.primaryRed;
-
-	return colors.primaryWhite;
 };
 
 const currentNavigationTab = (

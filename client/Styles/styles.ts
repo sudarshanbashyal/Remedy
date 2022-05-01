@@ -1,7 +1,7 @@
 import { Dimensions, StyleSheet } from "react-native";
 import { colors } from "./Colors";
 
-const dimens = {
+export const dimens = {
 	small: 5,
 	regular: 10,
 	medium: 20,
@@ -889,6 +889,66 @@ const styles = StyleSheet.create({
 	yellowButton: {
 		fontFamily: fonts.Poppins.medium,
 		color: colors.primaryGray,
+	},
+
+	stripCalendar: {
+		height: dimens.xxLarge * 2.5,
+		paddingTop: dimens.regular,
+		paddingBottom: dimens.small,
+	},
+	stripCalendarHeader: {
+		marginBottom: dimens.medium,
+		color: colors.opaqueWhite,
+	},
+	stripCalendarDateNumber: {
+		color: colors.primaryWhite,
+	},
+	stripCalendarDateName: {
+		color: colors.opaqueWhite,
+	},
+	stripCalendarIconStyle: {
+		display: "none",
+	},
+
+	highlightDateNumberStyle: {
+		color: colors.primaryWhite,
+	},
+	highlightDateNameStyle: {
+		color: colors.primaryWhite,
+	},
+	highlightDateContainerStyle: {
+		backgroundColor: colors.primaryBlue,
+		width: dimens.xLarge + dimens.regular,
+		height: dimens.xLarge + dimens.regular,
+		borderRadius: dimens.xLarge,
+	},
+
+	intakeContainer: {
+		marginTop: dimens.large,
+		paddingHorizontal: dimens.medium,
+	},
+	intakeEntryTime: {
+		color: colors.primaryWhite,
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.large,
+	},
+	intakeEntryContainer: {
+		borderRadius: dimens.regular,
+		borderWidth: 2,
+		paddingHorizontal: dimens.regular,
+		paddingVertical: dimens.regular,
+		borderColor: colors.lightGray,
+	},
+	intakeName: {
+		color: colors.primaryWhite,
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.regular,
+	},
+	intakeStatus: {
+		color: colors.primaryGreen,
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.regular,
+		marginTop: dimens.small,
 	},
 });
 

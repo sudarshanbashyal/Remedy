@@ -11,6 +11,7 @@ import {
 } from "../Utils/APIMedic";
 
 let nlp: any;
+
 const getNlp = async () => {
 	const trailedNlp = await trainModel();
 	nlp = trailedNlp;

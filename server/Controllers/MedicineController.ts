@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { serverError } from ".";
 import { PrismaDB } from "..";
 import { AuthRequestType } from "../Utils/Auth";
@@ -265,6 +265,35 @@ export const getFrequencies = async (req: AuthRequestType, res: Response) => {
 		return res.json({
 			ok: true,
 			data: frequencies,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
+export const getIntake = async (req: Request, res: Response) => {
+	try {
+		console.log(req.body);
+		const { date, schedules } = req.body;
+		console.log(date, schedules);
+
+		const intakeEntries = [];
+
+		for (let schedule of schedules) {
+			const entry = await PrismaDB.intake.findFirst({
+				where: {
+					scheduleId: schedule as string,
+					date: date as Date,
+				},
+			});
+
+			if (!entry) {
+				console.log("No entry found for the schedule: ", schedule);
+			}
+		}
+
+		return res.json({
+			ok: true,
 		});
 	} catch (error) {
 		return serverError(error as Error, res);

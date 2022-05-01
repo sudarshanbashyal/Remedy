@@ -19,7 +19,13 @@ const BottomNavigationBar = () => {
 		navigation.navigate(name);
 	};
 
-	const bottomTabs = ["ChatList", "MedicineList", "MedicineStats", "Profile"];
+	const bottomTabs = [
+		"ChatList",
+		"MedicineList",
+		"IntakeRegister",
+		"MedicineStats",
+		"Profile",
+	];
 
 	return (
 		<View style={styles.bottomNavigation}>

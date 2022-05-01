@@ -3,6 +3,7 @@ import { LogBox } from "react-native";
 import { Provider } from "react-redux";
 import { Store } from "./Redux/store";
 import StackRenderer from "./StackRenderer";
+import "react-native-gesture-handler";
 
 const App = () => {
 	useEffect(() => {
