@@ -357,7 +357,10 @@ export const updateIntakeStatus = async (
 		const { intakeId } = req.params;
 		let { intakeStatus, intakeTime } = req.body;
 
-		if (intakeStatus.toLowerCase() === "skipped") {
+		if (
+			intakeStatus.toLowerCase() === "skipped" ||
+			intakeStatus.toLowerCase() === "unlisted"
+		) {
 			intakeTime = undefined;
 		}
 

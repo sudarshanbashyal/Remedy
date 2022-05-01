@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ReactElement } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { makeApiCall } from "../../API/api";
 import { HTTP_PUT, UPDATE_INTAKE_STATUS } from "../../API/apiTypes";
@@ -8,7 +8,6 @@ import { formatHalvedTime } from "../../Utils/FormatTime/formatTime";
 
 const IntakeEntry = ({
 	intake: initialIntake,
-	selectedDate,
 }: {
 	intake: IntakeType;
 	selectedDate: Date;
@@ -16,7 +15,10 @@ const IntakeEntry = ({
 	const [intake, setIntake] = useState<IntakeType>(initialIntake);
 	const [expanded, setExpanded] = useState<boolean>(false);
 	const [statusStyle, setStatusStyle] = useState<any>(styles.intakeStatus);
-	const [intakeStatus, setIntakeStatus] = useState("");
+	const [intakeStatusDesc, setIntakeStatusDesc] = useState<string>("");
+	const [actionButtons, setActionsButtons] = useState<ReactElement>(
+		<View></View>
+	);
 
 	const { schedule } = intake;
 	const { medicine } = schedule;
@@ -51,26 +53,75 @@ const IntakeEntry = ({
 	useEffect(() => {
 		let style = { ...styles.intakeStatus };
 		let status = "";
+		let actions = <View></View>;
 
 		switch (intake.status.toLowerCase()) {
 			case "taken":
 				style = { ...style, ...styles.takenIntakeStatus };
 				status = `Taken at: ${formatHalvedTime(intake.intakeTime)}`;
+				actions = (
+					<TouchableOpacity
+						style={styles.blueButtonContainer}
+						onPress={() => {
+							updateStatus("Unlisted");
+						}}
+					>
+						<Text style={styles.blueButton}>Undo Intake</Text>
+					</TouchableOpacity>
+				);
 				break;
 
 			case "skipped":
 				style = { ...style, ...styles.skippedIntakeStatus };
 				status = `Skipped for the schedule`;
+				actions = (
+					<TouchableOpacity
+						style={styles.blueButtonContainer}
+						onPress={() => {
+							updateStatus("Unlisted");
+						}}
+					>
+						<Text style={styles.blueButton}>Undo Skip</Text>
+					</TouchableOpacity>
+				);
 				break;
 
 			case "unlisted":
 				style = { ...style, ...styles.unlistedIntakeStatus };
 				status = "Intake not listed yet.";
+				actions = (
+					<View style={styles.rowStartContainer}>
+						<TouchableOpacity
+							style={styles.blueButtonContainer}
+							onPress={() => {
+								updateStatus("Taken");
+							}}
+						>
+							<Text style={styles.blueButton}>Mark Taken</Text>
+						</TouchableOpacity>
+
+						<TouchableOpacity
+							onPress={() => {
+								updateStatus("Skipped");
+							}}
+						>
+							<Text
+								style={{
+									...styles.whiteTextButton,
+									marginLeft: dimens.medium,
+								}}
+							>
+								Skip
+							</Text>
+						</TouchableOpacity>
+					</View>
+				);
 				break;
 		}
 
-		setIntakeStatus(status);
+		setIntakeStatusDesc(status);
 		setStatusStyle(style);
+		setActionsButtons(actions);
 	}, [intake]);
 
 	return (
@@ -86,35 +137,11 @@ const IntakeEntry = ({
 					}}
 				>
 					<Text style={styles.intakeName}>{medicine.name}</Text>
-					<Text style={statusStyle}>{intakeStatus}</Text>
+					<Text style={statusStyle}>{intakeStatusDesc}</Text>
 
 					{expanded && (
 						<View style={styles.rowStartContainer}>
-							<TouchableOpacity
-								style={styles.blueButtonContainer}
-								onPress={() => {
-									updateStatus("Taken");
-								}}
-							>
-								<Text style={styles.blueButton}>
-									Mark Taken
-								</Text>
-							</TouchableOpacity>
-
-							<TouchableOpacity
-								onPress={() => {
-									updateStatus("Skipped");
-								}}
-							>
-								<Text
-									style={{
-										...styles.whiteTextButton,
-										marginLeft: dimens.medium,
-									}}
-								>
-									Skip
-								</Text>
-							</TouchableOpacity>
+							{actionButtons}
 						</View>
 					)}
 				</TouchableOpacity>
