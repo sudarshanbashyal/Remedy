@@ -4,15 +4,18 @@ import { IntakeType } from "../../Screens/Schedule/IntakeRegister";
 import styles, { dimens } from "../../Styles/styles";
 
 const IntakeEntry = ({ intake }: { intake: IntakeType }) => {
-	let intakeHour = intake.hour > 12 ? intake.hour - 12 : intake.hour;
-	let intakeHalf = intake.hour > 12 ? "PM" : "AM";
+	const { schedule } = intake;
+	const { medicine } = schedule;
+
+	let intakeHour = schedule.hour > 12 ? schedule.hour - 12 : schedule.hour;
+	let intakeHalf = schedule.hour > 12 ? "PM" : "AM";
 
 	const [expanded, setExpanded] = useState<boolean>(false);
 
 	return (
 		<View style={{ marginBottom: 20 }}>
 			<Text style={styles.intakeEntryTime}>
-				{intakeHour}:{intake.minutes} {intakeHalf}
+				{intakeHour}:{schedule.minutes} {intakeHalf}
 			</Text>
 
 			<View style={styles.intakeEntryContainer}>
@@ -21,7 +24,7 @@ const IntakeEntry = ({ intake }: { intake: IntakeType }) => {
 						setExpanded(!expanded);
 					}}
 				>
-					<Text style={styles.intakeName}>{intake.name}</Text>
+					<Text style={styles.intakeName}>{medicine.name}</Text>
 
 					<Text style={styles.intakeStatus}>
 						Taken today at 6:30 AM

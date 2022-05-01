@@ -127,8 +127,8 @@ model Request{
 model Intake{
 	intakeId String @id() @default(uuid())
 	status IntakeStatus @default(Unlisted)	
-	date DateTime?
-	intakeDate DateTime?
+	date String
+	intakeTIme DateTime?
 	scheduleId String
 	schedule Schedule @relation(fields:[scheduleId], references:[scheduleId])
 }

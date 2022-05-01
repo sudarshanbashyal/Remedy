@@ -273,9 +273,7 @@ export const getFrequencies = async (req: AuthRequestType, res: Response) => {
 
 export const getIntake = async (req: Request, res: Response) => {
 	try {
-		console.log(req.body);
 		const { date, schedules } = req.body;
-		console.log(date, schedules);
 
 		const intakeEntries = [];
 
@@ -283,17 +281,69 @@ export const getIntake = async (req: Request, res: Response) => {
 			const entry = await PrismaDB.intake.findFirst({
 				where: {
 					scheduleId: schedule as string,
-					date: date as Date,
+					date: date as string,
+				},
+				select: {
+					intakeId: true,
+					status: true,
+					scheduleId: true,
+					intakeTIme: true,
+					schedule: {
+						select: {
+							hour: true,
+							minutes: true,
+							scheduleId: true,
+							medicine: {
+								select: {
+									medicineId: true,
+									name: true,
+								},
+							},
+						},
+					},
 				},
 			});
 
-			if (!entry) {
-				console.log("No entry found for the schedule: ", schedule);
+			if (entry) {
+				intakeEntries.push(entry);
+				continue;
+			}
+
+			// create a new entry for the schedule/day if none found
+			const newEntry = await PrismaDB.intake.create({
+				data: {
+					date: date as string,
+					scheduleId: schedule as string,
+				},
+				select: {
+					intakeId: true,
+					status: true,
+					scheduleId: true,
+					intakeTIme: true,
+					schedule: {
+						select: {
+							hour: true,
+							minutes: true,
+							scheduleId: true,
+							medicine: {
+								select: {
+									medicineId: true,
+									name: true,
+								},
+							},
+						},
+					},
+				},
+			});
+
+			if (newEntry) {
+				intakeEntries.push(newEntry);
 			}
 		}
 
 		return res.json({
 			ok: true,
+			data: intakeEntries,
 		});
 	} catch (error) {
 		return serverError(error as Error, res);

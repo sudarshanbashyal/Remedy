@@ -16,10 +16,19 @@ import { makeApiCall } from "../../API/api";
 import { GET_INTAKE, HTTP_POST } from "../../API/apiTypes";
 
 export interface IntakeType {
-	medicineId: string;
-	name: string;
-	hour: number;
-	minutes: number;
+	intakeId: string;
+	status: string;
+	scheduleId: string;
+	intakeTime: Date;
+	schedule: {
+		hour: number;
+		minutes: number;
+		scheduleId: string;
+		medicine: {
+			medicineId: string;
+			name: string;
+		};
+	};
 }
 
 const IntakeRegister = () => {
@@ -28,6 +37,7 @@ const IntakeRegister = () => {
 	} = useSelector((state: RootStore) => state.userReducer);
 
 	const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+	const [intakes, setIntakes] = useState<IntakeType[]>([]);
 
 	const changeDate = (date: Moment) => {
 		setSelectedDate(moment(date).toDate());
@@ -50,18 +60,20 @@ const IntakeRegister = () => {
 			});
 
 			// query API to get entry for the day
+			const date = moment(new Date()).format("YYYY-MM-DD");
 
 			const apiResponse = await makeApiCall({
 				endpoint: GET_INTAKE,
 				httpAction: HTTP_POST,
 				body: {
 					schedules: scheduleIds,
-					date: new Date(),
+					date: date,
 				},
 			});
 
 			if (apiResponse.ok) {
-				console.log(apiResponse);
+				const { data } = apiResponse;
+				setIntakes(data);
 			}
 		})();
 	}, [selectedDate]);
@@ -87,7 +99,11 @@ const IntakeRegister = () => {
 					iconStyle={styles.stripCalendarIconStyle}
 				/>
 
-				<View style={styles.intakeContainer}></View>
+				<View style={styles.intakeContainer}>
+					{intakes.map((intake: IntakeType) => (
+						<IntakeEntry key={intake.intakeId} intake={intake} />
+					))}
+				</View>
 			</ScrollView>
 
 			<BottomNavigationBar />
