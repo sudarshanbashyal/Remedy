@@ -56,3 +56,17 @@ export const formatMessageTime = (date: Date): string => {
 export const getDayDifference = (date: Date): number => {
 	return moment().diff(moment(date), "days");
 };
+
+export const formatHalvedTime = (date: Date = undefined): string => {
+	const currentDate = date ? new Date(date) : new Date();
+	let formattedTime = "";
+
+	const hour = currentDate.getHours();
+	const minutes = currentDate.getMinutes();
+
+	formattedTime += hour > 12 ? hour - 12 : hour;
+	formattedTime += minutes >= 10 ? `:${minutes}` : `:0${minutes}`;
+	formattedTime += hour > 12 ? " PM" : " AM";
+
+	return formattedTime;
+};

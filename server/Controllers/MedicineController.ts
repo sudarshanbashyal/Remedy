@@ -271,7 +271,7 @@ export const getFrequencies = async (req: AuthRequestType, res: Response) => {
 	}
 };
 
-export const getIntake = async (req: Request, res: Response) => {
+export const getIntake = async (req: AuthRequestType, res: Response) => {
 	try {
 		const { date, schedules } = req.body;
 
@@ -286,8 +286,7 @@ export const getIntake = async (req: Request, res: Response) => {
 				select: {
 					intakeId: true,
 					status: true,
-					scheduleId: true,
-					intakeTIme: true,
+					intakeTime: true,
 					schedule: {
 						select: {
 							hour: true,
@@ -319,7 +318,7 @@ export const getIntake = async (req: Request, res: Response) => {
 					intakeId: true,
 					status: true,
 					scheduleId: true,
-					intakeTIme: true,
+					intakeTime: true,
 					schedule: {
 						select: {
 							hour: true,
@@ -344,6 +343,41 @@ export const getIntake = async (req: Request, res: Response) => {
 		return res.json({
 			ok: true,
 			data: intakeEntries,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
+export const updateIntakeStatus = async (
+	req: AuthRequestType,
+	res: Response
+) => {
+	try {
+		const { intakeId } = req.params;
+		let { intakeStatus, intakeTime } = req.body;
+
+		if (intakeStatus.toLowerCase() === "skipped") {
+			intakeTime = undefined;
+		}
+
+		const updatedEntry = await PrismaDB.intake.update({
+			where: {
+				intakeId: intakeId as string,
+			},
+			data: {
+				status: intakeStatus,
+				intakeTime: intakeTime,
+			},
+			select: {
+				status: true,
+				intakeTime: true,
+			},
+		});
+
+		return res.json({
+			ok: true,
+			data: updatedEntry,
 		});
 	} catch (error) {
 		return serverError(error as Error, res);

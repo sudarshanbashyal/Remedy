@@ -59,12 +59,13 @@ const IntakeRegister = () => {
 				}
 			});
 
-			// query API to get entry for the day
-			const date = moment(new Date()).format("YYYY-MM-DD");
+			// query API to get entry for the selected day
+			const date = moment(selectedDate).format("YYYY-MM-DD");
 
 			const apiResponse = await makeApiCall({
 				endpoint: GET_INTAKE,
 				httpAction: HTTP_POST,
+				auth: true,
 				body: {
 					schedules: scheduleIds,
 					date: date,
@@ -101,7 +102,11 @@ const IntakeRegister = () => {
 
 				<View style={styles.intakeContainer}>
 					{intakes.map((intake: IntakeType) => (
-						<IntakeEntry key={intake.intakeId} intake={intake} />
+						<IntakeEntry
+							key={intake.intakeId}
+							intake={intake}
+							selectedDate={selectedDate}
+						/>
 					))}
 				</View>
 			</ScrollView>

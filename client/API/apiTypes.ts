@@ -21,6 +21,7 @@ export const ADD_MESSAGE_REQUEST = "addMessageRequest";
 export const GET_INCOMING_REQUESTS = "getIncomingRequests";
 export const CHANGE_REQUEST_STATUS = "changeRequestStatus";
 export const GET_INTAKE = "getIntake";
+export const UPDATE_INTAKE_STATUS = "updateIntakeStatus";
 
 export type ApiEndpointType =
 	| typeof CHECK_EMAIL
@@ -45,7 +46,8 @@ export type ApiEndpointType =
 	| typeof ADD_MESSAGE_REQUEST
 	| typeof GET_INCOMING_REQUESTS
 	| typeof CHANGE_REQUEST_STATUS
-	| typeof GET_INTAKE;
+	| typeof GET_INTAKE
+	| typeof UPDATE_INTAKE_STATUS;
 
 export const HTTP_POST = "POST";
 export const HTTP_GET = "GET";

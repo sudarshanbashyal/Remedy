@@ -945,10 +945,19 @@ const styles = StyleSheet.create({
 		fontSize: fonts.size.regular,
 	},
 	intakeStatus: {
-		color: colors.primaryGreen,
+		color: colors.opaqueWhite,
 		fontFamily: fonts.Poppins.regular,
 		fontSize: fonts.size.regular,
 		marginTop: dimens.small,
+	},
+	unlistedIntakeStatus: {
+		color: colors.opaqueWhite,
+	},
+	takenIntakeStatus: {
+		color: colors.primaryGreen,
+	},
+	skippedIntakeStatus: {
+		color: colors.primaryRed,
 	},
 });
 
