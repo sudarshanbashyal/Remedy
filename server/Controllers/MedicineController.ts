@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { serverError } from ".";
 import { PrismaDB } from "..";
 import { AuthRequestType } from "../Utils/Auth";

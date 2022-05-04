@@ -11,6 +11,8 @@ import {
 	HTTP_POST,
 	REPORT_SYMPTOM_SIMILARITY,
 } from "../../API/apiTypes";
+import specializedHospitals from "../Hospitals/SpecializedHospitals";
+import { navigationRef } from "../../App";
 
 const GREETINGS_HELLO = "greetings.hello";
 const GREETINGS_BYE = "greetings.bye";
@@ -18,6 +20,7 @@ const INTENT_NONE = "none";
 const INTENT_SYMPTOM = "symptom";
 const REACTION_POSITIVE = "reaction.positive";
 const REACTION_NEGATIVE = "reaction.negative";
+const INTENT_HOSPITAL = "intent.hospital";
 
 const CONVERSATION_START = "conversation.start";
 const CONVERSATION_END = "conversation.end";
@@ -232,6 +235,47 @@ class ChatBot {
 		return this.replyToUser();
 	}
 
+	async getSpecializedHospitals(text: string): Promise<boolean> {
+		const {
+			data: { keywords },
+		} = await retext().use(retextPos).use(retextKeywords).process(text);
+
+		let stem = "";
+		let specializationFound: boolean = false;
+		let specializingHospitals = [];
+		const hospitalCategories = Object.keys(specializedHospitals);
+
+		if (Array.isArray(keywords)) {
+			for (let keyword of keywords) {
+				stem = keyword.stem.trim().toLowerCase();
+
+				if (hospitalCategories.includes(stem)) {
+					specializationFound = true;
+					specializingHospitals = specializedHospitals[stem];
+
+					break;
+				}
+			}
+		}
+
+		if (!specializationFound) {
+			// no specializing hospitals found
+			this.chatBotReply.content = `Sorry, no hospitals found for ${stem}.`;
+			return specializationFound;
+		}
+
+		// redirect user to maps screen
+		setTimeout(() => {
+			navigationRef.current?.navigate("SpecializedMaps", {
+				hospitals: specializingHospitals,
+				category: stem,
+			});
+		}, 1000);
+
+		this.chatBotReply.content = `Found ${specializingHospitals.length} hospitals for ${stem}. Redirecting you to the maps.`;
+		return specializationFound;
+	}
+
 	async analyzeUserText(text: string): Promise<ChatBubbleType> {
 		// get the user intent
 		const apiResponse = await makeApiCall({
@@ -250,6 +294,13 @@ class ChatBot {
 
 		let { intent } = apiResponse.data;
 		intent = intent.toLowerCase();
+
+		// user is asking for specialized hospitals
+		if (intent === INTENT_HOSPITAL) {
+			await this.getSpecializedHospitals(text);
+			this.chatBotReply.question = false;
+			return this.replyToUser();
+		}
 
 		if (intent === GREETINGS_HELLO || intent === GREETINGS_BYE) {
 			// reset symptoms if the intent is bye

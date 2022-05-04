@@ -59,6 +59,26 @@ export const trainModel = async () => {
 	nlp.addDocument("en", "not really", "reaction.negative");
 	nlp.addDocument("en", "don't think so", "reaction.negative");
 
+	// hosital intents;
+	nlp.addDocument(
+		"en",
+		"Show me hospitals specialized for cancer",
+		"intent.hospital"
+	);
+	nlp.addDocument(
+		"en",
+		"What hospitals are specialized for cancer?",
+		"intent.hospital"
+	);
+	nlp.addDocument("en", "Hospitals for Cancer", "intent.hospital");
+	nlp.addDocument("en", "Where are hospitals for cancer", "intent.hospital");
+	nlp.addDocument("en", "cancer hospital", "intent.hospital");
+	nlp.addDocument(
+		"en",
+		"show me direction to cancer hospital",
+		"intent.hospital"
+	);
+
 	// answers for greetings and goodbye intents
 	// the answers for symptom intent will be generated based on user input
 	nlp.addAnswer("en", "greetings.bye", "Till next time");

@@ -8,6 +8,7 @@
 	<uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
 	  android:usesCleartextTraffic="true"
@@ -24,6 +25,10 @@
 	<!-- Change the resource name to your App's accent color - or any other color you want -->
 	<meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
 				android:resource="@color/white"/> <!-- or @android:color/{name} to use a standard color -->
+
+	<meta-data
+    android:name="com.google.android.geo.API_KEY"
+		android:value="AIzaSyD9A_2e6aiMoqh9ycRHBpuh2gjqrydA8ag"/>
 
 	<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
 	<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />

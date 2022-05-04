@@ -959,6 +959,48 @@ const styles = StyleSheet.create({
 	skippedIntakeStatus: {
 		color: colors.primaryRed,
 	},
+
+	hospitalListContainer: {
+		paddingHorizontal: dimens.regular,
+		height: "50%",
+	},
+	hospitalCategoryTitle: {
+		fontFamily: fonts.Poppins.bold,
+		fontSize: fonts.size.large,
+		color: colors.opaqueWhite,
+	},
+	hospitalCategoryDescription: {
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.small,
+		color: colors.opaqueWhite,
+		marginBottom: dimens.large,
+	},
+	hospitalCategoryEntryContainer: {
+		padding: dimens.small,
+		borderWidth: 1,
+		borderColor: colors.opaqueWhite,
+		borderRadius: dimens.small,
+		marginBottom: dimens.medium,
+	},
+	hospitalCategoryEntryText: {
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.regular,
+		color: colors.primaryWhite,
+	},
+	selectedHospitalContainer: {
+		backgroundColor: colors.primaryBlue,
+		borderColor: colors.primaryBlue,
+	},
+
+	hospitalHamburgerContainer: {
+		zIndex: 999,
+		position: "absolute",
+		top: dimens.regular,
+		right: dimens.regular,
+		padding: dimens.small,
+		backgroundColor: colors.primaryBlue,
+		borderRadius: dimens.small,
+	},
 });
 
 export default styles;

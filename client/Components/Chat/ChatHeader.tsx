@@ -20,6 +20,10 @@ const ChatHeader = ({
 		navigation.goBack();
 	};
 
+	const goToMaps = () => {
+		navigation.navigate("SpecializedMaps");
+	};
+
 	const goToMedia = () => {
 		navigation.navigate("ChatMedia", {
 			chatId,
@@ -48,7 +52,7 @@ const ChatHeader = ({
 
 					<TouchableOpacity
 						style={styles.pageHeaderIcon}
-						onPress={goToMedia}
+						onPress={chatbot ? goToMaps : goToMedia}
 					>
 						<MoreIcon size={24} color={colors.primaryRed} />
 					</TouchableOpacity>

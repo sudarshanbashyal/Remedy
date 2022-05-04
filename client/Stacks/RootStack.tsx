@@ -22,6 +22,7 @@ import io, { Socket } from "socket.io-client";
 import { API_URL } from "../API/api";
 import RequestScreen from "../Screens/Chat/RequestScreen";
 import IntakeRegister from "../Screens/Schedule/IntakeRegister";
+import SpecializedMaps from "../Screens/Map/SpecializedMaps";
 
 export type RootStackType = {
 	ChatList: any;
@@ -45,6 +46,10 @@ export type RootStackType = {
 	AccountSettings: any;
 	RequestScreen: any;
 	IntakeRegister: any;
+	SpecializedMaps: {
+		hospitals: any;
+		category: any;
+	};
 };
 
 const slideFromRightAnimation: NativeStackNavigationOptions = {
@@ -109,6 +114,12 @@ const RootStack = () => {
 			<Stack.Screen name="MedicineList" component={MedicineList} />
 
 			<Stack.Screen name="Profile" component={Profile} />
+
+			<Stack.Screen
+				name="SpecializedMaps"
+				options={slideFromRightAnimation}
+				component={SpecializedMaps}
+			/>
 
 			<Stack.Screen
 				name="ProfileSettings"

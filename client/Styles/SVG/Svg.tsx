@@ -500,3 +500,20 @@ export const RefreshIcon = ({ color, size }: Props) => {
 		</Svg>
 	);
 };
+
+export const HamburgerIcon = ({ color, size }: Props) => {
+	return (
+		<Svg
+			viewBox="0 0 30 30"
+			width={size}
+			height={size}
+			fill-rule="evenodd"
+			clip-rule="evenodd"
+		>
+			<Path
+				fill={color}
+				d="M24 6h-24v-4h24v4zm0 4h-24v4h24v-4zm0 8h-24v4h24v-4z"
+			/>
+		</Svg>
+	);
+};

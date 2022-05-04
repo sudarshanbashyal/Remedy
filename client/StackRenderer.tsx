@@ -11,6 +11,7 @@ import { makeApiCall } from "./API/api";
 import { loginUserAction } from "./Redux/Actions/UserActions";
 import { HTTP_GET, FETCH_USER } from "./API/apiTypes";
 import { showToast } from "./Utils/Toast";
+import { navigationRef } from "./App";
 
 const StackRenderer = () => {
 	const dispatch = useDispatch();
@@ -93,7 +94,7 @@ const StackRenderer = () => {
 	}, []);
 
 	return (
-		<NavigationContainer>
+		<NavigationContainer ref={navigationRef}>
 			<StatusBar backgroundColor={colors.primaryGray} />
 
 			{user ? <RootStack /> : <AuthStack />}
