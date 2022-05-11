@@ -8,6 +8,7 @@ import {
 	ANALYZE_MESSAGE_INTENT,
 	GET_DIAGNOSIS,
 	GET_SIMILAR_SYMPTOMS,
+	GET_SPECIALIZED_HOSPITALS,
 	HTTP_POST,
 	REPORT_SYMPTOM_SIMILARITY,
 } from "../../API/apiTypes";
@@ -240,31 +241,19 @@ class ChatBot {
 			data: { keywords },
 		} = await retext().use(retextPos).use(retextKeywords).process(text);
 
-		let stem = "";
-		let specializationFound: boolean = false;
-		let specializingHospitals = [];
-		const hospitalCategories = Object.keys(specializedHospitals);
+		const apiResponse = await makeApiCall({
+			endpoint: GET_SPECIALIZED_HOSPITALS,
+			body: { keywords: keywords },
+			httpAction: HTTP_POST,
+		});
 
-		if (Array.isArray(keywords)) {
-			for (let keyword of keywords) {
-				stem = keyword.stem.trim().toLowerCase();
-
-				if (hospitalCategories.includes(stem)) {
-					specializationFound = true;
-					specializingHospitals = specializedHospitals[stem];
-
-					break;
-				}
-			}
+		if (!apiResponse.ok) {
+			this.chatBotReply.content = apiResponse.error.message;
+			return false;
 		}
 
-		if (!specializationFound) {
-			// no specializing hospitals found
-			this.chatBotReply.content = `Sorry, no hospitals found for ${stem}.`;
-			return specializationFound;
-		}
+		const { specializingHospitals, stem } = apiResponse.data;
 
-		// redirect user to maps screen
 		setTimeout(() => {
 			navigationRef.current?.navigate("SpecializedMaps", {
 				hospitals: specializingHospitals,
@@ -273,7 +262,7 @@ class ChatBot {
 		}, 1000);
 
 		this.chatBotReply.content = `Found ${specializingHospitals.length} hospitals for ${stem}. Redirecting you to the maps.`;
-		return specializationFound;
+		return true;
 	}
 
 	async analyzeUserText(text: string): Promise<ChatBubbleType> {

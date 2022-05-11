@@ -3,6 +3,7 @@ import {
 	analyzeMessageIntent,
 	getDiagnosis,
 	getSimilarSymptoms,
+	getSpecializedHospitals,
 	reportSymptomSimilarity,
 } from "../Controllers/ChatBotController";
 
@@ -15,5 +16,7 @@ router.post("/reportSymptomSimilarity", reportSymptomSimilarity);
 router.post("/getSimilarSymptoms", getSimilarSymptoms);
 
 router.post("/getDiagnosis", getDiagnosis);
+
+router.post("/getSpecializedHospitals", getSpecializedHospitals);
 
 export default router;
