@@ -5,3 +5,7 @@ export const formatText = (message: string, limit: number): string => {
 
 	return formattedMessage;
 };
+
+export const replaceSnakeCase = (text: string) => {
+	return text.replace(/_/g, " ");
+};

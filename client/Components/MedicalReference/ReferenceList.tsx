@@ -14,6 +14,7 @@ const ReferenceList = ({ drug }: { drug: DrugPreviewType }) => {
 		navigation.navigate("ReferenceDetails", {
 			genericName: drug.genericName,
 			rxcui: drug.rxcui,
+			raw: drug.raw,
 		});
 	};
 

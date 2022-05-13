@@ -9,6 +9,7 @@ import {
 import { makeApiCall } from "../../API/api";
 import { GET_MEDICAL_REFERENCE, HTTP_GET } from "../../API/apiTypes";
 import BottomNavigationBar from "../../Components/BottomNavigationBar";
+import NoData from "../../Components/Feedbacks/NoData";
 import ReferenceList from "../../Components/MedicalReference/ReferenceList";
 import { colors } from "../../Styles/Colors";
 import styles, { dimens } from "../../Styles/styles";
@@ -19,12 +20,14 @@ export interface DrugPreviewType {
 	productType: string;
 	rxcui?: number;
 	route: string;
-	raw: any;
+	raw: string;
 }
 
 const MedicalReference = () => {
 	const [drugName, setDrugName] = useState<string>("");
 	const [drugs, setDrugs] = useState<DrugPreviewType[]>([]);
+
+	const [searched, setSearched] = useState<boolean>(false);
 
 	const handleFileNameChange = (e: any) => {
 		const { text } = e.nativeEvent;
@@ -42,9 +45,9 @@ const MedicalReference = () => {
 			const { data } = apiResponse;
 
 			checkFDAStatus(data);
-		} else {
-			console.log("not found");
 		}
+
+		setSearched(true);
 	};
 
 	const checkFDAStatus = (drugs: any) => {
@@ -65,8 +68,6 @@ const MedicalReference = () => {
 				});
 			}
 		});
-
-		console.log(fdaDrugs);
 
 		setDrugs(fdaDrugs);
 	};
@@ -95,6 +96,8 @@ const MedicalReference = () => {
 						<SearchIcon color={colors.primaryWhite} size={24} />
 					</TouchableOpacity>
 				</View>
+
+				{searched && drugs.length === 0 && <NoData />}
 
 				<View style={{ marginTop: dimens.medium }}>
 					{drugs.map((drug: DrugPreviewType, index: number) => (

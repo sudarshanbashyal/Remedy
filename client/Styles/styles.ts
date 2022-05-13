@@ -1036,6 +1036,34 @@ const styles = StyleSheet.create({
 		fontFamily: fonts.Poppins.bold,
 		fontSize: fonts.size.small,
 	},
+
+	referenceDetailsContainer: {
+		paddingHorizontal: dimens.medium,
+		marginBottom: dimens.small,
+	},
+	referenceBasicTitle: {
+		marginRight: dimens.small,
+		fontFamily: fonts.Poppins.bold,
+		fontSize: fonts.size.small,
+		color: colors.primaryWhite,
+	},
+	referenceBasicDescription: {
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.small,
+		color: colors.primaryWhite,
+	},
+
+	referenceInfoContainer: {
+		marginTop: dimens.medium,
+		paddingTop: dimens.medium,
+		borderTopColor: colors.lightGray,
+		borderTopWidth: 3,
+	},
+	referenceInfoTitle: {
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.medium,
+		color: colors.primaryYellow,
+	},
 });
 
 export default styles;

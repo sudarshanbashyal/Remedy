@@ -56,6 +56,7 @@ export type RootStackType = {
 	ReferenceDetails: {
 		genericName: string;
 		rxcui: number | null;
+		raw: any;
 	};
 };
 
