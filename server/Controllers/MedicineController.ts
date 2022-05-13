@@ -1,7 +1,11 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { serverError } from ".";
 import { PrismaDB } from "..";
 import { AuthRequestType } from "../Utils/Auth";
+import dotenv from "dotenv";
+import fetch from "node-fetch";
+
+dotenv.config();
 
 export const addMedicine = async (req: AuthRequestType, res: Response) => {
 	try {
@@ -381,6 +385,34 @@ export const updateIntakeStatus = async (
 		return res.json({
 			ok: true,
 			data: updatedEntry,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
+export const getMedicalReference = async (req: Request, res: Response) => {
+	try {
+		const { name } = req.params;
+
+		const { OPEN_FDA_URI } = process.env;
+		const fullURI = `${OPEN_FDA_URI}"${name}"`;
+		const response = await fetch(fullURI);
+		const data = await response.json();
+
+		if (data.error) {
+			console.log(data.error);
+			return res.status(404).json({
+				ok: false,
+				error: {
+					message: "No data found.",
+				},
+			});
+		}
+
+		return res.json({
+			ok: true,
+			data: data.results,
 		});
 	} catch (error) {
 		return serverError(error as Error, res);

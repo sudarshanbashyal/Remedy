@@ -112,7 +112,7 @@ const ChatMedia = ({ route }) => {
 			</View>
 
 			<View style={styles.chatMediaContainer}>
-				<View style={styles.chatMediaSearchContainer}>
+				<View style={styles.searchContainer}>
 					<TextInput
 						placeholder="Search by Name of Extension"
 						placeholderTextColor={colors.opaqueWhite}

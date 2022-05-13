@@ -23,6 +23,8 @@ import { API_URL } from "../API/api";
 import RequestScreen from "../Screens/Chat/RequestScreen";
 import IntakeRegister from "../Screens/Schedule/IntakeRegister";
 import SpecializedMaps from "../Screens/Map/SpecializedMaps";
+import MedicalReference from "../Screens/MedicalReference/MedicalReference";
+import ReferenceDetails from "../Screens/MedicalReference/ReferenceDetails";
 
 export type RootStackType = {
 	ChatList: any;
@@ -49,6 +51,11 @@ export type RootStackType = {
 	SpecializedMaps: {
 		hospitals: any;
 		category: any;
+	};
+	MedicalReference: any;
+	ReferenceDetails: {
+		genericName: string;
+		rxcui: number | null;
 	};
 };
 
@@ -113,6 +120,11 @@ const RootStack = () => {
 
 			<Stack.Screen name="MedicineList" component={MedicineList} />
 
+			<Stack.Screen
+				name="MedicalReference"
+				component={MedicalReference}
+			/>
+
 			<Stack.Screen name="Profile" component={Profile} />
 
 			<Stack.Screen
@@ -137,6 +149,12 @@ const RootStack = () => {
 				name="RequestScreen"
 				options={slideFromRightAnimation}
 				component={RequestScreen}
+			/>
+
+			<Stack.Screen
+				name="ReferenceDetails"
+				options={slideFromRightAnimation}
+				component={ReferenceDetails}
 			/>
 		</Stack.Navigator>
 	);

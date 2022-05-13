@@ -99,7 +99,7 @@ const PatientRequestScreen = () => {
 				</View>
 
 				<View style={styles.messageRequestContainer}>
-					<View style={styles.chatMediaSearchContainer}>
+					<View style={styles.searchContainer}>
 						<TextInput
 							placeholder="Search Doctor"
 							placeholderTextColor={colors.opaqueWhite}

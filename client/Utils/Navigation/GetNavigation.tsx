@@ -9,6 +9,7 @@ import {
 	ChatBubbleIcon,
 	GraphIcon,
 	PillsIcon,
+	ResearchIcon,
 } from "../../Styles/SVG/Svg";
 
 const RenderTabComponent = ({ navigationName }) => {
@@ -67,6 +68,19 @@ const RenderTabComponent = ({ navigationName }) => {
 						)}
 					></View>
 					<GraphIcon size={24} color={colors.primaryWhite} />
+				</View>
+			);
+
+		case "MedicalReference":
+			return (
+				<View style={styles.bottomTabIconContainer}>
+					<View
+						style={currentNavigationTab(
+							navigationName,
+							currentNavigation
+						)}
+					></View>
+					<ResearchIcon size={30} color={colors.primaryWhite} />
 				</View>
 			);
 

@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
 	chatMediaContainer: {
 		paddingHorizontal: dimens.medium,
 	},
-	chatMediaSearchContainer: {
+	searchContainer: {
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
 		resizeMode: "cover",
 	},
 
-	medicineStatsContainer: {
+	paddedContainer: {
 		marginTop: dimens.regular,
 		paddingHorizontal: dimens.medium,
 	},
@@ -1000,6 +1000,41 @@ const styles = StyleSheet.create({
 		padding: dimens.small,
 		backgroundColor: colors.primaryBlue,
 		borderRadius: dimens.small,
+	},
+
+	referenceListContainer: {
+		marginBottom: dimens.regular,
+		backgroundColor: colors.lightGray,
+		borderRadius: dimens.small,
+		padding: dimens.regular,
+		position: "relative",
+	},
+	referenceGenericName: {
+		fontFamily: fonts.Poppins.semi,
+		fontSize: fonts.size.regular,
+		color: colors.primaryWhite,
+	},
+	referenceProductType: {
+		marginTop: dimens.small,
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.regular,
+		color: colors.opaqueWhite,
+	},
+	referenceRoute: {
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.regular,
+		color: colors.opaqueWhite,
+	},
+	referenceRxcui: {
+		position: "absolute",
+		top: dimens.regular,
+		right: dimens.regular,
+		backgroundColor: colors.primaryYellow,
+		paddingVertical: dimens.small,
+		paddingHorizontal: dimens.regular,
+		borderRadius: 100,
+		fontFamily: fonts.Poppins.bold,
+		fontSize: fonts.size.small,
 	},
 });
 

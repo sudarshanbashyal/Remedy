@@ -87,7 +87,7 @@ const MedicineStats = () => {
 	return (
 		<View style={styles.fullContainer}>
 			<ScrollView>
-				<View style={styles.medicineStatsContainer}>
+				<View style={styles.paddedContainer}>
 					<Text style={styles.mailScreenTitle}>
 						My Medicine Stats
 					</Text>
