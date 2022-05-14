@@ -1,9 +1,14 @@
 import React from "react";
-import { Dimensions, Text, View } from "react-native";
+import { View } from "react-native";
+import { Calendar } from "react-native-calendars";
 import styles from "../../Styles/styles";
 
 const HabitGraph = () => {
-	return <View style={styles.medicineGraphContainer}></View>;
+	return (
+		<View style={styles.medicineGraphContainer}>
+			<Calendar />
+		</View>
+	);
 };
 
 export default HabitGraph;
