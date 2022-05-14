@@ -23,7 +23,7 @@ export const graphConfigs = {
 	propsForDots: {
 		r: "6",
 		strokeWidth: "2",
-		stroke: colors.primaryRed,
+		stroke: colors.primaryBlue,
 	},
 };
 
@@ -93,9 +93,8 @@ const MedicineStats = () => {
 					</Text>
 				</View>
 
-				<FrequencyGraph frequencies={frequencies} />
-
 				<HabitGraph />
+				<FrequencyGraph frequencies={frequencies} />
 			</ScrollView>
 
 			<BottomNavigationBar />

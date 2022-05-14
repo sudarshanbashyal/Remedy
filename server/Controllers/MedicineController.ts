@@ -167,7 +167,15 @@ export const updateMedicine = async (req: AuthRequestType, res: Response) => {
 			},
 		});
 
-		// delete previous scheules first before updating this medicine
+		// delete previous schedules and intakes first before updating this medicine
+		await PrismaDB.intake.deleteMany({
+			where: {
+				schedule: {
+					medicineId: medicineId as string,
+				},
+			},
+		});
+
 		await PrismaDB.schedule.deleteMany({
 			where: {
 				medicineId: medicineId as string,
@@ -347,6 +355,40 @@ export const getIntake = async (req: AuthRequestType, res: Response) => {
 		return res.json({
 			ok: true,
 			data: intakeEntries,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
+export const getAllIntakes = async (req: AuthRequestType, res: Response) => {
+	try {
+		const { userId } = req;
+		const { startDate, endDate } = req.params;
+
+		const monthlyIntakes = await PrismaDB.intake.findMany({
+			where: {
+				AND: [
+					{
+						schedule: {
+							medicine: {
+								userId: userId as string,
+							},
+						},
+					},
+					{
+						date: {
+							gte: startDate,
+							lte: endDate,
+						},
+					},
+				],
+			},
+		});
+
+		return res.json({
+			ok: true,
+			data: monthlyIntakes,
 		});
 	} catch (error) {
 		return serverError(error as Error, res);

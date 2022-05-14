@@ -1064,6 +1064,36 @@ const styles = StyleSheet.create({
 		fontSize: fonts.size.medium,
 		color: colors.primaryYellow,
 	},
+
+	habitGraphIntakeContainer: {
+		marginTop: dimens.regular,
+		padding: dimens.regular,
+		backgroundColor: colors.lightGray,
+		borderRadius: dimens.small,
+	},
+	habitGraphDate: {
+		fontFamily: fonts.Poppins.semi,
+		fontSize: fonts.size.medium,
+		color: colors.primaryWhite,
+		marginBottom: dimens.regular,
+	},
+	habitGraphEntry: {
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.regular,
+		color: colors.primaryWhite,
+		marginBottom: dimens.small,
+	},
+	indiactorCircle: {
+		marginRight: dimens.small,
+		height: dimens.small,
+		width: dimens.small,
+		borderRadius: dimens.small,
+	},
+	indicatorText: {
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.small,
+		color: colors.primaryWhite,
+	},
 });
 
 export default styles;

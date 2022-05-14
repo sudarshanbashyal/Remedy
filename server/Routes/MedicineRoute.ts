@@ -8,6 +8,7 @@ import {
 	updateMedicine,
 	updateIntakeStatus,
 	getMedicalReference,
+	getAllIntakes,
 } from "../Controllers/MedicineController";
 import { isAuth } from "../Utils/Auth";
 
@@ -26,6 +27,8 @@ router.get("/getFrequencies", isAuth, getFrequencies);
 router.get("/getMedicineList", isAuth, getMedicineList);
 
 router.post("/getIntake", isAuth, getIntake);
+
+router.get("/getAllIntakes/:startDate/:endDate", isAuth, getAllIntakes);
 
 router.put("/updateIntakeStatus/:intakeId", isAuth, updateIntakeStatus);
 
