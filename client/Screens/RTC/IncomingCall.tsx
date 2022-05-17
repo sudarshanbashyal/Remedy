@@ -46,20 +46,6 @@ const IncomingCall = ({ route }) => {
 				source={require("../../assets/images/call-bg.jpg")}
 			/>
 
-			<View
-				style={{
-					...styles.allCenteredContainer,
-					marginTop: StatusBar.currentHeight,
-				}}
-			>
-				<Image
-					style={styles.callScreenImageContainer}
-					source={{
-						uri: "https://avatars.dicebear.com/api/initials/CT.png",
-					}}
-				/>
-			</View>
-
 			<Text style={styles.callScreenUserName}>{caller}</Text>
 			<Text style={styles.callScreenStatus}>Incoming Calling...</Text>
 

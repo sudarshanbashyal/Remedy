@@ -15,15 +15,14 @@ import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackType } from "../../Stacks/RootStack";
 
 const OutgoingCall = ({ route }) => {
-	let incomingCall, isIncomingCall;
-	let receivingUserName;
+	let incomingCall, isIncomingCall, receivingUserName, fullName;
 
 	if (route && route.params) {
 		if (route.params.isIncomingCall) {
 			incomingCall = route.params.call;
 		} else {
 			receivingUserName = route.params.username;
-			console.log(receivingUserName);
+			fullName = route.params.fullName;
 		}
 
 		isIncomingCall = route.params.isIncomingCall;
@@ -37,6 +36,7 @@ const OutgoingCall = ({ route }) => {
 	const [callStatus, setCallStatus] = useState<string>("Calling");
 	const [localVideoStreamId, setLocalVideoStreamId] = useState<any>(null);
 	const [remoteVideoStreamId, setRemoteVideoStreamId] = useState<any>(null);
+	const [actionsHidden, setActionsHidden] = useState<boolean>(false);
 
 	// get instance
 	const voximplant = Voximplant.getInstance();
@@ -88,7 +88,6 @@ const OutgoingCall = ({ route }) => {
 				receivingUserName,
 				callSettings
 			);
-			console.log(call);
 
 			subscribeToCallEvent();
 		};
@@ -107,8 +106,23 @@ const OutgoingCall = ({ route }) => {
 		const subscribeToCallEvent = async () => {
 			if (call.current) {
 				call.current.on(Voximplant.CallEvents.Failed, (callEvent) => {
-					if (callEvent.reason == "Decline") {
-						navigation.goBack();
+					console.log(callEvent.reason);
+
+					if (
+						callEvent.reason == "Decline" ||
+						callEvent.reason == "Temporarily Unavailable"
+					) {
+						setCallStatus(
+							callEvent.reason == "Decline"
+								? "Call Declined"
+								: "User Currently Unavailable"
+						);
+						setLocalVideoStreamId(null);
+						setActionsHidden(true);
+
+						setTimeout(() => {
+							navigation.goBack();
+						}, 2000);
 					}
 				});
 
@@ -178,12 +192,14 @@ const OutgoingCall = ({ route }) => {
 		<View style={styles.fullContainer}>
 			<StatusBar translucent backgroundColor="transparent" />
 
-			<View style={styles.localVideoPerviewContainer}>
-				<Voximplant.VideoView
-					videoStreamId={localVideoStreamId}
-					style={{ width: "100%", height: "100%", zIndex: 9999 }}
-				/>
-			</View>
+			{localVideoStreamId && (
+				<View style={styles.localVideoPerviewContainer}>
+					<Voximplant.VideoView
+						videoStreamId={localVideoStreamId}
+						style={{ width: "100%", height: "100%", zIndex: 9999 }}
+					/>
+				</View>
+			)}
 
 			{remoteVideoStreamId && (
 				<View style={styles.remoteVideoPreviewContainer}>
@@ -201,44 +217,32 @@ const OutgoingCall = ({ route }) => {
 						source={require("../../assets/images/call-bg.jpg")}
 					/>
 
-					<View
-						style={{
-							...styles.allCenteredContainer,
-							marginTop: StatusBar.currentHeight,
-						}}
-					>
-						<Image
-							style={styles.callScreenImageContainer}
-							source={{
-								uri: "https://avatars.dicebear.com/api/initials/CT.png",
-							}}
-						/>
-					</View>
-
-					<Text style={styles.callScreenUserName}>Harry Turner</Text>
+					<Text style={styles.callScreenUserName}>{fullName}</Text>
 					<Text style={styles.callScreenStatus}>{callStatus}...</Text>
 				</View>
 			)}
 
-			<View
-				style={{
-					...styles.callScreenIconContainer,
-					...styles.allCenteredContainer,
-				}}
-			>
-				<TouchableOpacity
-					onPress={hangUp}
+			{!actionsHidden && (
+				<View
 					style={{
+						...styles.callScreenIconContainer,
 						...styles.allCenteredContainer,
-						...styles.callScreenIconBackground,
 					}}
 				>
-					<BorderlessCrossIcon
-						size={30}
-						color={colors.primaryWhite}
-					/>
-				</TouchableOpacity>
-			</View>
+					<TouchableOpacity
+						onPress={hangUp}
+						style={{
+							...styles.allCenteredContainer,
+							...styles.callScreenIconBackground,
+						}}
+					>
+						<BorderlessCrossIcon
+							size={30}
+							color={colors.primaryWhite}
+						/>
+					</TouchableOpacity>
+				</View>
+			)}
 		</View>
 	);
 };

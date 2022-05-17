@@ -1111,7 +1111,7 @@ const styles = StyleSheet.create({
 		height: "100%",
 	},
 	callScreenUserName: {
-		marginTop: dimens.regular,
+		marginTop: dimens.xxLarge * 3,
 		textAlign: "center",
 		color: colors.primaryWhite,
 		fontFamily: fonts.Poppins.regular,

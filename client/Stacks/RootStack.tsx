@@ -71,6 +71,7 @@ export type RootStackType = {
 		call?: any;
 		isIncomingCall?: boolean;
 		username?: string;
+		fullName?: string;
 	};
 	OngoingCall: {
 		call: any;

@@ -37,6 +37,7 @@ const ChatHeader = ({
 		navigation.navigate("OutgoingCall", {
 			isIncomingCall: false,
 			username: voxUsername,
+			fullName: messageWith,
 		});
 	};
 
