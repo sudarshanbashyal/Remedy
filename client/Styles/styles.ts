@@ -1153,7 +1153,6 @@ const styles = StyleSheet.create({
 	localVideoPerviewContainer: {
 		zIndex: 9999,
 		position: "absolute",
-		backgroundColor: "transparent",
 		top: dimens.xxLarge,
 		right: dimens.regular,
 		borderRadius: dimens.small,

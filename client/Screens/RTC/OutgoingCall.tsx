@@ -13,6 +13,7 @@ import { BorderlessCrossIcon } from "../../Styles/SVG/Svg";
 import { Voximplant } from "react-native-voximplant";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackType } from "../../Stacks/RootStack";
+import { Overlay } from "react-native-maps";
 
 const OutgoingCall = ({ route }) => {
 	let incomingCall, isIncomingCall, receivingUserName, fullName;
@@ -106,8 +107,6 @@ const OutgoingCall = ({ route }) => {
 		const subscribeToCallEvent = async () => {
 			if (call.current) {
 				call.current.on(Voximplant.CallEvents.Failed, (callEvent) => {
-					console.log(callEvent.reason);
-
 					if (
 						callEvent.reason == "Decline" ||
 						callEvent.reason == "Temporarily Unavailable"
@@ -195,8 +194,13 @@ const OutgoingCall = ({ route }) => {
 			{localVideoStreamId && (
 				<View style={styles.localVideoPerviewContainer}>
 					<Voximplant.VideoView
+						showOnTop={true}
 						videoStreamId={localVideoStreamId}
-						style={{ width: "100%", height: "100%", zIndex: 9999 }}
+						style={{
+							width: "100%",
+							height: "100%",
+							zIndex: 9999,
+						}}
 					/>
 				</View>
 			)}
