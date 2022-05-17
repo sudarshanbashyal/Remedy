@@ -45,6 +45,7 @@ model User{
 	password String
 	bio String?
 	profilePicture String?
+	voximplantUsername String?
 	dob DateTime @default(now())
 	role UserType @default(Patient)
 	gender Gender

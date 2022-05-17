@@ -59,6 +59,7 @@ const LoginScreen = () => {
 				bio,
 				profilePicture,
 				role,
+				voximplantUsername,
 			} = apiResponse.data;
 
 			dispatch(
@@ -74,6 +75,7 @@ const LoginScreen = () => {
 					bio,
 					profilePicture,
 					role,
+					voximplantUsername,
 				})
 			);
 

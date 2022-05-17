@@ -25,6 +25,7 @@ export const UPDATE_INTAKE_STATUS = "updateIntakeStatus";
 export const GET_SPECIALIZED_HOSPITALS = "getSpecializedHospitals";
 export const GET_MEDICAL_REFERENCE = "getMedicalReference";
 export const GET_ALL_INTAKES = "getAllIntakes";
+export const GET_VOXIMPLANT_USERNAME = "getVoximplantUsername";
 
 export type ApiEndpointType =
 	| typeof CHECK_EMAIL
@@ -53,7 +54,8 @@ export type ApiEndpointType =
 	| typeof UPDATE_INTAKE_STATUS
 	| typeof GET_SPECIALIZED_HOSPITALS
 	| typeof GET_MEDICAL_REFERENCE
-	| typeof GET_ALL_INTAKES;
+	| typeof GET_ALL_INTAKES
+	| typeof GET_VOXIMPLANT_USERNAME;
 
 export const HTTP_POST = "POST";
 export const HTTP_GET = "GET";

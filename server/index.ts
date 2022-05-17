@@ -10,6 +10,27 @@ import { addSocket, handleMessage, removeSocket } from "./Socket/hub";
 
 export const PrismaDB = new PrismaClient();
 
+export const createVoximplantProfile = async (
+	name: string,
+	username: string
+) => {
+	const VoximplantApiClient = require("@voximplant/apiclient-nodejs").default;
+	const client = new VoximplantApiClient("./Utils/vox-credentials.json");
+	client.onReady = async function () {
+		try {
+			const result = await client.Users.addUser({
+				userName: username,
+				userDisplayName: name,
+				userPassword: process.env.VOXIMPLANT_USER_PASSWORD,
+				applicationId: process.env.VOXIMPLANT_APP_ID,
+			});
+			console.log(result);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+};
+
 const init = async () => {
 	const app = Express();
 	app.use(
