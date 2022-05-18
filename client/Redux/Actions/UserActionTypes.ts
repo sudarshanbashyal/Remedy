@@ -43,6 +43,7 @@ export interface MedicineType {
 	active: boolean;
 	schedules?: ScheduleType[];
 	days: number[];
+	createdAt: Date;
 }
 
 export interface ScheduleType {

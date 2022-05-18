@@ -75,8 +75,6 @@ const StackRenderer = () => {
 				auth: true,
 			});
 
-			console.log(apiResponse.data);
-
 			if (apiResponse?.ok) {
 				const {
 					userId,

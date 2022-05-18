@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment, { Moment } from "moment";
 import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
@@ -62,6 +62,10 @@ const HabitGraph = () => {
 		[]
 	);
 
+	const [oldestMedicineDate, setOldestMedicineDate] = useState<Date>(
+		new Date()
+	);
+
 	const markMonths = (intakes: any, startDate: string, endDate: string) => {
 		const intakeStatus = {};
 		intakes.forEach((intake: any) => {
@@ -111,7 +115,20 @@ const HabitGraph = () => {
 			const currentDay = moment(curr).format("YYYY-MM-DD");
 			const weekDay = curr.getDay();
 
+			// moment(currentDay, "YYYY-MM-DD").isAfter(moment(), "day")
+			// skip the day of the first added day is greater than month day or if the day is after today
+			if (
+				moment(oldestMedicineDate, "YYYY-MM-DD").isAfter(
+					currentDay,
+					"day"
+				) ||
+				moment(currentDay, "YYYY-MM-DD").isAfter(moment(), "day")
+			) {
+				continue;
+			}
+
 			if (!markedDays[currentDay] && medicationDays.has(weekDay)) {
+				// continue otherwise
 				markedDays[currentDay] = {
 					marked: true,
 					dotColor: colors.opaqueWhite,
@@ -129,9 +146,18 @@ const HabitGraph = () => {
 			const scheduleIds: string[] = [];
 
 			user.medicines.forEach((medicine: MedicineType) => {
+				// check if this is the oldest added medicine
+				if (medicine.createdAt < oldestMedicineDate) {
+					setOldestMedicineDate(medicine.createdAt);
+				}
+
 				if (
 					medicine.days.includes(selectedDay.getDay()) &&
-					medicine.active
+					medicine.active &&
+					moment(medicine.createdAt, "YYYY-MM-DD").isSameOrBefore(
+						selectedDay,
+						"day"
+					)
 				) {
 					medicine.schedules.forEach((schedule: ScheduleType) => {
 						const { scheduleId } = schedule;
@@ -195,8 +221,9 @@ const HabitGraph = () => {
 					marginBottom: dimens.regular,
 				}}
 			>
-				{habitIndicators.map((indicator) => (
+				{habitIndicators.map((indicator, index) => (
 					<View
+						key={index}
 						style={{
 							...styles.rowStartContainer,
 							marginRight: dimens.medium,

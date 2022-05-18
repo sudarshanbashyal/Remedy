@@ -70,6 +70,7 @@ model Medicine{
 	active Boolean @default(true)
 	userId String
 	user User @relation(fields:[userId], references:[userId])
+	createdAt DateTime @default(now())
 	schedules Schedule[]
 	frequencies Frequency[]
 	days Int[]
