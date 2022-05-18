@@ -1,4 +1,8 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import {
+	NavigationProp,
+	StackActions,
+	useNavigation,
+} from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Text, View, Image, StatusBar, TouchableOpacity } from "react-native";
 import { RootStackType } from "../../Stacks/RootStack";
@@ -19,10 +23,12 @@ const IncomingCall = ({ route }) => {
 	};
 
 	const acceptCall = () => {
-		navigation.navigate("OutgoingCall", {
-			call,
-			isIncomingCall: true,
-		});
+		navigation.dispatch(
+			StackActions.replace("OutgoingCall", {
+				call,
+				isIncomingCall: true,
+			})
+		);
 	};
 
 	useEffect(() => {

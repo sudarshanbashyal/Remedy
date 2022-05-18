@@ -104,24 +104,29 @@ const OutgoingCall = ({ route }) => {
 			call.current.answer(callSettings);
 		};
 
+		const changeCallEndStatus = (status: string) => {
+			setCallStatus(status);
+			setActionsHidden(true);
+			setLocalVideoStreamId(null);
+			setRemoteVideoStreamId(null);
+
+			setTimeout(() => {
+				navigation.goBack();
+			}, 2000);
+		};
+
 		const subscribeToCallEvent = async () => {
 			if (call.current) {
 				call.current.on(Voximplant.CallEvents.Failed, (callEvent) => {
-					if (
-						callEvent.reason == "Decline" ||
-						callEvent.reason == "Temporarily Unavailable"
-					) {
-						setCallStatus(
-							callEvent.reason == "Decline"
-								? "Call Declined"
-								: "User Currently Unavailable"
-						);
-						setLocalVideoStreamId(null);
-						setActionsHidden(true);
+					const reason = callEvent.reason;
+					const failureMaps = {
+						Decline: "Call Declined",
+						"Temporarily Unavailable": "User Currently Unavailable",
+						"Request Timeout": "Not Picked Up",
+					};
 
-						setTimeout(() => {
-							navigation.goBack();
-						}, 2000);
+					if (failureMaps[reason]) {
+						changeCallEndStatus(failureMaps[reason]);
 					}
 				});
 
@@ -142,7 +147,7 @@ const OutgoingCall = ({ route }) => {
 				call.current.on(
 					Voximplant.CallEvents.Disconnected,
 					(callEvent) => {
-						navigation.goBack();
+						changeCallEndStatus("Call Ended");
 					}
 				);
 
