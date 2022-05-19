@@ -13,6 +13,7 @@ import {
 	addMessageRequest,
 	getIncomingRequests,
 	changeRequestStatus,
+	getVoximplantUsername,
 } from "../Controllers/UserController";
 import { isAuth } from "../Utils/Auth";
 
@@ -25,6 +26,8 @@ router.post("/loginUser", loginUser);
 router.post("/checkEmail", emailExists);
 
 router.get("/fetchUser", isAuth, fetchUser);
+
+router.get("/getVoximplantUsername/:id", getVoximplantUsername);
 
 router.put("/updateUserProfile", isAuth, updateUserProfile);
 

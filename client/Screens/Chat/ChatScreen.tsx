@@ -214,6 +214,7 @@ const ChatScreen = ({ route }) => {
 				chatbot={chatbot}
 				chatId={chatId}
 				messageWith={messageWith}
+				recipentId={recipentId}
 			/>
 
 			<ScrollView ref={scrollViewRef} style={{ marginBottom: 50 }}>

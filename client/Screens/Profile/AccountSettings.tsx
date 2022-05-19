@@ -22,6 +22,7 @@ import { validateEmail } from "../../Utils/Validations/validation";
 import { makeApiCall } from "../../API/api";
 import { showToast } from "../../Utils/Toast";
 import { HTTP_PUT, UPDATE_USER_ACCOUNT } from "../../API/apiTypes";
+import { Voximplant } from "react-native-voximplant";
 
 export interface AccountSettingsType {
 	email: string;
@@ -30,6 +31,8 @@ export interface AccountSettingsType {
 }
 
 const AccountSettings = () => {
+	const voximplant = Voximplant.getInstance();
+
 	const dispatch = useDispatch();
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
 
@@ -88,7 +91,8 @@ const AccountSettings = () => {
 		navigation.goBack();
 	};
 
-	const handleLogout = () => {
+	const handleLogout = async () => {
+		await voximplant.disconnect();
 		dispatch(logoutUserAction());
 	};
 

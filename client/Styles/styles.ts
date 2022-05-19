@@ -494,7 +494,6 @@ const styles = StyleSheet.create({
 	},
 	medicineGraphContainer: {
 		paddingHorizontal: dimens.medium,
-		marginTop: dimens.xxLarge,
 	},
 	lineGraphTitleContainer: {
 		width: "100%",
@@ -1093,6 +1092,95 @@ const styles = StyleSheet.create({
 		fontFamily: fonts.Poppins.regular,
 		fontSize: fonts.size.small,
 		color: colors.primaryWhite,
+	},
+
+	callPendingContainer: {
+		position: "relative",
+	},
+	callBackgroundImage: {
+		height: "100%",
+		width: "100%",
+		position: "absolute",
+		zIndex: -1,
+		top: 0,
+		right: 0,
+	},
+	safeAreaContainer: {
+		position: "relative",
+		height: "100%",
+	},
+	callScreenUserName: {
+		marginTop: dimens.xxLarge * 3,
+		textAlign: "center",
+		color: colors.primaryWhite,
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.large,
+	},
+	callScreenImageContainer: {
+		marginTop: dimens.xxLarge,
+		height: dimens.xxLarge * 2,
+		width: dimens.xxLarge * 2,
+		borderRadius: dimens.large * 2,
+	},
+	callScreenStatus: {
+		textAlign: "center",
+		color: colors.opaqueWhite,
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.medium,
+	},
+	callScreenIconContainer: {
+		width: "100%",
+		position: "absolute",
+		bottom: dimens.medium,
+		right: 0,
+		padding: dimens.large,
+	},
+	callScreenIconBackground: {
+		height: dimens.xxLarge * 1.2,
+		width: dimens.xxLarge * 1.2,
+		borderRadius: dimens.xxLarge * 2,
+		backgroundColor: colors.primaryRed,
+		paddingTop: dimens.small,
+		paddingLeft: dimens.small,
+	},
+
+	remoteVideoPreviewContainer: {
+		height: "100%",
+		width: "100%",
+		backgroundColor: colors.primaryGray,
+	},
+	localVideoPerviewContainer: {
+		zIndex: 9999,
+		position: "absolute",
+		top: dimens.xxLarge,
+		right: dimens.regular,
+		borderRadius: dimens.small,
+		height: dimens.xxLarge * 3,
+		width: dimens.xxLarge * 2,
+	},
+
+	frequencyDetailContainer: {
+		padding: dimens.regular,
+		borderColor: colors.lightGray,
+		borderWidth: 1,
+		borderRadius: dimens.regular,
+	},
+	frequencyDetailDate: {
+		fontFamily: fonts.Poppins.medium,
+		fontSize: fonts.size.regular,
+		color: colors.primaryWhite,
+	},
+	frequencyDetailDay: {
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.regular,
+		color: colors.opaqueWhite,
+		marginRight: dimens.regular,
+	},
+	frequencyDetailActiveDay: {
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.regular,
+		color: colors.primaryWhite,
+		marginRight: dimens.regular,
 	},
 });
 

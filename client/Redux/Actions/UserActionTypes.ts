@@ -28,6 +28,7 @@ export interface UserType {
 	email: string;
 	dob: Date;
 	bio?: string;
+	voximplantUsername: string;
 	gender: string;
 	medicines?: MedicineType[];
 	profilePicture: string;
@@ -42,6 +43,7 @@ export interface MedicineType {
 	active: boolean;
 	schedules?: ScheduleType[];
 	days: number[];
+	createdAt: Date;
 }
 
 export interface ScheduleType {

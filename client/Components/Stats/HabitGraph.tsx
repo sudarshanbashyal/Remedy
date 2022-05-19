@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment, { Moment } from "moment";
 import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
@@ -62,6 +62,10 @@ const HabitGraph = () => {
 		[]
 	);
 
+	const [oldestMedicineDate, setOldestMedicineDate] = useState<Date>(
+		new Date()
+	);
+
 	const markMonths = (intakes: any, startDate: string, endDate: string) => {
 		const intakeStatus = {};
 		intakes.forEach((intake: any) => {
@@ -112,6 +116,7 @@ const HabitGraph = () => {
 			const weekDay = curr.getDay();
 
 			if (!markedDays[currentDay] && medicationDays.has(weekDay)) {
+				// continue otherwise
 				markedDays[currentDay] = {
 					marked: true,
 					dotColor: colors.opaqueWhite,
@@ -129,9 +134,19 @@ const HabitGraph = () => {
 			const scheduleIds: string[] = [];
 
 			user.medicines.forEach((medicine: MedicineType) => {
+				// check if this is the oldest added medicine
+				console.log(medicine.createdAt);
+				if (medicine.createdAt < oldestMedicineDate) {
+					setOldestMedicineDate(medicine.createdAt);
+				}
+
 				if (
 					medicine.days.includes(selectedDay.getDay()) &&
-					medicine.active
+					medicine.active &&
+					moment(medicine.createdAt, "YYYY-MM-DD").isSameOrBefore(
+						selectedDay,
+						"day"
+					)
 				) {
 					medicine.schedules.forEach((schedule: ScheduleType) => {
 						const { scheduleId } = schedule;
@@ -195,8 +210,9 @@ const HabitGraph = () => {
 					marginBottom: dimens.regular,
 				}}
 			>
-				{habitIndicators.map((indicator) => (
+				{habitIndicators.map((indicator, index) => (
 					<View
+						key={index}
 						style={{
 							...styles.rowStartContainer,
 							marginRight: dimens.medium,
@@ -248,13 +264,9 @@ const HabitGraph = () => {
 								{intake.schedule.hour > 12
 									? intake.schedule.hour - 12
 									: intake.schedule.hour}
-
-								{intake.schedule.minutes}
-
+								:{intake.schedule.minutes}
 								{intake.schedule.hour > 12 ? " PM " : " AM "}
-
 								<Text> - {intake.schedule.medicine.name}</Text>
-
 								<Text
 									style={{
 										color:

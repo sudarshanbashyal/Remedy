@@ -10,12 +10,14 @@ import { RootStore } from "./Redux/store";
 import { makeApiCall } from "./API/api";
 import { loginUserAction } from "./Redux/Actions/UserActions";
 import { HTTP_GET, FETCH_USER } from "./API/apiTypes";
-import { showToast } from "./Utils/Toast";
 import { navigationRef } from "./App";
+import { Voximplant } from "react-native-voximplant";
 
 const StackRenderer = () => {
 	const dispatch = useDispatch();
 	const { user } = useSelector((state: RootStore) => state.userReducer);
+
+	const voximplant = Voximplant.getInstance();
 
 	const toastConfig = {
 		success: (props) => (
@@ -51,6 +53,20 @@ const StackRenderer = () => {
 		),
 	};
 
+	// listen for incoming call events
+	useEffect(() => {
+		if (!user) return;
+
+		voximplant.on(
+			Voximplant.ClientEvents.IncomingCall,
+			(incomingCallEvent) => {
+				navigationRef.current?.navigate("IncomingCall", {
+					call: incomingCallEvent.call,
+				});
+			}
+		);
+	}, [user]);
+
 	useEffect(() => {
 		(async () => {
 			const apiResponse = await makeApiCall({
@@ -72,6 +88,7 @@ const StackRenderer = () => {
 					bio,
 					profilePicture,
 					role,
+					voximplantUsername,
 				} = apiResponse.data;
 
 				dispatch(
@@ -87,6 +104,7 @@ const StackRenderer = () => {
 						bio,
 						profilePicture,
 						role,
+						voximplantUsername,
 					})
 				);
 			}

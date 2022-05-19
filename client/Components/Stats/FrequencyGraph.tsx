@@ -12,8 +12,10 @@ import NoData from "../Feedbacks/NoData";
 
 const FrequencyGraph = ({
 	frequencies,
+	setSelectedMedicineId,
 }: {
 	frequencies: FrequencyListType[];
+	setSelectedMedicineId?: React.Dispatch<React.SetStateAction<string>>;
 }) => {
 	const [open, setOpen] = useState(false);
 	const [value, setValue] = useState(null);
@@ -23,6 +25,9 @@ const FrequencyGraph = ({
 
 	const setGraphValues = (e: string) => {
 		setValue(e);
+		if (setSelectedMedicineId) {
+			setSelectedMedicineId(e);
+		}
 
 		frequencies.forEach((frequency: FrequencyListType) => {
 			if (e === frequency.medicineId) {

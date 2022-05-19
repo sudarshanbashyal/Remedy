@@ -50,7 +50,11 @@ const IntakeRegister = () => {
 			medicines.forEach((medicine: MedicineType) => {
 				if (
 					medicine.days.includes(selectedDate.getDay()) &&
-					medicine.active
+					medicine.active &&
+					moment(medicine.createdAt, "YYYY-MM-DD").isSameOrBefore(
+						selectedDate,
+						"day"
+					)
 				) {
 					medicine.schedules.forEach((schedule: ScheduleType) => {
 						const { scheduleId } = schedule;

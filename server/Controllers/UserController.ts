@@ -1,14 +1,17 @@
 import { UploadApiResponse } from "cloudinary";
 import { Request, Response } from "express";
 import { serverError } from ".";
-import { PrismaDB } from "..";
+import { PrismaDB, createVoximplantProfile } from "..";
 import { AuthRequestType, generateJWTToken } from "../Utils/Auth";
 import { hashPassword, isCorrectPassword } from "../Utils/Bcrypt";
 import { PROFILE_PRESET, uploadImage } from "../Utils/cloudinary";
+import { generateUsername } from "../Utils/VoximPlantConfig";
 
 export const registerUser = async (req: Request, res: Response) => {
 	try {
 		const { firstName, lastName, email, password, gender, dob } = req.body;
+
+		const generatedUsername = generateUsername(email);
 
 		const user = await PrismaDB.user.create({
 			data: {
@@ -17,6 +20,7 @@ export const registerUser = async (req: Request, res: Response) => {
 				email,
 				password: await hashPassword(password),
 				gender,
+				voximplantUsername: generatedUsername,
 				dob: new Date(dob),
 				profilePicture: `https://avatars.dicebear.com/api/initials/${
 					firstName[0] + lastName[0]
@@ -32,6 +36,12 @@ export const registerUser = async (req: Request, res: Response) => {
 				},
 			});
 		}
+
+		// create voximplantUsername user profile
+		await createVoximplantProfile(
+			firstName + " " + lastName,
+			generatedUsername
+		);
 
 		return res.status(201).json({
 			ok: true,
@@ -145,6 +155,37 @@ export const fetchUser = async (req: AuthRequestType, res: Response) => {
 				ok: false,
 				error: {
 					message: "Unauthorized token or the user doesn't exist.",
+				},
+			});
+		}
+
+		return res.json({
+			ok: true,
+			data: user,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
+export const getVoximplantUsername = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+
+		const user = await PrismaDB.user.findUnique({
+			where: {
+				userId: id as string,
+			},
+			select: {
+				voximplantUsername: true,
+			},
+		});
+
+		if (!user) {
+			return res.status(404).json({
+				ok: false,
+				error: {
+					message: "User not found.",
 				},
 			});
 		}

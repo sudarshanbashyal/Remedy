@@ -6,7 +6,7 @@ import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
 import { SettingsIcon } from "../../Styles/SVG/Svg";
 
-const weekMap = ["S", "M", "T", "W", "T", "F", "S"];
+export const weekMap = ["S", "M", "T", "W", "T", "F", "S"];
 
 const MedicineListElement = ({ medicine }) => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();

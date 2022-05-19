@@ -45,6 +45,7 @@ model User{
 	password String
 	bio String?
 	profilePicture String?
+	voximplantUsername String?
 	dob DateTime @default(now())
 	role UserType @default(Patient)
 	gender Gender
@@ -69,6 +70,7 @@ model Medicine{
 	active Boolean @default(true)
 	userId String
 	user User @relation(fields:[userId], references:[userId])
+	createdAt DateTime @default(now())
 	schedules Schedule[]
 	frequencies Frequency[]
 	days Int[]
@@ -86,6 +88,7 @@ model Schedule{
 model Frequency{
 	frequencyId String @id() @default(uuid())
 	date DateTime @default(now())
+	days Int[]
 	frequencyPerWeek Int	
 	medicineId String
 	medicine Medicine @relation(fields:[medicineId], references:[medicineId])
