@@ -40,6 +40,7 @@ const PatientList = () => {
 
 				{patients.map((patient) => (
 					<TouchableOpacity
+						key={patient.recipentId}
 						style={styles.chatPreview}
 						onPress={() => {
 							goToPatientHistory(

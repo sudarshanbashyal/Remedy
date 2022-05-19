@@ -1158,6 +1158,30 @@ const styles = StyleSheet.create({
 		height: dimens.xxLarge * 3,
 		width: dimens.xxLarge * 2,
 	},
+
+	frequencyDetailContainer: {
+		padding: dimens.regular,
+		borderColor: colors.lightGray,
+		borderWidth: 1,
+		borderRadius: dimens.regular,
+	},
+	frequencyDetailDate: {
+		fontFamily: fonts.Poppins.medium,
+		fontSize: fonts.size.regular,
+		color: colors.primaryWhite,
+	},
+	frequencyDetailDay: {
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.regular,
+		color: colors.opaqueWhite,
+		marginRight: dimens.regular,
+	},
+	frequencyDetailActiveDay: {
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.regular,
+		color: colors.primaryWhite,
+		marginRight: dimens.regular,
+	},
 });
 
 export default styles;

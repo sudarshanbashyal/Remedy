@@ -63,6 +63,7 @@ export const addMedicine = async (req: AuthRequestType, res: Response) => {
 			data: {
 				medicineId,
 				frequencyPerWeek: schedules.length * days.length,
+				days: days,
 			},
 		});
 
@@ -220,15 +221,20 @@ export const updateMedicine = async (req: AuthRequestType, res: Response) => {
 			take: 1,
 		});
 
+		const currentFrequencyDays = currentFrequency?.days.sort().join(",");
+		const newFrequencyDays = days.sort().join(",");
+
 		// checking old frequency vs new frequency
 		if (
 			currentFrequency?.frequencyPerWeek !==
-			schedules.length * days.length
+				schedules.length * days.length ||
+			currentFrequencyDays !== newFrequencyDays
 		) {
 			await PrismaDB.frequency.create({
 				data: {
 					medicineId: medicineId as string,
 					frequencyPerWeek: schedules.length * days.length,
+					days: days,
 				},
 			});
 		}
@@ -477,6 +483,13 @@ export const getPatientFrequencies = async (req: Request, res: Response) => {
 						frequencyId: true,
 						date: true,
 						frequencyPerWeek: true,
+						days: true,
+						medicine: {
+							select: {
+								medicineId: true,
+								name: true,
+							},
+						},
 					},
 				},
 			},

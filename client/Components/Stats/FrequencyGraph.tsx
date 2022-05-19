@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Dimensions, Text } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-import styles, { dimens } from "../../Styles/styles";
+import styles from "../../Styles/styles";
 import DropDownPicker from "react-native-dropdown-picker";
 import {
 	FrequencyListType,
@@ -12,8 +12,10 @@ import NoData from "../Feedbacks/NoData";
 
 const FrequencyGraph = ({
 	frequencies,
+	setSelectedMedicineId,
 }: {
 	frequencies: FrequencyListType[];
+	setSelectedMedicineId?: React.Dispatch<React.SetStateAction<string>>;
 }) => {
 	const [open, setOpen] = useState(false);
 	const [value, setValue] = useState(null);
@@ -23,6 +25,9 @@ const FrequencyGraph = ({
 
 	const setGraphValues = (e: string) => {
 		setValue(e);
+		if (setSelectedMedicineId) {
+			setSelectedMedicineId(e);
+		}
 
 		frequencies.forEach((frequency: FrequencyListType) => {
 			if (e === frequency.medicineId) {
@@ -53,12 +58,7 @@ const FrequencyGraph = ({
 	}, [frequencies]);
 
 	return (
-		<View
-			style={{
-				...styles.medicineGraphContainer,
-				marginTop: dimens.xxLarge,
-			}}
-		>
+		<View style={styles.medicineGraphContainer}>
 			<View style={styles.lineGraphTitleContainer}>
 				<Text style={styles.lineGraphTitleText}>Frequency For:</Text>
 

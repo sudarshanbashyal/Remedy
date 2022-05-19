@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { makeApiCall } from "../../API/api";
 import { GET_PATIENT_FREQUENCIES, HTTP_GET } from "../../API/apiTypes";
+import FrequencyDetails from "../../Components/Stats/FrequencyDetails";
 import FrequencyGraph from "../../Components/Stats/FrequencyGraph";
 import { RootStackType } from "../../Stacks/RootStack";
 import { colors } from "../../Styles/Colors";
@@ -21,10 +22,13 @@ const PatientHistory = ({ route }) => {
 	};
 
 	const [frequencies, setFrequencies] = useState<FrequencyListType[]>([]);
+	const [frequencyDetails, setFrequencyDetails] = useState<any>({});
+	const [selectedMedicineId, setSelectedMedicineId] = useState<string>(null);
 
 	useEffect(() => {
 		(async () => {
 			const allFrequencies: FrequencyListType[] = [];
+			const allFrequencyDetails = {};
 
 			const apiResponse = await makeApiCall({
 				endpoint: GET_PATIENT_FREQUENCIES,
@@ -40,6 +44,26 @@ const PatientHistory = ({ route }) => {
 					frequency.frequencies.forEach((val: any) => {
 						frequencyDates.push(val.date);
 						frequencyValues.push(val.frequencyPerWeek);
+
+						const { medicineId, name } = val.medicine;
+
+						// freqneucy details
+						if (!allFrequencyDetails[medicineId]) {
+							allFrequencyDetails[medicineId] = {
+								name: name,
+								details: [],
+							};
+						}
+
+						allFrequencyDetails[medicineId].details = [
+							...allFrequencyDetails[medicineId].details,
+
+							{
+								date: val.date,
+								frequencyPerWeek: val.frequencyPerWeek,
+								days: val.days,
+							},
+						];
 					});
 
 					allFrequencies.push({
@@ -50,6 +74,7 @@ const PatientHistory = ({ route }) => {
 					});
 				});
 
+				setFrequencyDetails(allFrequencyDetails);
 				setFrequencies(allFrequencies);
 				return;
 			}
@@ -72,7 +97,15 @@ const PatientHistory = ({ route }) => {
 				</View>
 			</View>
 
-			<FrequencyGraph frequencies={frequencies} />
+			<FrequencyGraph
+				frequencies={frequencies}
+				setSelectedMedicineId={setSelectedMedicineId}
+			/>
+
+			<FrequencyDetails
+				selectedMedicineId={selectedMedicineId}
+				frequencyDetails={frequencyDetails}
+			/>
 		</View>
 	);
 };

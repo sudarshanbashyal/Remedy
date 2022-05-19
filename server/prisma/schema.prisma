@@ -88,6 +88,7 @@ model Schedule{
 model Frequency{
 	frequencyId String @id() @default(uuid())
 	date DateTime @default(now())
+	days Int[]
 	frequencyPerWeek Int	
 	medicineId String
 	medicine Medicine @relation(fields:[medicineId], references:[medicineId])

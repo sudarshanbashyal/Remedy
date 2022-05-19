@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import BottomNavigationBar from "../../Components/BottomNavigationBar";
-import styles from "../../Styles/styles";
+import styles, { dimens } from "../../Styles/styles";
 import FrequencyGraph from "../../Components/Stats/FrequencyGraph";
 import HabitGraph from "../../Components/Stats/HabitGraph";
 import { colors } from "../../Styles/Colors";
@@ -93,8 +93,13 @@ const MedicineStats = () => {
 					</Text>
 				</View>
 
-				<HabitGraph />
-				<FrequencyGraph frequencies={frequencies} />
+				<View style={{ marginTop: dimens.xxLarge }}>
+					<HabitGraph />
+				</View>
+
+				<View style={{ marginTop: dimens.xxLarge }}>
+					<FrequencyGraph frequencies={frequencies} />
+				</View>
 			</ScrollView>
 
 			<BottomNavigationBar />
