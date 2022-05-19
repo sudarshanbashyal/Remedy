@@ -27,7 +27,7 @@ const BottomNavigationBar = () => {
 		let tabs = ["ChatList"];
 
 		if (user.role === "Doctor") {
-			tabs = [...tabs, ...["MedicalReference"]];
+			tabs = [...tabs, ...["PatientList", "MedicalReference"]];
 		} else {
 			tabs = [
 				...tabs,

@@ -8,6 +8,7 @@ import {
 	CalendarTickIcon,
 	ChatBubbleIcon,
 	GraphIcon,
+	PatientsIcon,
 	PillsIcon,
 	ResearchIcon,
 } from "../../Styles/SVG/Svg";
@@ -42,6 +43,19 @@ const RenderTabComponent = ({ navigationName }) => {
 						)}
 					></View>
 					<PillsIcon size={35} color={colors.primaryWhite} />
+				</View>
+			);
+
+		case "PatientList":
+			return (
+				<View style={styles.bottomTabIconContainer}>
+					<View
+						style={currentNavigationTab(
+							navigationName,
+							currentNavigation
+						)}
+					></View>
+					<PatientsIcon size={45} color={colors.primaryWhite} />
 				</View>
 			);
 

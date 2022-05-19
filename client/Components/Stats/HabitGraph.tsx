@@ -115,18 +115,6 @@ const HabitGraph = () => {
 			const currentDay = moment(curr).format("YYYY-MM-DD");
 			const weekDay = curr.getDay();
 
-			// moment(currentDay, "YYYY-MM-DD").isAfter(moment(), "day")
-			// skip the day of the first added day is greater than month day or if the day is after today
-			if (
-				moment(oldestMedicineDate, "YYYY-MM-DD").isAfter(
-					currentDay,
-					"day"
-				) ||
-				moment(currentDay, "YYYY-MM-DD").isAfter(moment(), "day")
-			) {
-				continue;
-			}
-
 			if (!markedDays[currentDay] && medicationDays.has(weekDay)) {
 				// continue otherwise
 				markedDays[currentDay] = {
@@ -147,6 +135,7 @@ const HabitGraph = () => {
 
 			user.medicines.forEach((medicine: MedicineType) => {
 				// check if this is the oldest added medicine
+				console.log(medicine.createdAt);
 				if (medicine.createdAt < oldestMedicineDate) {
 					setOldestMedicineDate(medicine.createdAt);
 				}
@@ -275,13 +264,9 @@ const HabitGraph = () => {
 								{intake.schedule.hour > 12
 									? intake.schedule.hour - 12
 									: intake.schedule.hour}
-
-								{intake.schedule.minutes}
-
+								:{intake.schedule.minutes}
 								{intake.schedule.hour > 12 ? " PM " : " AM "}
-
 								<Text> - {intake.schedule.medicine.name}</Text>
-
 								<Text
 									style={{
 										color:

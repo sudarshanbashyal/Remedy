@@ -494,7 +494,6 @@ const styles = StyleSheet.create({
 	},
 	medicineGraphContainer: {
 		paddingHorizontal: dimens.medium,
-		marginTop: dimens.xxLarge,
 	},
 	lineGraphTitleContainer: {
 		width: "100%",

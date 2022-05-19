@@ -12,7 +12,6 @@ import {
 	HTTP_POST,
 	REPORT_SYMPTOM_SIMILARITY,
 } from "../../API/apiTypes";
-import specializedHospitals from "../Hospitals/SpecializedHospitals";
 import { navigationRef } from "../../App";
 
 const GREETINGS_HELLO = "greetings.hello";
@@ -220,6 +219,9 @@ class ChatBot {
 		).join(
 			", "
 		)}. \n\nI diagnose you with ${Name}, also known as ${ProfName}.\n\n ${TreatmentDescription}`;
+
+		// reset chatbot state
+		this.resetChatbotConvo();
 	}
 
 	async formInitialReply(symptom: string = ""): Promise<ChatBubbleType> {

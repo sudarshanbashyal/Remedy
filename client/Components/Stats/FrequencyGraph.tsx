@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Dimensions, Text } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-import styles from "../../Styles/styles";
+import styles, { dimens } from "../../Styles/styles";
 import DropDownPicker from "react-native-dropdown-picker";
 import {
 	FrequencyListType,
@@ -53,7 +53,12 @@ const FrequencyGraph = ({
 	}, [frequencies]);
 
 	return (
-		<View style={styles.medicineGraphContainer}>
+		<View
+			style={{
+				...styles.medicineGraphContainer,
+				marginTop: dimens.xxLarge,
+			}}
+		>
 			<View style={styles.lineGraphTitleContainer}>
 				<Text style={styles.lineGraphTitleText}>Frequency For:</Text>
 

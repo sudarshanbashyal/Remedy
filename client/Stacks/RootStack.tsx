@@ -31,6 +31,8 @@ import OngoingCall from "../Screens/RTC/OngoingCall";
 
 import { Voximplant } from "react-native-voximplant";
 import { VOXIMPLANT_APP_NAME, VOXIMPLANT_USER_PASSWORD } from "../Utils/keys";
+import PatientList from "../Screens/Patients/PatientList";
+import PatientHistory from "../Screens/Patients/PatientHistory";
 
 export type RootStackType = {
 	ChatList: any;
@@ -76,6 +78,11 @@ export type RootStackType = {
 	OngoingCall: {
 		call: any;
 		isIncomingCall: boolean;
+	};
+	PatientList: any;
+	PatientHistory: {
+		messageWith: string;
+		recipentId: string;
 	};
 };
 
@@ -185,6 +192,14 @@ const RootStack = () => {
 			/>
 
 			<Stack.Screen name="Profile" component={Profile} />
+
+			<Stack.Screen name="PatientList" component={PatientList} />
+
+			<Stack.Screen
+				name="PatientHistory"
+				options={slideFromRightAnimation}
+				component={PatientHistory}
+			/>
 
 			<Stack.Screen
 				name="SpecializedMaps"
