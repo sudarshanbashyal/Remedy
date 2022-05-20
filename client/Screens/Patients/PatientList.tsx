@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import BottomNavigationBar from "../../Components/BottomNavigationBar";
 import { RootStore } from "../../Redux/store";
 import { RootStackType } from "../../Stacks/RootStack";
-import styles, { dimens } from "../../Styles/styles";
+import styles from "../../Styles/styles";
 import { getChatPreviews } from "../../Utils/Chat/getChatList";
 
 const PatientList = () => {

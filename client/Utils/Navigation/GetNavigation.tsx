@@ -2,11 +2,13 @@ import React from "react";
 import { View, Image } from "react-native";
 import { useSelector } from "react-redux";
 import { RootStore } from "../../Redux/store";
+import DoctorsList from "../../Screens/Doctors/DoctorsList";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
 import {
 	CalendarTickIcon,
 	ChatBubbleIcon,
+	DoctorIcon,
 	GraphIcon,
 	PatientsIcon,
 	PillsIcon,
@@ -95,6 +97,19 @@ const RenderTabComponent = ({ navigationName }) => {
 						)}
 					></View>
 					<ResearchIcon size={30} color={colors.primaryWhite} />
+				</View>
+			);
+
+		case "DoctorsList":
+			return (
+				<View style={styles.bottomTabIconContainer}>
+					<View
+						style={currentNavigationTab(
+							navigationName,
+							currentNavigation
+						)}
+					></View>
+					<DoctorIcon size={30} color={colors.primaryWhite} />
 				</View>
 			);
 

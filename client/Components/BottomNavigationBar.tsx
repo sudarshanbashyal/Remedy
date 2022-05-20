@@ -28,11 +28,13 @@ const BottomNavigationBar = () => {
 
 		if (user.role === "Doctor") {
 			tabs = [...tabs, ...["PatientList", "MedicalReference"]];
-		} else {
+		} else if (user.role === "Patient") {
 			tabs = [
 				...tabs,
 				...["MedicineList", "IntakeRegister", "MedicineStats"],
 			];
+		} else {
+			tabs = [...tabs, ...["DoctorsList"]];
 		}
 
 		tabs.push("Profile");

@@ -33,6 +33,7 @@ import { Voximplant } from "react-native-voximplant";
 import { VOXIMPLANT_APP_NAME, VOXIMPLANT_USER_PASSWORD } from "../Utils/keys";
 import PatientList from "../Screens/Patients/PatientList";
 import PatientHistory from "../Screens/Patients/PatientHistory";
+import DoctorsList from "../Screens/Doctors/DoctorsList";
 
 export type RootStackType = {
 	ChatList: any;
@@ -84,6 +85,7 @@ export type RootStackType = {
 		messageWith: string;
 		recipentId: string;
 	};
+	DoctorsList: any;
 };
 
 const slideFromRightAnimation: NativeStackNavigationOptions = {
@@ -194,6 +196,8 @@ const RootStack = () => {
 			<Stack.Screen name="Profile" component={Profile} />
 
 			<Stack.Screen name="PatientList" component={PatientList} />
+
+			<Stack.Screen name="DoctorsList" component={DoctorsList} />
 
 			<Stack.Screen
 				name="PatientHistory"
