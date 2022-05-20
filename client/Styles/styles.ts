@@ -1182,6 +1182,63 @@ const styles = StyleSheet.create({
 		color: colors.primaryWhite,
 		marginRight: dimens.regular,
 	},
+
+	userTypeContainer: {
+		paddingHorizontal: dimens.regular,
+		paddingVertical: dimens.small,
+		borderRadius: dimens.regular,
+		borderColor: colors.opaqueWhite,
+		borderWidth: 1,
+		marginRight: dimens.regular,
+		marginBottom: dimens.medium,
+	},
+	selectedUserTypeContainer: {
+		backgroundColor: colors.primaryBlue,
+		borderColor: colors.primaryBlue,
+	},
+	userType: {
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.small,
+		color: colors.primaryWhite,
+	},
+
+	medicalDocumentsContainer: {
+		width: "100%",
+		flexWrap: "wrap",
+		flexDirection: "row",
+		justifyContent: "flex-start",
+		alignItems: "center",
+		borderColor: colors.opaqueWhite,
+		borderStyle: "dashed",
+		borderWidth: 1,
+		borderRadius: dimens.regular,
+		paddingVertical: dimens.large,
+		paddingHorizontal: dimens.regular,
+		marginTop: dimens.regular,
+	},
+	documentContainerPlaceholder: {
+		fontFamily: fonts.Poppins.regular,
+		fontSize: fonts.size.regular,
+		color: colors.opaqueWhite,
+	},
+
+	documentImageContainer: {
+		height: dimens.xxLarge * 2,
+		width: dimens.xxLarge,
+		position: "relative",
+		marginRight: dimens.xxLarge,
+	},
+	documentImage: {
+		borderRadius: dimens.small,
+		height: "100%",
+		width: "100%",
+		resizeMode: "cover",
+	},
+	documentImageRemove: {
+		position: "absolute",
+		top: -dimens.regular,
+		right: -dimens.regular,
+	},
 });
 
 export default styles;

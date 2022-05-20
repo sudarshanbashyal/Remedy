@@ -13,7 +13,6 @@ import { BorderlessCrossIcon } from "../../Styles/SVG/Svg";
 import { Voximplant } from "react-native-voximplant";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackType } from "../../Stacks/RootStack";
-import { Overlay } from "react-native-maps";
 
 const OutgoingCall = ({ route }) => {
 	let incomingCall, isIncomingCall, receivingUserName, fullName;

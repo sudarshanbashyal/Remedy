@@ -1,15 +1,37 @@
+import { UserType } from "@prisma/client";
 import { UploadApiResponse } from "cloudinary";
 import { Request, Response } from "express";
 import { serverError } from ".";
 import { PrismaDB, createVoximplantProfile } from "..";
 import { AuthRequestType, generateJWTToken } from "../Utils/Auth";
 import { hashPassword, isCorrectPassword } from "../Utils/Bcrypt";
-import { PROFILE_PRESET, uploadImage } from "../Utils/cloudinary";
+import {
+	PROFILE_PRESET,
+	uploadImage,
+	uploadMedicalDocuments,
+} from "../Utils/cloudinary";
 import { generateUsername } from "../Utils/VoximPlantConfig";
 
 export const registerUser = async (req: Request, res: Response) => {
 	try {
-		const { firstName, lastName, email, password, gender, dob } = req.body;
+		const {
+			firstName,
+			lastName,
+			email,
+			password,
+			gender,
+			dob,
+			expertise,
+			medicalDocuments,
+		} = req.body;
+
+		let role = "Patient";
+		let verified = true;
+
+		if (expertise && medicalDocuments) {
+			role = "Doctor";
+			verified = false;
+		}
 
 		const generatedUsername = generateUsername(email);
 
@@ -25,6 +47,11 @@ export const registerUser = async (req: Request, res: Response) => {
 				profilePicture: `https://avatars.dicebear.com/api/initials/${
 					firstName[0] + lastName[0]
 				}.png`,
+				role: role as UserType,
+				verified,
+			},
+			select: {
+				userId: true,
 			},
 		});
 
@@ -35,6 +62,20 @@ export const registerUser = async (req: Request, res: Response) => {
 					message: "Couldn't create user.",
 				},
 			});
+		}
+
+		// upload medical documents if it is a doctor
+		if (role === "Doctor") {
+			const links = await uploadMedicalDocuments(medicalDocuments);
+			if (links) {
+				await PrismaDB.professionalDetails.create({
+					data: {
+						expertise,
+						userId: user.userId,
+						medicalDocuments: links,
+					},
+				});
+			}
 		}
 
 		// create voximplantUsername user profile

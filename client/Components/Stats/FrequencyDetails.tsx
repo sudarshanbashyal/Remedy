@@ -41,6 +41,7 @@ const FrequencyDetails = ({
 								<View style={styles.rowStartContainer}>
 									{weekMap.map((weekDay, index) => (
 										<Text
+											key={index}
 											style={
 												detail.days.includes(index)
 													? styles.frequencyDetailActiveDay

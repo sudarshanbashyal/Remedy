@@ -1,10 +1,13 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { Asset } from "react-native-image-picker";
 import { makeApiCall } from "../../API/api";
 import { CHECK_EMAIL, HTTP_POST, REGISTER_USER } from "../../API/apiTypes";
 import AccountStep from "../../Components/Register/AccountStep";
+import ProfessionStep from "../../Components/Register/ProfessionStep";
 import ProfileStep from "../../Components/Register/ProfileStep";
+import UserTypeSelector from "../../Components/Register/UserTypeSelector";
 import { AuthStackType } from "../../Stacks/AuthStack";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
@@ -22,6 +25,8 @@ export interface RegistrationType {
 	password: string | null;
 	confirmPassword: string | null;
 	profilePicture: string | null;
+	expertise?: string;
+	medicalDocuments?: Asset[];
 }
 
 const initialUserData = {
@@ -33,7 +38,14 @@ const initialUserData = {
 	password: null,
 	confirmPassword: null,
 	profilePicture: null,
+	expertise: null,
+	medicalDocuments: [],
 };
+
+export const PATIENT_TYPE = "patient";
+export const DOCTOR_TYPE = "doctor";
+
+export type UserType = typeof PATIENT_TYPE | typeof DOCTOR_TYPE;
 
 const RegisterScreen = () => {
 	const navigation = useNavigation<NavigationProp<AuthStackType>>();
@@ -46,8 +58,18 @@ const RegisterScreen = () => {
 	const [userData, setUserData] = useState<RegistrationType>(initialUserData);
 	const [errors, setErrors] = useState<string[]>([]);
 
+	const [registrationType, setRegistrationType] =
+		useState<UserType>(PATIENT_TYPE);
+
+	const [stepLabels, setStepLabels] = useState("");
+
 	const handleChange = (value: string, name: keyof RegistrationType) => {
 		setUserData({ ...userData, [name]: value });
+	};
+
+	const resetRegistration = () => {
+		setCurrentStep(1);
+		setUserData(initialUserData);
 	};
 
 	const goBack = () => {
@@ -119,9 +141,45 @@ const RegisterScreen = () => {
 		return true;
 	};
 
+	const checkProfessionSteps = () => {
+		const currentErrors = [];
+
+		if (!userData.expertise) {
+			currentErrors.push("You must fill the expertise field.");
+		}
+
+		console.log(userData.medicalDocuments);
+		if (
+			!userData.medicalDocuments ||
+			userData.medicalDocuments.length === 0
+		) {
+			currentErrors.push(
+				"You must upload at least one medical certificate."
+			);
+		}
+
+		setErrors(currentErrors);
+
+		if (currentErrors.length > 0) {
+			return false;
+		}
+
+		return true;
+	};
+
+	const handleDocumentImages = (images: Asset[]) => {
+		setUserData({ ...userData, medicalDocuments: images });
+	};
+
 	const handleRegistration = async () => {
-		const correctEntries = await checkAccountStep();
-		if (!correctEntries) return;
+		const correctAccountEntries = await checkAccountStep();
+
+		if (!correctAccountEntries) return;
+
+		if (registrationType === DOCTOR_TYPE) {
+			const correctProfessionEntries = checkProfessionSteps();
+			if (!correctProfessionEntries) return;
+		}
 
 		const avatar = generateIdenticon(
 			userData.firstName + userData.lastName
@@ -148,6 +206,48 @@ const RegisterScreen = () => {
 		);
 	};
 
+	const moveForward = () => {
+		if (registrationType === PATIENT_TYPE) {
+			if (currentStep < 2) {
+				goNext();
+				return;
+			}
+
+			handleRegistration();
+			return;
+		}
+
+		if (currentStep < 3) {
+			goNext();
+			return;
+		}
+
+		handleRegistration();
+	};
+
+	useEffect(() => {
+		let label = "";
+
+		if (registrationType === PATIENT_TYPE) {
+			if (currentStep < 2) {
+				label = `Proceed ${currentStep}/2`;
+			} else {
+				label = "Register Account";
+			}
+
+			setStepLabels(label);
+			return;
+		}
+
+		if (currentStep < 3) {
+			label = `Proceed ${currentStep}/3`;
+		} else {
+			label = "Register Account";
+		}
+
+		setStepLabels(label);
+	}, [currentStep, registrationType]);
+
 	const goNext = () => {
 		const correctEntries = checkProfileStep();
 		if (!correctEntries) return;
@@ -159,6 +259,12 @@ const RegisterScreen = () => {
 		<View style={styles.fullContainer}>
 			<View style={styles.loginFlexContainer}>
 				<View style={styles.loginContainer}>
+					<UserTypeSelector
+						registrationType={registrationType}
+						setRegistrationType={setRegistrationType}
+						resetRegistration={resetRegistration}
+					/>
+
 					{currentStep === 1 ? (
 						<ProfileStep
 							errors={errors}
@@ -166,12 +272,20 @@ const RegisterScreen = () => {
 							userData={userData}
 							setErrors={setErrors}
 						/>
-					) : (
+					) : currentStep === 2 ? (
 						<AccountStep
 							errors={errors}
 							handleChange={handleChange}
 							userData={userData}
 							setErrors={setErrors}
+						/>
+					) : (
+						<ProfessionStep
+							errors={errors}
+							handleChange={handleChange}
+							userData={userData}
+							setErrors={setErrors}
+							handleDocumentImages={handleDocumentImages}
 						/>
 					)}
 
@@ -190,16 +304,10 @@ const RegisterScreen = () => {
 						</TouchableOpacity>
 
 						<TouchableOpacity
-							onPress={
-								currentStep === 2 ? handleRegistration : goNext
-							}
+							onPress={moveForward}
 							style={styles.blueButtonContainer}
 						>
-							<Text style={styles.blueButton}>
-								{currentStep === 2
-									? "Register Account"
-									: `Proceed ${currentStep}/2`}
-							</Text>
+							<Text style={styles.blueButton}>{stepLabels}</Text>
 						</TouchableOpacity>
 					</View>
 				</View>

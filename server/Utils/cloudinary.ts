@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from "cloudinary";
+import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -9,12 +9,14 @@ cloudinary.config({
 	api_secret: process.env.CLOUDINARY_SECRET,
 });
 
-// cloudinary setup ends here...
-
 export const PROFILE_PRESET = "profile_image";
 export const MESSAGE_PRESET = "message_image";
+export const DOCUMENT_PRESET = "medical_documents";
 
-export type presetType = typeof PROFILE_PRESET | typeof MESSAGE_PRESET;
+export type presetType =
+	| typeof PROFILE_PRESET
+	| typeof MESSAGE_PRESET
+	| typeof DOCUMENT_PRESET;
 
 export const uploadImage = async (
 	base64: string,
@@ -45,4 +47,27 @@ export const uploadImage = async (
 		console.log(error);
 		return null;
 	}
+};
+
+export const uploadMedicalDocuments = async (
+	imageAssets: any
+): Promise<string[]> => {
+	const savedLinks: string[] = [];
+
+	for (let asset of imageAssets) {
+		try {
+			const uploadedImage: UploadApiResponse | null = await uploadImage(
+				`data:image/jpeg;base64,${asset.base64}`,
+				DOCUMENT_PRESET
+			);
+
+			if (uploadedImage) {
+				savedLinks.push(uploadedImage.secure_url);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	return savedLinks;
 };

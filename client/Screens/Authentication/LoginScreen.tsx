@@ -47,6 +47,13 @@ const LoginScreen = () => {
 		});
 
 		if (apiResponse?.ok) {
+			// check if the user is verified
+			const { verified } = apiResponse.data;
+			if (!verified) {
+				showToast("error", "Your account is not verified yet.");
+				return;
+			}
+
 			const {
 				userId,
 				firstName,

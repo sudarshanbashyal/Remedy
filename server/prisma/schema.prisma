@@ -56,6 +56,15 @@ model User{
 	messages Message[]
 	outgoingRequests Request[] @relation("requestFrom")
 	incomingRequests Request[] @relation("requestTo")
+	professionalDetails ProfessionalDetails?
+}
+
+model ProfessionalDetails{
+	detailsId String @id() @default(uuid())
+	expertise String
+	medicalDocuments String[]
+	userId String
+	user User @relation(fields:[userId], references:[userId])
 }
 
 model UserRole{

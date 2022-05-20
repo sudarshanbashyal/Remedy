@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import DatePicker from "react-native-date-picker";
 import DropDownPicker from "react-native-dropdown-picker";
+import { Asset } from "react-native-image-picker";
 import { RegistrationType } from "../../Screens/Authentication/RegisterScreen";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
@@ -13,6 +14,7 @@ export interface RegistrationStepProp {
 	handleChange: (value: string, name: keyof RegistrationType) => void;
 	errors: string[];
 	setErrors: Dispatch<SetStateAction<string[]>>;
+	handleDocumentImages?: (images: Asset[]) => void;
 }
 
 const ProfileStep = ({
