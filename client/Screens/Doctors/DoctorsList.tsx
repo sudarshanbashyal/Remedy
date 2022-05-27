@@ -3,16 +3,17 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, View, Text, Image, TouchableOpacity } from "react-native";
 import { makeApiCall } from "../../API/api";
 import { GET_ALL_DOCTORS, HTTP_GET } from "../../API/apiTypes";
+import DoctorListFilter from "../../Components/Admin/DoctorListFilter";
 import BottomNavigationBar from "../../Components/BottomNavigationBar";
 import { RootStackType } from "../../Stacks/RootStack";
-import styles from "../../Styles/styles";
+import styles, { dimens } from "../../Styles/styles";
 import { formatName } from "../../Utils/FormatName/formatName";
 
 const DoctorsList = () => {
 	const [doctors, setDoctors] = useState<any>([]);
+	const [doctorsToRender, setDoctorsToRender] = useState<any>([]);
 
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
-
 	const goToDoctorDetails = () => {};
 
 	useEffect(() => {
@@ -25,6 +26,7 @@ const DoctorsList = () => {
 
 			if (apiResponse.ok) {
 				setDoctors(apiResponse.data);
+				setDoctorsToRender(apiResponse.data);
 			}
 		})();
 	}, []);
@@ -36,34 +38,40 @@ const DoctorsList = () => {
 					<Text style={styles.mailScreenTitle}>All Doctors</Text>
 				</View>
 
-				{doctors.map((doctor) => (
-					<TouchableOpacity
-						key={doctor.userId}
-						style={styles.chatPreview}
-						onPress={() => {}}
-					>
-						<View style={styles.spacedApartContainer}>
-							<View>
-								<View style={styles.chatPreviewImageContainer}>
-									<Image
-										style={styles.chatPreviewIcon}
-										source={{
-											uri: doctor.profilePicture,
-										}}
-									/>
-								</View>
+				<DoctorListFilter
+					setDoctorsToRender={setDoctorsToRender}
+					doctors={doctors}
+				/>
 
+				<View style={{ minHeight: dimens.xxLarge * 2 }}>
+					{doctorsToRender.map((doctor) => (
+						<TouchableOpacity
+							key={doctor.userId}
+							style={styles.chatPreview}
+							onPress={() => {}}
+						>
+							<View style={styles.spacedApartContainer}>
+								<View>
+									<View
+										style={styles.chatPreviewImageContainer}
+									>
+										<Image
+											style={styles.chatPreviewIcon}
+											source={{
+												uri: doctor.profilePicture,
+											}}
+										/>
+									</View>
+								</View>
 								<Text style={styles.chatPreviewName}>
 									{formatName(
 										doctor.firstName + " " + doctor.lastName
 									)}
 								</Text>
 							</View>
-
-							<Text>Hello There</Text>
-						</View>
-					</TouchableOpacity>
-				))}
+						</TouchableOpacity>
+					))}
+				</View>
 			</ScrollView>
 
 			<BottomNavigationBar />

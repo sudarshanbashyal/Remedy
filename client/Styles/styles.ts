@@ -1239,6 +1239,22 @@ const styles = StyleSheet.create({
 		top: -dimens.regular,
 		right: -dimens.regular,
 	},
+
+	doctorFilterContainer: {
+		flexDirection: "row",
+		justifyContent: "flex-start",
+		alignItems: "center",
+		paddingHorizontal: dimens.medium,
+		marginTop: -dimens.medium,
+		marginBottom: dimens.large,
+	},
+	doctorFilterInput: {
+		flex: 1.6,
+		marginRight: dimens.small,
+	},
+	doctorFilterDropdownContainer: {
+		flex: 1,
+	},
 });
 
 export default styles;
