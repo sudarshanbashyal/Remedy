@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { makeApiCall } from "../../API/api";
 import { GET_CHAT_MEDIA, HTTP_GET } from "../../API/apiTypes";
-import MediaModal, { MediaModalType } from "../../Components/Modal/MediaModal";
+import MediaModal, { ModalType } from "../../Components/Modal/MediaModal";
 import { RootStackType } from "../../Stacks/RootStack";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
@@ -11,10 +11,10 @@ import { BackIcon, SearchIcon } from "../../Styles/SVG/Svg";
 import { formatText } from "../../Utils/FormatText/formatText";
 import { showToast } from "../../Utils/Toast";
 
-interface MediaType {
+export interface ModalMediaType {
 	content: string;
 	name: string;
-	date: Date;
+	date?: Date;
 	type: string;
 }
 
@@ -26,15 +26,14 @@ const ChatMedia = ({ route }) => {
 		navigation.goBack();
 	};
 
-	const [modalProperties, setModalProperties] =
-		useState<MediaModalType>(null);
+	const [modalProperties, setModalProperties] = useState<ModalType>(null);
 
 	const [fileName, setFileName] = useState<string>("");
 
-	const [medias, setMedias] = useState<MediaType[]>([]);
-	const [renderMedias, setRenderMedias] = useState<MediaType[]>([]);
+	const [medias, setMedias] = useState<ModalMediaType[]>([]);
+	const [renderMedias, setRenderMedias] = useState<ModalMediaType[]>([]);
 
-	const handleModalState = (media: MediaType) => {
+	const handleModalState = (media: ModalMediaType) => {
 		const { name, type, content } = media;
 
 		setModalProperties({
@@ -61,8 +60,9 @@ const ChatMedia = ({ route }) => {
 	};
 
 	const handleSearch = () => {
-		const filteredMedias: MediaType[] = medias.filter((media: MediaType) =>
-			media.name.toLowerCase().includes(fileName.toLowerCase())
+		const filteredMedias: ModalMediaType[] = medias.filter(
+			(media: ModalMediaType) =>
+				media.name.toLowerCase().includes(fileName.toLowerCase())
 		);
 
 		setRenderMedias(filteredMedias);
@@ -132,7 +132,7 @@ const ChatMedia = ({ route }) => {
 				</View>
 
 				<View style={styles.chatFilesLayoutContainer}>
-					{renderMedias.map((media: MediaType) => (
+					{renderMedias.map((media: ModalMediaType) => (
 						<TouchableOpacity
 							onPress={() => {
 								handleModalState(media);

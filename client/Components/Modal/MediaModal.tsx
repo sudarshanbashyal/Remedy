@@ -5,7 +5,7 @@ import styles from "../../Styles/styles";
 import { handleDownload } from "../../Utils/Download/downloadFile";
 import { formatText } from "../../Utils/FormatText/formatText";
 
-export interface MediaModalType {
+export interface ModalType {
 	name: string;
 	content: string;
 	type: string;
@@ -19,7 +19,7 @@ const MediaModal = ({
 	type,
 	modalActive,
 	removeModal,
-}: MediaModalType) => {
+}: ModalType) => {
 	const getRealFileName = () => {
 		return name.split("/")[1];
 	};
@@ -32,11 +32,13 @@ const MediaModal = ({
 			isVisible={modalActive}
 		>
 			<View style={styles.modalContainer}>
-				<View style={styles.modalMediaInformationContainer}>
-					<Text style={styles.modalText}>
-						{formatText(getRealFileName(), 40)}
-					</Text>
-				</View>
+				{name && (
+					<View style={styles.modalMediaInformationContainer}>
+						<Text style={styles.modalText}>
+							{formatText(getRealFileName(), 40)}
+						</Text>
+					</View>
+				)}
 
 				<View style={styles.modalImagePreview}>
 					<Image
