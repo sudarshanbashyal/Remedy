@@ -14,7 +14,6 @@ const DoctorsList = () => {
 	const [doctorsToRender, setDoctorsToRender] = useState<any>([]);
 
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
-	const goToDoctorDetails = () => {};
 
 	useEffect(() => {
 		(async () => {
@@ -48,7 +47,11 @@ const DoctorsList = () => {
 						<TouchableOpacity
 							key={doctor.userId}
 							style={styles.chatPreview}
-							onPress={() => {}}
+							onPress={() => {
+								navigation.navigate("DoctorDetails", {
+									doctor,
+								});
+							}}
 						>
 							<View style={styles.spacedApartContainer}>
 								<View>

@@ -12,6 +12,7 @@
 	"dependencies": {
 		"@nlpjs/basic": "^4.23.1",
 		"@prisma/client": "^3.9.2",
+		"@sendgrid/mail": "^7.7.0",
 		"@types/bcrypt": "^5.0.0",
 		"@types/cors": "^2.8.12",
 		"@types/dotenv": "^8.2.0",

@@ -34,6 +34,7 @@ import { VOXIMPLANT_APP_NAME, VOXIMPLANT_USER_PASSWORD } from "../Utils/keys";
 import PatientList from "../Screens/Patients/PatientList";
 import PatientHistory from "../Screens/Patients/PatientHistory";
 import DoctorsList from "../Screens/Doctors/DoctorsList";
+import DoctorDetails from "../Screens/Doctors/DoctorDetails";
 
 export type RootStackType = {
 	ChatList: any;
@@ -86,6 +87,9 @@ export type RootStackType = {
 		recipentId: string;
 	};
 	DoctorsList: any;
+	DoctorDetails: {
+		doctor: any;
+	};
 };
 
 const slideFromRightAnimation: NativeStackNavigationOptions = {
@@ -233,6 +237,12 @@ const RootStack = () => {
 				name="ReferenceDetails"
 				options={slideFromRightAnimation}
 				component={ReferenceDetails}
+			/>
+
+			<Stack.Screen
+				name="DoctorDetails"
+				options={slideFromRightAnimation}
+				component={DoctorDetails}
 			/>
 
 			<Stack.Screen

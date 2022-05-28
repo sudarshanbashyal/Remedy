@@ -57,6 +57,7 @@ model User{
 	outgoingRequests Request[] @relation("requestFrom")
 	incomingRequests Request[] @relation("requestTo")
 	professionalDetails ProfessionalDetails?
+	createdAt DateTime @default(now())
 }
 
 model ProfessionalDetails{
