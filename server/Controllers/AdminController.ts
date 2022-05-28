@@ -1,8 +1,12 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { serverError } from ".";
 import { PrismaDB } from "..";
-import { AuthRequestType } from "../Utils/Auth";
-import { sendVerificationEmail } from "../Utils/SendGrid";
+import { AuthRequestType, generateResetToken } from "../Utils/Auth";
+import {
+	sendEmail,
+	SUBJECT_PASSWORD_RESET,
+	SUBJECT_VERIFICATION,
+} from "../Utils/SendGrid";
 
 export const getAllDoctors = async (req: AuthRequestType, res: Response) => {
 	try {
@@ -51,11 +55,91 @@ export const updateDoctorVerification = async (
 
 		if (updatedUser.verified) {
 			const { email, firstName, lastName } = updatedUser;
-			await sendVerificationEmail(email, firstName, lastName);
+			await sendEmail(SUBJECT_VERIFICATION, {
+				first_name: firstName,
+				last_name: lastName,
+				email,
+			});
 		}
 
 		return res.json({
 			ok: true,
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
+export const setPasswordResetToken = async (req: Request, res: Response) => {
+	try {
+		const { email } = req.body;
+		const resetToken = generateResetToken();
+
+		const updatedUser = await PrismaDB.user.update({
+			where: {
+				email,
+			},
+			data: {
+				resetToken,
+			},
+		});
+
+		if (updatedUser) {
+			const { email, firstName, lastName } = updatedUser;
+			await sendEmail(SUBJECT_PASSWORD_RESET, {
+				first_name: firstName,
+				last_name: lastName,
+				email,
+				token: resetToken,
+			});
+
+			return res.status(201).json({
+				ok: true,
+			});
+		}
+
+		return res.status(404).json({
+			ok: false,
+			error: {
+				message: "No user found.",
+			},
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
+export const verifyToken = async (req: Request, res: Response) => {
+	try {
+		const { token, email } = req.body;
+
+		const user = await PrismaDB.user.findFirst({
+			where: {
+				AND: [
+					{
+						email: email,
+					},
+					{
+						resetToken: +token,
+					},
+				],
+			},
+		});
+
+		if (!user) {
+			return res.status(404).json({
+				ok: false,
+				error: {
+					message: "Invalid token.",
+				},
+			});
+		}
+
+		return res.json({
+			ok: true,
+			data: {
+				userId: user.userId,
+			},
 		});
 	} catch (error) {
 		return serverError(error as Error, res);

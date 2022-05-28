@@ -8,7 +8,7 @@ import { HTTP_POST, LOGIN_USER } from "../../API/apiTypes";
 import { loginUserAction } from "../../Redux/Actions/UserActions";
 import { AuthStackType } from "../../Stacks/AuthStack";
 import { colors } from "../../Styles/Colors";
-import styles from "../../Styles/styles";
+import styles, { dimens } from "../../Styles/styles";
 import { showToast } from "../../Utils/Toast";
 
 export interface LoginType {
@@ -27,8 +27,8 @@ const LoginScreen = () => {
 		password: null,
 	});
 
-	const handleRegisterPage = () => {
-		navigation.navigate("Register");
+	const handleNavigation = (nav: keyof AuthStackType) => {
+		navigation.navigate(nav);
 	};
 
 	const handleChange = (name: string, event: any) => {
@@ -127,10 +127,19 @@ const LoginScreen = () => {
 								handleChange("password", e);
 							}}
 						/>
-
-						<TouchableOpacity onPress={handleRegisterPage}>
-							<Text style={styles.loginNavigationText}>
-								Don't have an account yet? Register one.
+						<TouchableOpacity
+							onPress={() => {
+								handleNavigation("ForgotPasswordEmail");
+							}}
+						>
+							<Text
+								style={{
+									...styles.loginNavigationText,
+									textAlign: "right",
+									marginTop: dimens.small,
+								}}
+							>
+								Forgot Password?
 							</Text>
 						</TouchableOpacity>
 
@@ -142,6 +151,16 @@ const LoginScreen = () => {
 							}}
 						>
 							<Text style={styles.blueButton}>Login</Text>
+						</TouchableOpacity>
+
+						<TouchableOpacity
+							onPress={() => {
+								handleNavigation("Register");
+							}}
+						>
+							<Text style={styles.loginNavigationText}>
+								Don't have an account yet? Register one.
+							</Text>
 						</TouchableOpacity>
 					</View>
 				</View>

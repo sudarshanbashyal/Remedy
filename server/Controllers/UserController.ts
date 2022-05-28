@@ -93,6 +93,36 @@ export const registerUser = async (req: Request, res: Response) => {
 	}
 };
 
+export const resetPassword = async (req: Request, res: Response) => {
+	try {
+		const { userId, password } = req.body;
+
+		const updatedUser = await PrismaDB.user.update({
+			where: {
+				userId,
+			},
+			data: {
+				password: await hashPassword(password),
+			},
+		});
+
+		if (updatedUser) {
+			return res.json({
+				ok: true,
+			});
+		}
+
+		return res.json({
+			ok: false,
+			error: {
+				message: "Could not update password.",
+			},
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
 export const loginUser = async (req: Request, res: Response) => {
 	try {
 		const { email, password } = req.body;
@@ -148,14 +178,16 @@ export const emailExists = async (req: Request, res: Response) => {
 		});
 
 		if (!user) {
-			return res.json({
+			return res.status(404).json({
 				ok: true,
-				emailExists: false,
+				data: {
+					emailExists: false,
+				},
 			});
 		}
 
-		return res.status(400).json({
-			ok: false,
+		return res.json({
+			ok: true,
 			data: {
 				emailExists: true,
 			},

@@ -81,3 +81,7 @@ export const setApiMedicToken = async () => {
 		fs.writeFileSync(envFilePath, envContent.join(os.EOL));
 	}
 };
+
+export const generateResetToken = (): number => {
+	return Math.floor(Math.random() * 90000) + 10000;
+};

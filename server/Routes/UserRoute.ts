@@ -14,6 +14,7 @@ import {
 	getIncomingRequests,
 	changeRequestStatus,
 	getVoximplantUsername,
+	resetPassword,
 } from "../Controllers/UserController";
 import { isAuth } from "../Utils/Auth";
 
@@ -46,5 +47,7 @@ router.post("/addMessageRequest", isAuth, addMessageRequest);
 router.post("/getIncomingRequests", isAuth, getIncomingRequests);
 
 router.put("/changeRequestStatus/:id", isAuth, changeRequestStatus);
+
+router.put("/resetPassword", resetPassword);
 
 export default router;

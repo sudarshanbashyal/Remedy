@@ -58,6 +58,7 @@ model User{
 	incomingRequests Request[] @relation("requestTo")
 	professionalDetails ProfessionalDetails?
 	createdAt DateTime @default(now())
+	resetToken Int?
 }
 
 model ProfessionalDetails{

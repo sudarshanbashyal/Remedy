@@ -29,6 +29,9 @@ export const GET_VOXIMPLANT_USERNAME = "getVoximplantUsername";
 export const GET_PATIENT_FREQUENCIES = "getPatientFrequencies";
 export const GET_ALL_DOCTORS = "getAllDoctors";
 export const UPDATE_DOCTOR_VERIFICATION = "updateDoctorVerification";
+export const SET_PASSWORD_RESET_TOKEN = "setPasswordResetToken";
+export const VERIFY_TOKEN = "verifyToken";
+export const RESET_PASSWORD = "resetPassword";
 
 export type ApiEndpointType =
 	| typeof CHECK_EMAIL
@@ -61,6 +64,9 @@ export type ApiEndpointType =
 	| typeof GET_VOXIMPLANT_USERNAME
 	| typeof GET_PATIENT_FREQUENCIES
 	| typeof UPDATE_DOCTOR_VERIFICATION
+	| typeof SET_PASSWORD_RESET_TOKEN
+	| typeof VERIFY_TOKEN
+	| typeof RESET_PASSWORD
 	| typeof GET_ALL_DOCTORS;
 
 export const HTTP_POST = "POST";

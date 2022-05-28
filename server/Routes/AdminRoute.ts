@@ -1,7 +1,9 @@
 import { Router } from "express";
 import {
 	getAllDoctors,
+	setPasswordResetToken,
 	updateDoctorVerification,
+	verifyToken,
 } from "../Controllers/AdminController";
 import { isAuth } from "../Utils/Auth";
 
@@ -14,5 +16,9 @@ router.put(
 	isAuth,
 	updateDoctorVerification
 );
+
+router.post("/setPasswordResetToken", setPasswordResetToken);
+
+router.post("/verifyToken", verifyToken);
 
 export default router;
