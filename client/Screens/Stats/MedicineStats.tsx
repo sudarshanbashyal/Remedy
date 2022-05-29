@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import BottomNavigationBar from "../../Components/BottomNavigationBar";
 import styles, { dimens } from "../../Styles/styles";
 import FrequencyGraph from "../../Components/Stats/FrequencyGraph";
@@ -87,15 +87,7 @@ const MedicineStats = () => {
 	return (
 		<View style={styles.fullContainer}>
 			<ScrollView>
-				<View style={styles.paddedContainer}>
-					<Text style={styles.mailScreenTitle}>
-						My Medicine Stats
-					</Text>
-				</View>
-
-				<View style={{ marginTop: dimens.xxLarge }}>
-					<HabitGraph />
-				</View>
+				<HabitGraph />
 
 				<View style={{ marginTop: dimens.xxLarge }}>
 					<FrequencyGraph frequencies={frequencies} />

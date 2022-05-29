@@ -1,6 +1,6 @@
 import moment, { Moment } from "moment";
 import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 import { Theme } from "react-native-calendars/src/types";
 import { useSelector } from "react-redux";
@@ -19,6 +19,7 @@ import { RootStore } from "../../Redux/store";
 import { IntakeType } from "../../Screens/Schedule/IntakeRegister";
 import { colors } from "../../Styles/Colors";
 import styles, { dimens } from "../../Styles/styles";
+import { RefreshIcon } from "../../Styles/SVG/Svg";
 import { formatFullDate } from "../../Utils/FormatTime/formatTime";
 import { showToast } from "../../Utils/Toast";
 
@@ -175,34 +176,53 @@ const HabitGraph = () => {
 		})();
 	}, [selectedDay]);
 
-	useEffect(() => {
-		(async () => {
-			const [year, month] = displayedMonth.split("-");
+	const refreshStats = () => {
+		fetchMonthlyData();
+	};
 
-			const endDay = new Date(+year, +month, 0).getDate();
+	const fetchMonthlyData = async () => {
+		const [year, month] = displayedMonth.split("-");
 
-			const startDate = `${year}-${month}-01`;
-			const endDate = `${year}-${month}-${endDay}`;
+		const endDay = new Date(+year, +month, 0).getDate();
 
-			const apiResponse = await makeApiCall({
-				endpoint: GET_ALL_INTAKES,
-				httpAction: HTTP_GET,
-				auth: true,
-				queryParams: [startDate, endDate],
-			});
+		const startDate = `${year}-${month}-01`;
+		const endDate = `${year}-${month}-${endDay}`;
 
-			if (apiResponse.ok) {
-				markMonths(apiResponse.data, startDate, endDate);
-				return;
-			}
+		const apiResponse = await makeApiCall({
+			endpoint: GET_ALL_INTAKES,
+			httpAction: HTTP_GET,
+			auth: true,
+			queryParams: [startDate, endDate],
+		});
 
-			showToast("error", "Could not retrieve intake data.");
+		if (apiResponse.ok) {
+			markMonths(apiResponse.data, startDate, endDate);
 			return;
-		})();
+		}
+
+		showToast("error", "Could not retrieve intake data.");
+		return;
+	};
+
+	useEffect(() => {
+		fetchMonthlyData();
 	}, [displayedMonth]);
 
 	return (
 		<View style={styles.medicineGraphContainer}>
+			<View
+				style={{
+					...styles.spacedApartContainer,
+					marginBottom: dimens.xLarge,
+				}}
+			>
+				<Text style={styles.mainScreenTitle}>My Medicine Stats</Text>
+
+				<TouchableOpacity onPress={fetchMonthlyData}>
+					<RefreshIcon size={24} color={colors.opaqueWhite} />
+				</TouchableOpacity>
+			</View>
+
 			<View
 				style={{
 					...styles.rowStartContainer,

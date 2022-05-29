@@ -19,6 +19,7 @@ export interface LoginType {
 const LoginScreen = () => {
 	const dispatch = useDispatch();
 
+	const [loading, setLoading] = useState<boolean>(false);
 	const navigation = useNavigation<NavigationProp<AuthStackType>>();
 	const [error, setError] = useState<string | null>(null);
 

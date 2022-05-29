@@ -104,7 +104,7 @@ const MedicineList = () => {
 		<View style={styles.fullContainer}>
 			<ScrollView style={styles.medicineListContainer}>
 				<View style={styles.spacedApartContainer}>
-					<Text style={styles.mailScreenTitle}>My Medicine List</Text>
+					<Text style={styles.mainScreenTitle}>My Medicine List</Text>
 
 					<TouchableOpacity onPress={refreshList}>
 						<RefreshIcon size={24} color={colors.opaqueWhite} />

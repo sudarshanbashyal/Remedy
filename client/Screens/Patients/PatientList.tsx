@@ -35,7 +35,7 @@ const PatientList = () => {
 		<View style={styles.fullContainer}>
 			<ScrollView>
 				<View style={styles.chatTitleContainer}>
-					<Text style={styles.mailScreenTitle}>My Patients</Text>
+					<Text style={styles.mainScreenTitle}>My Patients</Text>
 				</View>
 
 				{patients.map((patient) => (

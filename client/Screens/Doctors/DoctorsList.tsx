@@ -34,7 +34,7 @@ const DoctorsList = () => {
 		<View style={styles.fullContainer}>
 			<ScrollView>
 				<View style={styles.chatTitleContainer}>
-					<Text style={styles.mailScreenTitle}>All Doctors</Text>
+					<Text style={styles.mainScreenTitle}>All Doctors</Text>
 				</View>
 
 				<DoctorListFilter

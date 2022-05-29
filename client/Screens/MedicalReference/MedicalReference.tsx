@@ -75,7 +75,7 @@ const MedicalReference = () => {
 	return (
 		<View style={styles.fullContainer}>
 			<ScrollView style={styles.paddedContainer}>
-				<Text style={styles.mailScreenTitle}>Drug References</Text>
+				<Text style={styles.mainScreenTitle}>Drug References</Text>
 
 				<View style={styles.searchContainer}>
 					<TextInput
