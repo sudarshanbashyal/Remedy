@@ -89,7 +89,7 @@ const LoginScreen = () => {
 			return;
 		}
 
-		showToast("error", "Could not login right now");
+		showToast("error", "Invalid Username or Password");
 	};
 
 	return (

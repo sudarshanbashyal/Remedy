@@ -1255,6 +1255,23 @@ const styles = StyleSheet.create({
 	doctorFilterDropdownContainer: {
 		flex: 1,
 	},
+
+	splashScreenContainer: {
+		width: "100%",
+		height: "100%",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	splashScreenLogo: {
+		height: dimens.xxLarge * 1.7,
+		width: dimens.xxLarge * 1.7,
+		resizeMode: "contain",
+	},
+	splashScreenText: {
+		fontFamily: fonts.Poppins.bold,
+		color: colors.primaryWhite,
+		fontSize: fonts.size.large,
+	},
 });
 
 export default styles;

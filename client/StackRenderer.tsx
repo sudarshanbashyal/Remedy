@@ -1,5 +1,5 @@
 import { NavigationContainer } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AuthStack from "./Stacks/AuthStack";
 import RootStack from "./Stacks/RootStack";
 import { colors } from "./Styles/Colors";
@@ -12,12 +12,15 @@ import { loginUserAction } from "./Redux/Actions/UserActions";
 import { HTTP_GET, FETCH_USER } from "./API/apiTypes";
 import { navigationRef } from "./App";
 import { Voximplant } from "react-native-voximplant";
+import SplashScreen from "./Screens/Splash/SplashScreen";
 
 const StackRenderer = () => {
 	const dispatch = useDispatch();
 	const { user } = useSelector((state: RootStore) => state.userReducer);
 
 	const voximplant = Voximplant.getInstance();
+
+	const [loading, setLoading] = useState<boolean>(true);
 
 	const toastConfig = {
 		success: (props) => (
@@ -108,6 +111,10 @@ const StackRenderer = () => {
 					})
 				);
 			}
+
+			setTimeout(() => {
+				setLoading(false);
+			}, 1000);
 		})();
 	}, []);
 
@@ -115,7 +122,7 @@ const StackRenderer = () => {
 		<NavigationContainer ref={navigationRef}>
 			<StatusBar backgroundColor={colors.primaryGray} />
 
-			{user ? <RootStack /> : <AuthStack />}
+			{loading ? <SplashScreen /> : user ? <RootStack /> : <AuthStack />}
 
 			<Toast config={toastConfig} />
 		</NavigationContainer>
