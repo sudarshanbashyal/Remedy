@@ -7,6 +7,7 @@ import {
 	TextInput,
 	ScrollView,
 	View,
+	ActivityIndicator,
 } from "react-native";
 import { RootStackType } from "../../Stacks/RootStack";
 import { colors } from "../../Styles/Colors";
@@ -49,6 +50,8 @@ const ProfileSettings = () => {
 	const goBack = () => {
 		navigation.goBack();
 	};
+
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const [userData, setUserData] = useState<UserProfileType>({
 		firstName,
@@ -115,6 +118,7 @@ const ProfileSettings = () => {
 		const validData: boolean = validateData();
 		if (!validData) return;
 
+		setLoading(true);
 		const apiResponse = await makeApiCall({
 			endpoint: UPDATE_USER_PROFILE,
 			httpAction: HTTP_PUT,
@@ -126,6 +130,7 @@ const ProfileSettings = () => {
 				},
 			},
 		});
+		setLoading(false);
 
 		if (apiResponse.ok) {
 			const { data } = apiResponse;
@@ -284,9 +289,15 @@ const ProfileSettings = () => {
 
 						<TouchableOpacity onPress={handleSubmit}>
 							<View style={styles.blueButtonContainer}>
-								<Text style={styles.blueButton}>
-									Save Profile
-								</Text>
+								{loading ? (
+									<ActivityIndicator
+										color={colors.primaryWhite}
+									/>
+								) : (
+									<Text style={styles.blueButton}>
+										Save Profile
+									</Text>
+								)}
 							</View>
 						</TouchableOpacity>
 					</View>

@@ -1,6 +1,6 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { Asset } from "react-native-image-picker";
 import { makeApiCall } from "../../API/api";
 import { CHECK_EMAIL, HTTP_POST, REGISTER_USER } from "../../API/apiTypes";
@@ -53,6 +53,8 @@ const RegisterScreen = () => {
 	const handleLoginPage = () => {
 		navigation.navigate("Login");
 	};
+
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const [currentStep, setCurrentStep] = useState<number>(1);
 	const [userData, setUserData] = useState<RegistrationType>(initialUserData);
@@ -114,11 +116,13 @@ const RegisterScreen = () => {
 		}
 
 		// check if email already exists
+		setLoading(true);
 		const apiResponse = await makeApiCall({
 			endpoint: CHECK_EMAIL,
 			httpAction: HTTP_POST,
 			body: { email: userData.email },
 		});
+		setLoading(false);
 
 		if (apiResponse?.data?.emailExists) {
 			currentErrors.push("The email you entered already exists.");
@@ -172,6 +176,8 @@ const RegisterScreen = () => {
 	};
 
 	const handleRegistration = async () => {
+		setLoading(true);
+
 		const correctAccountEntries = await checkAccountStep();
 
 		if (!correctAccountEntries) return;
@@ -196,10 +202,12 @@ const RegisterScreen = () => {
 
 		if (apiResponse?.ok) {
 			navigation.navigate("Login");
+			setLoading(false);
 			showToast("success", "Your account was successfully created.");
 			return;
 		}
 
+		setLoading(false);
 		showToast(
 			"error",
 			"Your account could not be registered. Please try again."
@@ -307,7 +315,15 @@ const RegisterScreen = () => {
 							onPress={moveForward}
 							style={styles.blueButtonContainer}
 						>
-							<Text style={styles.blueButton}>{stepLabels}</Text>
+							{loading ? (
+								<ActivityIndicator
+									color={colors.primaryWhite}
+								/>
+							) : (
+								<Text style={styles.blueButton}>
+									{stepLabels}
+								</Text>
+							)}
 						</TouchableOpacity>
 					</View>
 				</View>

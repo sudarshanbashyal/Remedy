@@ -1,6 +1,12 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+	ActivityIndicator,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	View,
+} from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useDispatch } from "react-redux";
 import { makeApiCall } from "../../API/api";
@@ -40,6 +46,7 @@ const LoginScreen = () => {
 
 	const handleLogin = async () => {
 		setError(null);
+		setLoading(true);
 
 		const apiResponse = await makeApiCall({
 			endpoint: LOGIN_USER,
@@ -87,9 +94,11 @@ const LoginScreen = () => {
 				})
 			);
 
+			setLoading(false);
 			return;
 		}
 
+		setLoading(false);
 		showToast("error", "Invalid Username or Password");
 	};
 
@@ -151,7 +160,13 @@ const LoginScreen = () => {
 								...styles.loginCTAContainer,
 							}}
 						>
-							<Text style={styles.blueButton}>Login</Text>
+							{loading ? (
+								<ActivityIndicator
+									color={colors.primaryWhite}
+								/>
+							) : (
+								<Text style={styles.blueButton}>Login</Text>
+							)}
 						</TouchableOpacity>
 
 						<TouchableOpacity

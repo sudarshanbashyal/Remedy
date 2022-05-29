@@ -14,6 +14,7 @@ import {
 import IntakeEntry from "../../Components/Schedule/IntakeEntry";
 import { makeApiCall } from "../../API/api";
 import { GET_INTAKE, HTTP_POST } from "../../API/apiTypes";
+import NoData from "../../Components/Feedbacks/NoData";
 
 export interface IntakeType {
 	intakeId: string;
@@ -105,6 +106,13 @@ const IntakeRegister = () => {
 				/>
 
 				<View style={styles.intakeContainer}>
+					{intakes.length === 0 && (
+						<NoData
+							title="No Scheduled Medicine"
+							description="Hmm, it looks like you don't have any medicines scheduled for today."
+						/>
+					)}
+
 					{intakes.map((intake: IntakeType) => (
 						<IntakeEntry
 							key={intake.intakeId}

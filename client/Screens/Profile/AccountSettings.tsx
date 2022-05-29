@@ -6,6 +6,7 @@ import {
 	TextInput,
 	ScrollView,
 	View,
+	ActivityIndicator,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Errors from "../../Components/Feedbacks/Errors";
@@ -37,6 +38,8 @@ const AccountSettings = () => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
 
 	const { user } = useSelector((state: RootStore) => state.userReducer);
+
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const [errors, setErrors] = useState<string[]>([]);
 	const [accountData, setAccountData] = useState<AccountSettingsType>({
@@ -72,12 +75,14 @@ const AccountSettings = () => {
 	const handleSubmit = async () => {
 		if (!validateFields()) return;
 
+		setLoading(true);
 		const apiResponse = await makeApiCall({
 			endpoint: UPDATE_USER_ACCOUNT,
 			httpAction: HTTP_PUT,
 			auth: true,
 			body: { accountData },
 		});
+		setLoading(false);
 
 		if (apiResponse.ok) {
 			showToast("success", "Account Successfully Updated.");
@@ -158,7 +163,15 @@ const AccountSettings = () => {
 							style={styles.blueButtonContainer}
 							onPress={handleSubmit}
 						>
-							<Text style={styles.blueButton}>Save Account</Text>
+							{loading ? (
+								<ActivityIndicator
+									color={colors.primaryWhite}
+								/>
+							) : (
+								<Text style={styles.blueButton}>
+									Save Account
+								</Text>
+							)}
 						</TouchableOpacity>
 					</View>
 

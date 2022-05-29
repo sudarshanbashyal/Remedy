@@ -395,6 +395,7 @@ const styles = StyleSheet.create({
 		marginRight: dimens.regular + 5,
 	},
 	blueButtonContainer: {
+		minWidth: dimens.xxLarge * 2.5,
 		backgroundColor: colors.primaryBlue,
 		paddingHorizontal: dimens.regular + 5,
 		paddingVertical: dimens.regular,

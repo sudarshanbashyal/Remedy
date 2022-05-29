@@ -209,6 +209,9 @@ class ChatBot {
 			return;
 		}
 
+		// set conversation type to end in case chatbot needs to take another series of entries
+		this.currentConversation.conversationType = CONVERSATION_END;
+
 		const { data } = apiResponse;
 		const { Name, ProfName, TreatmentDescription } = data;
 
@@ -219,9 +222,6 @@ class ChatBot {
 		).join(
 			", "
 		)}. \n\nI diagnose you with ${Name}, also known as ${ProfName}.\n\n ${TreatmentDescription}`;
-
-		// reset chatbot state
-		this.resetChatbotConvo();
 	}
 
 	async formInitialReply(symptom: string = ""): Promise<ChatBubbleType> {
@@ -268,13 +268,16 @@ class ChatBot {
 	}
 
 	async analyzeUserText(text: string): Promise<ChatBubbleType> {
+		if (this.currentConversation.conversationType === CONVERSATION_END) {
+			this.resetChatbotConvo();
+		}
+
 		// get the user intent
 		const apiResponse = await makeApiCall({
 			endpoint: ANALYZE_MESSAGE_INTENT,
 			httpAction: HTTP_POST,
 			body: { message: text },
 		});
-		console.log(apiResponse);
 
 		if (!apiResponse?.ok) {
 			this.chatBotReply.content =
