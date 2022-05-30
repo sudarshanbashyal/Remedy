@@ -59,7 +59,7 @@ export const handleScheduling = async () => {
 
 			const weekDays = medicine.days;
 			medicine.schedules.forEach((schedule: ScheduleType) => {
-				console.log(schedule.hour, schedule.minutes);
+				// console.log(schedule.hour, schedule.minutes);
 
 				for (let day of weekDays) {
 					const newJob = NodeSchedule.scheduleJob(
@@ -73,7 +73,7 @@ export const handleScheduling = async () => {
 							);
 						}
 					);
-					console.log(newJob);
+					// console.log(newJob);
 
 					if (newJob) {
 						currentJobs.push(newJob);

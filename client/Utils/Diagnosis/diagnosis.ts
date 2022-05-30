@@ -149,7 +149,7 @@ class ChatBot {
 		this.currentSymptoms[symptomValue] = symptomName;
 
 		// if the number of current symptoms is more than or equals to three provide diagnosis, else ask more questions
-		if (Object.keys(this.currentSymptoms).length >= 5) {
+		if (Object.keys(this.currentSymptoms).length >= 4) {
 			await this.provideDiagnosis();
 			return;
 		}
