@@ -48,6 +48,12 @@ const LoginScreen = () => {
 		setError(null);
 		setLoading(true);
 
+		if (!userData.email || !userData.password) {
+			setLoading(false);
+			setError("Please fill up all the fields");
+			return;
+		}
+
 		const apiResponse = await makeApiCall({
 			endpoint: LOGIN_USER,
 			httpAction: HTTP_POST,
@@ -59,6 +65,7 @@ const LoginScreen = () => {
 			const { verified } = apiResponse.data;
 			if (!verified) {
 				showToast("error", "Your account is not verified yet.");
+				setLoading(false);
 				return;
 			}
 

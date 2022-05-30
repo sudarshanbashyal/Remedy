@@ -11,6 +11,7 @@ import { AuthStackType } from "../../Stacks/AuthStack";
 import { colors } from "../../Styles/Colors";
 import styles, { dimens } from "../../Styles/styles";
 import { showToast } from "../../Utils/Toast";
+import Errors from "../../Components/Feedbacks/Errors";
 
 const ForgotPasswordReset = ({ route }) => {
 	const { userId } = route.params;
@@ -18,13 +19,19 @@ const ForgotPasswordReset = ({ route }) => {
 
 	const [password, setPassword] = useState<string>(null);
 	const [confirmPassword, setConfirmPassword] = useState<string>(null);
+	const [errors, setErrors] = useState<string[]>([]);
 
 	const handleReset = async () => {
+		const allErrors = [];
+
 		if (!password || !confirmPassword) {
-			showToast("error", "Please full up both fields");
-			return;
+			allErrors.push("Please fill up both fields");
 		} else if (password !== confirmPassword) {
-			showToast("error", "Your passwords are different");
+			allErrors.push("Please enter the same passwords");
+		}
+
+		if (allErrors.length > 0) {
+			setErrors(allErrors);
 			return;
 		}
 
@@ -50,6 +57,8 @@ const ForgotPasswordReset = ({ route }) => {
 		<View style={styles.fullContainer}>
 			<View style={styles.loginFlexContainer}>
 				<View style={styles.loginContainer}>
+					{errors.length > 0 && <Errors errors={errors} />}
+
 					<Text style={styles.loginTitle}>Create new Password</Text>
 					<Text
 						style={{

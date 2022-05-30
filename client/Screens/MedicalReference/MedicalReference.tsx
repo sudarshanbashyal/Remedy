@@ -97,7 +97,12 @@ const MedicalReference = () => {
 					</TouchableOpacity>
 				</View>
 
-				{searched && drugs.length === 0 && <NoData />}
+				{searched && drugs.length === 0 && (
+					<NoData
+						title="No Drugs Found"
+						description="Hmm, the drug that you looked up did not bring up any results. Try looking for something else."
+					/>
+				)}
 
 				<View style={{ marginTop: dimens.medium }}>
 					{drugs.map((drug: DrugPreviewType, index: number) => (

@@ -14,6 +14,7 @@ import {
 	HTTP_POST,
 } from "../../API/apiTypes";
 import PatientRequestItem from "../../Components/Chat/PatientRequestItem";
+import NoData from "../../Components/Feedbacks/NoData";
 import { RootStackType } from "../../Stacks/RootStack";
 import { colors } from "../../Styles/Colors";
 import styles from "../../Styles/styles";
@@ -25,7 +26,7 @@ export interface RequestItemType {
 	firstName: string;
 	lastName: string;
 	profilePicture: string;
-	professionalDetails:any;
+	professionalDetails: any;
 }
 
 const PatientRequestScreen = () => {
@@ -34,6 +35,7 @@ const PatientRequestScreen = () => {
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [doctors, setDoctors] = useState<RequestItemType[]>([]);
 	const [requests, setRequests] = useState({});
+	const [searched, setSearched] = useState<boolean>(false);
 
 	const goBack = () => {
 		naviation.navigate("ChatList");
@@ -59,9 +61,11 @@ const PatientRequestScreen = () => {
 			setRequests(requestsMap);
 			setDoctors(doctors);
 
+			setSearched(true);
 			return;
 		}
 
+		setSearched(true);
 		showToast("error", "Could not retrieve list.");
 	};
 
@@ -119,6 +123,13 @@ const PatientRequestScreen = () => {
 							<SearchIcon color={colors.primaryWhite} size={24} />
 						</TouchableOpacity>
 					</View>
+
+					{searched && doctors.length === 0 && (
+						<NoData
+							title="No Doctors"
+							description="Hmm, the name that you searched for did not bring up any doctors registered in our app."
+						/>
+					)}
 
 					<View>
 						{doctors.map((doctor: RequestItemType) => (
