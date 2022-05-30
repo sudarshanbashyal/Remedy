@@ -537,6 +537,7 @@ export const getDoctors = async (req: AuthRequestType, res: Response) => {
 				firstName: true,
 				lastName: true,
 				profilePicture: true,
+				professionalDetails: true,
 			},
 		});
 

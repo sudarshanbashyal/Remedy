@@ -35,7 +35,10 @@ const PatientRequestItem = ({
 						</Text>
 
 						<Text style={styles.doctorTitle}>
-							{formatText("MBBS/MD something something", 20)}
+							{formatText(
+								doctor.professionalDetails.expertise,
+								20
+							)}
 						</Text>
 					</View>
 				</View>

@@ -26,12 +26,16 @@ export const stopScheduling = async () => {
 let currentJobs = [];
 
 export const createChannel = () => {
-	PushNotification.createChannel(
-		{ channelId: "scheduleChannel", channelName: "Schedule Channel" },
-		() => {
-			console.log("Channel created.");
-		}
-	);
+	try {
+		PushNotification.createChannel(
+			{ channelId: "scheduleChannel", channelName: "Schedule Channel" },
+			() => {
+				console.log("Channel created.");
+			}
+		);
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 // TODO:
@@ -54,21 +58,27 @@ export const handleScheduling = async () => {
 			if (!medicine.active) continue;
 
 			const weekDays = medicine.days;
-
 			medicine.schedules.forEach((schedule: ScheduleType) => {
-				weekDays.forEach((day: number) => {
-					currentJobs.push(
-						NodeSchedule.scheduleJob(
-							`${schedule.minutes} ${schedule.hour} * * ${day}`,
-							() => {
-								handleNotification(
-									`Reminder: ${medicine.name}`,
-									`Hi, this is a reminder for you to take ${medicine.name}.`
-								);
-							}
-						)
+				console.log(schedule.hour, schedule.minutes);
+
+				for (let day of weekDays) {
+					const newJob = NodeSchedule.scheduleJob(
+						`${schedule.minutes} ${
+							schedule.hour == 24 ? 0 : schedule.hour
+						} * * ${day}`,
+						() => {
+							handleNotification(
+								`Reminder: ${medicine.name}`,
+								`Hi, this is a reminder for you to take ${medicine.name}.`
+							);
+						}
 					);
-				});
+					console.log(newJob);
+
+					if (newJob) {
+						currentJobs.push(newJob);
+					}
+				}
 			});
 		}
 	});

@@ -25,6 +25,7 @@ export interface RequestItemType {
 	firstName: string;
 	lastName: string;
 	profilePicture: string;
+	professionalDetails:any;
 }
 
 const PatientRequestScreen = () => {

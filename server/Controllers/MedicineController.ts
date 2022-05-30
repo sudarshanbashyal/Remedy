@@ -35,7 +35,11 @@ export const addMedicine = async (req: AuthRequestType, res: Response) => {
 			const minutes = +schedule.minutes;
 			let hour = +schedule.hour;
 
-			hour = schedule.half === "AM" ? hour : hour + 12;
+			if (hour == 12) {
+				hour = schedule.half === "PM" ? hour : hour + 12;
+			} else {
+				hour = schedule.half === "AM" ? hour : hour + 12;
+			}
 
 			return {
 				hour,
@@ -187,7 +191,11 @@ export const updateMedicine = async (req: AuthRequestType, res: Response) => {
 			const minutes = +schedule.minutes;
 			let hour = +schedule.hour;
 
-			hour = schedule.half === "AM" ? hour : hour + 12;
+			if (hour == 12) {
+				hour = schedule.half === "PM" ? hour : hour + 12;
+			} else {
+				hour = schedule.half === "AM" ? hour : hour + 12;
+			}
 
 			return {
 				hour,
