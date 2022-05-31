@@ -91,8 +91,8 @@ const init = async () => {
 		});
 	});
 
-	server.listen(process.env.port || 3000, () => {
-		console.log("Up and up");
+	server.listen(process.env.PORT || 3000, () => {
+		console.log("Up and up!!");
 	});
 };
 

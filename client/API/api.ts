@@ -1,7 +1,7 @@
 import { getUserToken } from "../Utils/AsyncStorage/asyncStorage";
 import { ApiArgumentsType, ApiEndpointType } from "./apiTypes";
 
-export const API_URL = "http://192.168.1.69:3000";
+export const API_URL = "https://app-remedy.herokuapp.com";
 
 // order of the arguments
 // mandatory params first: url, verb, auth

@@ -15,10 +15,13 @@ import {
 	changeRequestStatus,
 	getVoximplantUsername,
 	resetPassword,
+	ping,
 } from "../Controllers/UserController";
 import { isAuth } from "../Utils/Auth";
 
 const router = Router();
+
+router.get("/ping", ping);
 
 router.post("/registerUser", registerUser);
 

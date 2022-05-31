@@ -12,6 +12,17 @@ import {
 } from "../Utils/cloudinary";
 import { generateUsername } from "../Utils/VoximPlantConfig";
 
+export const ping = async (_: Request, res: Response) => {
+	try {
+		return res.json({
+			ok: true,
+			message: "Pong",
+		});
+	} catch (error) {
+		return serverError(error as Error, res);
+	}
+};
+
 export const registerUser = async (req: Request, res: Response) => {
 	try {
 		const {
