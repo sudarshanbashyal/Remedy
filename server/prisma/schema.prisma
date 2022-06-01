@@ -69,11 +69,6 @@ model ProfessionalDetails{
 	user User @relation(fields:[userId], references:[userId])
 }
 
-model UserRole{
-	roleId String @id() @default(uuid())
-	name UserType
-}
-
 model Medicine{
 	medicineId String @id() @default(uuid())
 	name String
@@ -123,7 +118,6 @@ model Message{
 	name String? @default("")
 	content String
 	chatBot Boolean @default(false)
-	seen Boolean @default(false)
 	forwardable Boolean @default(false)
 	chatId String
 	chat Chat @relation(fields:[chatId], references:[chatId])

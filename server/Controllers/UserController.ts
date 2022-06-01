@@ -114,6 +114,7 @@ export const resetPassword = async (req: Request, res: Response) => {
 			},
 			data: {
 				password: await hashPassword(password),
+				resetToken: null,
 			},
 		});
 

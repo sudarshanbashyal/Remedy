@@ -1,6 +1,6 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { makeApiCall } from "../../API/api";
 import {
 	CHANGE_REQUEST_STATUS,
@@ -13,7 +13,7 @@ import DoctorRequestItem, {
 } from "../../Components/Chat/DoctorRequestItem";
 import { RootStackType } from "../../Stacks/RootStack";
 import { colors } from "../../Styles/Colors";
-import styles from "../../Styles/styles";
+import styles, { dimens } from "../../Styles/styles";
 import { BackIcon } from "../../Styles/SVG/Svg";
 import { showToast } from "../../Utils/Toast";
 
@@ -28,6 +28,7 @@ const DoctorRequestScreen = () => {
 	const navigation = useNavigation<NavigationProp<RootStackType>>();
 
 	const [requests, setRequests] = useState<DoctorRequestItemType[]>([]);
+	const [loading, setLoading] = useState<boolean>(true);
 
 	const goBack = () => {
 		navigation.navigate("ChatList");
@@ -52,9 +53,11 @@ const DoctorRequestScreen = () => {
 			setRequests(unrespondedRequests);
 
 			showToast("success", `Message request ${status}.`);
+			setLoading(false);
 			return;
 		}
 
+		setLoading(false);
 		showToast(
 			"error",
 			"Coudln't respond to request. Please try again later"
@@ -104,15 +107,22 @@ const DoctorRequestScreen = () => {
 				</View>
 			</View>
 
+			{loading && (
+				<View style={{ marginTop: dimens.xxLarge }}>
+					<ActivityIndicator color={colors.primaryWhite} />
+				</View>
+			)}
+
 			<View style={{ paddingHorizontal: 16 }}>
 				<View>
-					{requests.map((request: DoctorRequestItemType) => (
-						<DoctorRequestItem
-							key={request.requestId}
-							patient={request}
-							handleRequestResponse={handleRequestResponse}
-						/>
-					))}
+					{!loading &&
+						requests.map((request: DoctorRequestItemType) => (
+							<DoctorRequestItem
+								key={request.requestId}
+								patient={request}
+								handleRequestResponse={handleRequestResponse}
+							/>
+						))}
 				</View>
 			</View>
 		</View>

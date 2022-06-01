@@ -110,85 +110,79 @@ const LoginScreen = () => {
 	};
 
 	return (
-		<KeyboardAwareScrollView>
-			<View style={styles.fullContainer}>
-				<View style={styles.loginFlexContainer}>
-					<View style={styles.loginContainer}>
-						<Text style={styles.loginTitle}>
-							Login to your Account
-						</Text>
+		<View style={styles.fullContainer}>
+			<View style={styles.loginFlexContainer}>
+				<View style={styles.loginContainer}>
+					<Text style={styles.loginTitle}>Login to your Account</Text>
 
-						{error && (
-							<View style={styles.errorContainer}>
-								<Text style={styles.errorText}>{error}</Text>
-							</View>
-						)}
+					{error && (
+						<View style={styles.errorContainer}>
+							<Text style={styles.errorText}>{error}</Text>
+						</View>
+					)}
 
-						<TextInput
-							value={userData.email}
-							placeholder="Email Address"
-							style={styles.inputStyle}
-							placeholderTextColor={colors.opaqueWhite}
-							onChange={(e) => {
-								handleChange("email", e);
-							}}
-						/>
+					<TextInput
+						value={userData.email}
+						placeholder="Email Address"
+						style={styles.inputStyle}
+						placeholderTextColor={colors.opaqueWhite}
+						onChange={(e) => {
+							handleChange("email", e);
+						}}
+					/>
 
-						<TextInput
-							value={userData.password}
-							placeholder="Password"
-							style={styles.inputStyle}
-							secureTextEntry={true}
-							placeholderTextColor={colors.opaqueWhite}
-							onChange={(e) => {
-								handleChange("password", e);
-							}}
-						/>
-						<TouchableOpacity
-							onPress={() => {
-								handleNavigation("ForgotPasswordEmail");
-							}}
-						>
-							<Text
-								style={{
-									...styles.loginNavigationText,
-									textAlign: "right",
-									marginTop: dimens.small,
-								}}
-							>
-								Forgot Password?
-							</Text>
-						</TouchableOpacity>
-
-						<TouchableOpacity
-							onPress={handleLogin}
+					<TextInput
+						value={userData.password}
+						placeholder="Password"
+						style={styles.inputStyle}
+						secureTextEntry={true}
+						placeholderTextColor={colors.opaqueWhite}
+						onChange={(e) => {
+							handleChange("password", e);
+						}}
+					/>
+					<TouchableOpacity
+						onPress={() => {
+							handleNavigation("ForgotPasswordEmail");
+						}}
+					>
+						<Text
 							style={{
-								...styles.blueButtonContainer,
-								...styles.loginCTAContainer,
+								...styles.loginNavigationText,
+								textAlign: "right",
+								marginTop: dimens.small,
 							}}
 						>
-							{loading ? (
-								<ActivityIndicator
-									color={colors.primaryWhite}
-								/>
-							) : (
-								<Text style={styles.blueButton}>Login</Text>
-							)}
-						</TouchableOpacity>
+							Forgot Password?
+						</Text>
+					</TouchableOpacity>
 
-						<TouchableOpacity
-							onPress={() => {
-								handleNavigation("Register");
-							}}
-						>
-							<Text style={styles.loginNavigationText}>
-								Don't have an account yet? Register one.
-							</Text>
-						</TouchableOpacity>
-					</View>
+					<TouchableOpacity
+						onPress={handleLogin}
+						style={{
+							...styles.blueButtonContainer,
+							...styles.loginCTAContainer,
+						}}
+					>
+						{loading ? (
+							<ActivityIndicator color={colors.primaryWhite} />
+						) : (
+							<Text style={styles.blueButton}>Login</Text>
+						)}
+					</TouchableOpacity>
+
+					<TouchableOpacity
+						onPress={() => {
+							handleNavigation("Register");
+						}}
+					>
+						<Text style={styles.loginNavigationText}>
+							Don't have an account yet? Register one.
+						</Text>
+					</TouchableOpacity>
 				</View>
 			</View>
-		</KeyboardAwareScrollView>
+		</View>
 	);
 };
 

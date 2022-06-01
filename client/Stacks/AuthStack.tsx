@@ -5,6 +5,7 @@ import ForgotPasswordReset from "../Screens/Authentication/ForgotPasswordReset";
 import ForgotPasswordToken from "../Screens/Authentication/ForgotPasswordToken";
 import LoginScreen from "../Screens/Authentication/LoginScreen";
 import RegisterScreen from "../Screens/Authentication/RegisterScreen";
+import { colors } from "../Styles/Colors";
 
 export type AuthStackType = {
 	Login: {
@@ -25,7 +26,11 @@ const AuthStack = () => {
 
 	return (
 		<Stack.Navigator
-			screenOptions={{ headerShown: false, animation: "none" }}
+			screenOptions={{
+				headerShown: false,
+				animation: "none",
+				contentStyle: { backgroundColor: colors.primaryGray },
+			}}
 		>
 			<Stack.Screen name="Login" component={LoginScreen} />
 			<Stack.Screen name="Register" component={RegisterScreen} />

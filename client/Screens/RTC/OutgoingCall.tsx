@@ -66,9 +66,15 @@ const OutgoingCall = ({ route }) => {
 				permissionGranted[PermissionsAndroid.PERMISSIONS.CAMERA] ===
 				"granted";
 
-			if (audioPermission && cameraPermission) {
-				setPermissionsGranted(true);
+			if (!audioPermission || !cameraPermission) {
+				setCallStatus("Permission Denied By User");
+				setTimeout(() => {
+					navigation.goBack();
+				}, 2000);
+				return;
 			}
+
+			setPermissionsGranted(true);
 		})();
 	}, []);
 

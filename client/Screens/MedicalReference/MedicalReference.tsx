@@ -5,6 +5,7 @@ import {
 	TextInput,
 	View,
 	TouchableOpacity,
+	ActivityIndicator,
 } from "react-native";
 import { makeApiCall } from "../../API/api";
 import { GET_MEDICAL_REFERENCE, HTTP_GET } from "../../API/apiTypes";
@@ -29,12 +30,17 @@ const MedicalReference = () => {
 
 	const [searched, setSearched] = useState<boolean>(false);
 
+	const [loading, setLoading] = useState<boolean>(false);
+
 	const handleFileNameChange = (e: any) => {
 		const { text } = e.nativeEvent;
 		setDrugName(text);
 	};
 
 	const handleDrugSearch = async () => {
+		setDrugs([]);
+
+		setLoading(true);
 		const apiResponse = await makeApiCall({
 			endpoint: GET_MEDICAL_REFERENCE,
 			httpAction: HTTP_GET,
@@ -44,9 +50,11 @@ const MedicalReference = () => {
 		if (apiResponse.ok) {
 			const { data } = apiResponse;
 
+			setLoading(false);
 			checkFDAStatus(data);
 		}
 
+		setLoading(false);
 		setSearched(true);
 	};
 
@@ -97,7 +105,13 @@ const MedicalReference = () => {
 					</TouchableOpacity>
 				</View>
 
-				{searched && drugs.length === 0 && (
+				{loading && (
+					<View style={{ marginTop: dimens.xxLarge }}>
+						<ActivityIndicator color={colors.primaryWhite} />
+					</View>
+				)}
+
+				{!loading && searched && drugs.length === 0 && (
 					<NoData
 						title="No Drugs Found"
 						description="Hmm, the drug that you looked up did not bring up any results. Try looking for something else."
@@ -105,9 +119,10 @@ const MedicalReference = () => {
 				)}
 
 				<View style={{ marginTop: dimens.medium }}>
-					{drugs.map((drug: DrugPreviewType, index: number) => (
-						<ReferenceList key={index} drug={drug} />
-					))}
+					{!loading &&
+						drugs.map((drug: DrugPreviewType, index: number) => (
+							<ReferenceList key={index} drug={drug} />
+						))}
 				</View>
 			</ScrollView>
 

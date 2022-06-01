@@ -1,6 +1,7 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
+	ActivityIndicator,
 	ScrollView,
 	Text,
 	TextInput,
@@ -17,7 +18,7 @@ import PatientRequestItem from "../../Components/Chat/PatientRequestItem";
 import NoData from "../../Components/Feedbacks/NoData";
 import { RootStackType } from "../../Stacks/RootStack";
 import { colors } from "../../Styles/Colors";
-import styles from "../../Styles/styles";
+import styles, { dimens } from "../../Styles/styles";
 import { BackIcon, SearchIcon } from "../../Styles/SVG/Svg";
 import { showToast } from "../../Utils/Toast";
 
@@ -36,12 +37,14 @@ const PatientRequestScreen = () => {
 	const [doctors, setDoctors] = useState<RequestItemType[]>([]);
 	const [requests, setRequests] = useState({});
 	const [searched, setSearched] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const goBack = () => {
 		naviation.navigate("ChatList");
 	};
 
 	const handleSearch = async () => {
+		setLoading(true);
 		const apiResponse = await makeApiCall({
 			endpoint: GET_DOCTORS,
 			httpAction: HTTP_POST,
@@ -61,10 +64,12 @@ const PatientRequestScreen = () => {
 			setRequests(requestsMap);
 			setDoctors(doctors);
 
+			setLoading(false);
 			setSearched(true);
 			return;
 		}
 
+		setLoading(false);
 		setSearched(true);
 		showToast("error", "Could not retrieve list.");
 	};
@@ -124,6 +129,12 @@ const PatientRequestScreen = () => {
 						</TouchableOpacity>
 					</View>
 
+					{loading && (
+						<View style={{ marginTop: dimens.xxLarge }}>
+							<ActivityIndicator color={colors.primaryWhite} />
+						</View>
+					)}
+
 					{searched && doctors.length === 0 && (
 						<NoData
 							title="No Doctors"
@@ -132,14 +143,15 @@ const PatientRequestScreen = () => {
 					)}
 
 					<View>
-						{doctors.map((doctor: RequestItemType) => (
-							<PatientRequestItem
-								key={doctor.userId}
-								doctor={doctor}
-								requests={requests}
-								sendMessageRequest={sendMessageRequest}
-							/>
-						))}
+						{!loading &&
+							doctors.map((doctor: RequestItemType) => (
+								<PatientRequestItem
+									key={doctor.userId}
+									doctor={doctor}
+									requests={requests}
+									sendMessageRequest={sendMessageRequest}
+								/>
+							))}
 					</View>
 				</View>
 			</ScrollView>

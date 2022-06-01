@@ -127,7 +127,11 @@ const IntakeEntry = ({
 	return (
 		<View style={{ marginBottom: 20 }}>
 			<Text style={styles.intakeEntryTime}>
-				{intakeHour}:{schedule.minutes} {intakeHalf}
+				{intakeHour}:
+				{schedule.minutes < 10
+					? "0" + schedule.minutes
+					: schedule.minutes}{" "}
+				{intakeHalf}
 			</Text>
 
 			<View style={styles.intakeEntryContainer}>
