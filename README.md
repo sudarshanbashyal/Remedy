@@ -27,13 +27,13 @@ A number of different technologies have been utilized to make this application p
 
 Some screenshots of the application are attached below:
 
-<img src="./client/pictures/messaging.png" width="400" />
+<img src="./client/pictures/messaging.png" width="600" />
 
-<img src="./client/pictures/messaging_media.png" width="400" />
+<img src="./client/pictures/messaging_media.png" width="600" />
 
-<img src="./client/pictures/chatbot_symptoms.png" width="400" />
+<img src="./client/pictures/chatbot_symptoms.png" width="300" />
 
-<img src="./client/pictures/chatbot_diagnosis.png" width="400" />
+<img src="./client/pictures/chatbot_diagnosis.png" width="300" />
 
-<img src="./client/pictures/hospital_navigation.png" width="400" />
+<img src="./client/pictures/hospital_navigation.png" width="300" />
 
