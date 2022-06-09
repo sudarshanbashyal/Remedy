@@ -93,10 +93,6 @@ export const handleMessage = async ({
 		if (recipentSocket) {
 			socket.to(recipentSocket).emit("chat_screen_message", newMessage);
 			socket.to(recipentSocket).emit("chat_list_message", newMessage);
-
-			/*
-			socket.to(recipentSocket).emit("message_notification", newMessage);
-			*/
 		}
 	} catch (error) {
 		console.log(error);
